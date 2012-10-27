@@ -1,4 +1,3 @@
-
 `config/initializer/griddler.rb`
 
 ```
