@@ -3,7 +3,9 @@ module Griddler
 
   def self.configure
     self.configuration = Configuration.new
-    yield configuration
+    if block_given?
+      yield configuration
+    end
   end
 
   class Configuration

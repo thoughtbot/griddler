@@ -17,8 +17,10 @@ describe Griddler::Configuration do
   end
 
   describe 'with config block' do
-    before Griddler.configure do |config|
-      config.to = :hash
+    before do
+      Griddler.configure do |config|
+        config.to = :hash
+      end
     end
 
     it 'stores config' do
