@@ -14,15 +14,10 @@ class Griddler::Email
 
     @subject = params[:subject]
 
-    if params[:charsets]
-      charsets = ActiveSupport::JSON.decode(params[:charsets])
-      @body = EmailParser.extract_reply_body(Iconv.new('utf-8', charsets['text']).iconv(params[:text]))
-    else
-      @body = EmailParser.extract_reply_body(params[:text])
-    end
   end
 
   private
+
   def extract_address(address, type)
     parsed = EmailParser.parse_address(address)
     if type == :hash
@@ -30,6 +25,16 @@ class Griddler::Email
     else
       parsed[type]
     end
+  end
+
+  def extract_body(body_text)
+    if params[:charsets]
+      charsets = ActiveSupport::JSON.decode(params[:charsets])
+      body_text = Iconv.new('utf-8', charsets['text']).
+        iconv(body_text)
+    end
+
+    @body = EmailParser.extract_reply_body(text)
   end
 
   def config
