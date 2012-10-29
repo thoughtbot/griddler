@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Griddler::EmailsController do
   describe 'POST create' do
     it 'is successfull' do
-        post :create
+        post :create, email_params
         response.should be_success
     end
 
@@ -15,4 +15,11 @@ describe Griddler::EmailsController do
         post :create
     end
   end
+end
+
+def email_params
+  {
+    to: 'someone@example.com',
+    from: 'someone@example.com'
+  }
 end
