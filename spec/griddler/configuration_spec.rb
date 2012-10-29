@@ -8,11 +8,11 @@ describe Griddler::Configuration do
     end
 
     it 'provides defaults' do
-      Griddler.configuration.handler_class.should == nil
-      Griddler.configuration.handler_method.should == :process
-      Griddler.configuration.to.should == :token
-      Griddler.configuration.raw_body.should == false
-      Griddler.configuration.reply_delimiter == 'Reply ABOVE THIS LINE'
+      Griddler.configuration.handler_class.should eq(nil)
+      Griddler.configuration.handler_method.should eq(:process)
+      Griddler.configuration.to.should eq(:token)
+      Griddler.configuration.raw_body.should eq(false)
+      Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
     end
   end
 
