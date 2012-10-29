@@ -17,6 +17,8 @@ describe Griddler::EmailsController do
   end
 end
 
+private
+
 def email_params
   {
     to: 'someone@example.com',

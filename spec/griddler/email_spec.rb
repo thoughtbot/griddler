@@ -302,9 +302,9 @@ describe Griddler::Email do
     end
 
     describe 'handler_method' do
-    end
-
-    describe 'raw_body' do
+      it 'calls the handler method on EmailProcessor' do
+        pending
+      end
     end
   end
 end

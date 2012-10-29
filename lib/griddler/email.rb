@@ -13,7 +13,7 @@ class Griddler::Email
     end
 
     @subject = params[:subject]
-
+    @body = extract_body(params[:text], params[:charsets])
   end
 
   private
@@ -27,14 +27,13 @@ class Griddler::Email
     end
   end
 
-  def extract_body(body_text)
-    if params[:charsets]
-      charsets = ActiveSupport::JSON.decode(params[:charsets])
-      body_text = Iconv.new('utf-8', charsets['text']).
-        iconv(body_text)
+  def extract_body(body_text, charsets)
+    if charsets.present?
+      charsets = ActiveSupport::JSON.decode(charsets)
+      body_text = Iconv.new('utf-8', charsets['text']).iconv(body_text)
     end
 
-    @body = EmailParser.extract_reply_body(text)
+    EmailParser.extract_reply_body(body_text)
   end
 
   def config

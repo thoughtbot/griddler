@@ -1,3 +1,13 @@
+# Parse emails from their full format into a hash containing full email, host,
+# local token, and the raw argument.
+#
+# Some Body <somebody@example.com>
+# # => {
+#   token: 'somebody',
+#   host: 'example.com',
+#   email: 'somebody@example.com',
+#   full: 'Some Body <somebody@example.com>',
+# }
 module EmailParser
   def self.parse_address(full_address)
     email_address = extract_email_address(full_address)
@@ -29,18 +39,10 @@ module EmailParser
 
   private
 
-  # Extract the email portion of an address in the format
-  #
-  #   Some Body <somebody@example.com>
-  #   #=> somebody@example.com
   def self.extract_email_address(full_address)
     full_address.split('<').last.delete('>').strip
   end
 
-  # Split email into token and host
-  #
-  #   somebody@example.com
-  #   #=> [somebody, example.com]
   def self.split_address(email_address)
     email_address.try :split, '@'
   end
