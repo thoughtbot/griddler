@@ -7,9 +7,11 @@ class Griddler::Email
     if params[:to]
       @to = extract_address(params[:to], config.to)
     end
+
     if params[:from]
       @from = extract_address(params[:from], :email)
     end
+
     @subject = params[:subject]
 
     if params[:charsets]
