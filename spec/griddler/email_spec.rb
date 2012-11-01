@@ -13,7 +13,7 @@ describe Griddler::Email do
       > Thanks, Tristan
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -29,7 +29,7 @@ describe Griddler::Email do
       > Thanks, Tristan
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -45,7 +45,7 @@ describe Griddler::Email do
       > Thanks, Tristan
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -61,7 +61,7 @@ describe Griddler::Email do
       Check out this report!
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -74,7 +74,7 @@ describe Griddler::Email do
       Hey!
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -89,7 +89,7 @@ describe Griddler::Email do
       Hey!
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -104,7 +104,7 @@ describe Griddler::Email do
       Hey!
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -122,7 +122,7 @@ describe Griddler::Email do
       > Hey!
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -140,7 +140,7 @@ describe Griddler::Email do
       > Hey!
     EOF
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == 'Hello.'
   end
 
@@ -165,7 +165,12 @@ describe Griddler::Email do
       from: 'UTF-8',
       text: 'utf-8'
     }.to_json
-    email = Griddler::Email.new(text: body, charsets: charsets)
+    email = Griddler::Email.new(
+      text: body,
+      to: 'hi@e.com',
+      from: 'bye@e.com',
+      charsets: charsets
+    )
 
     email.body.should == 'Hello.'
   end
@@ -173,7 +178,7 @@ describe Griddler::Email do
   it 'should preserve empty lines' do
     body = "Hello.\n\nWhat's up?"
 
-    email = Griddler::Email.new(text: body)
+    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
     email.body.should == body
   end
 
@@ -236,7 +241,6 @@ describe Griddler::Email do
 
     describe 'raw_body = true' do
       it 'should not modify the body' do
-        pending
         Griddler.configuration.stub(raw_body: true)
         email = Griddler::Email.new(params)
 
@@ -250,6 +254,20 @@ describe Griddler::Email do
         email = Griddler::Email.new(params)
 
         email.body.should == params[:text]
+      end
+
+      it 'splits at custom delimeter' do
+        params[:text] = <<-EOS.strip_heredoc.strip
+          trolololo
+
+          -- reply above --
+
+          wut
+        EOS
+
+        Griddler.configuration.stub(reply_delimiter: '-- reply above --')
+        email = Griddler::Email.new(params)
+        email.body.should == 'trolololo'
       end
     end
 
@@ -296,14 +314,26 @@ describe Griddler::Email do
     end
 
     describe 'handler_class' do
-      it 'calls process on the handler class' do
-        pending
+      before do
+        class MyHandler; end
+      end
+
+      it 'calls process on the custom handler class' do
+        MyHandler.stub(:process).and_return('success')
+        Griddler.configuration.stub(:handler_class).and_return(MyHandler)
+        MyHandler.should_receive(:process)
+
+        email = Griddler::Email.new(params)
       end
     end
 
     describe 'handler_method' do
-      it 'calls the handler method on EmailProcessor' do
-        pending
+      it 'calls the custom handler method on implied EmailProcessor' do
+        EmailProcessor.stub(:foo_bar).and_return('success')
+        Griddler.configuration.stub(:handler_method).and_return(:foo_bar)
+        EmailProcessor.should_receive(:foo_bar)
+
+        email = Griddler::Email.new(params)
       end
     end
   end

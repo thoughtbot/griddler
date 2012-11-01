@@ -22,6 +22,10 @@ module Griddler
       @to ||= :token
     end
 
+    def handler_class
+      @handler_class ||= EmailProcessor
+    end
+
     def handler_method
       @handler_method ||= :process
     end
