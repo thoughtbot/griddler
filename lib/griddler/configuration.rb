@@ -1,9 +1,18 @@
 module Griddler
-  mattr_accessor :configuration
+  class << self
+    attr_accessor :configuration
+  end
 
   def self.configure
     self.configuration = Configuration.new
-    yield configuration
+    if block_given?
+      yield configuration
+    end
+    self.configuration
+  end
+
+  def self.configuration
+    @configuration || self.configure
   end
 
   class Configuration
@@ -11,6 +20,10 @@ module Griddler
 
     def to
       @to ||= :token
+    end
+
+    def handler_class
+      @handler_class ||= EmailProcessor
     end
 
     def handler_method
@@ -22,7 +35,7 @@ module Griddler
     end
 
     def reply_delimiter
-      @raw_body ||= 'REPLY ABOVE THIS LINE'
+      @reply_delimiter ||= 'Reply ABOVE THIS LINE'
     end
   end
 end
