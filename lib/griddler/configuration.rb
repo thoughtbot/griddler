@@ -14,7 +14,7 @@ module Griddler
   end
 
   def self.configuration
-    @@configuration || self.configure
+    @configuration || self.configure
   end
 
   class Configuration
