@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    griddler (0.0.1)
+    griddler (0.1.0)
       rails (>= 3.2.0)
 
 GEM
