@@ -1,5 +1,6 @@
 class EmailProcessor
+  cattr_accessor :email
   def self.process(email)
-    true
+    @@email = email
   end
 end

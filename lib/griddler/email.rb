@@ -1,7 +1,7 @@
 require 'iconv'
 
 class Griddler::Email
-  attr_accessor :to, :from, :body, :user, :comment
+  attr_accessor :to, :from, :body, :subject
 
   def initialize(params)
     @to = extract_address(params[:to], config.to)
