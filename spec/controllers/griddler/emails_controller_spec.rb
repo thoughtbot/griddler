@@ -21,7 +21,13 @@ private
 
 def email_params
   {
-    to: 'someone@example.com',
-    from: 'someone@example.com'
+    headers: 'Received: by 127.0.0.1 with SMTP...',
+    to: 'thoughtbot <tb@example.com>',
+    from: 'John Doe <someone@example.com>',
+    subject: 'hello there',
+    text: 'this is an email message',
+    html: '<p>this is an email message</p>',
+    charsets: '{"to":"UTF-8","html":"ISO-8859-1","subject":"UTF-8","from":"UTF-8","text":"ISO-8859-1"}',
+    SPF: "pass"
   }
 end
