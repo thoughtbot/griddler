@@ -35,7 +35,7 @@ class Griddler::Email
     attachment_files = []
 
     attachment_count.times do |index|
-      attachment_files << params["attachment#{index+1}".to_sym]
+      attachment_files << params["attachment#{index + 1}".to_sym]
     end
 
     attachment_files

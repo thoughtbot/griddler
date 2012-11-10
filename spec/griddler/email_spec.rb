@@ -350,9 +350,20 @@ describe Griddler::Email, '#attachments' do
       attachments: '2',
       attachment1: upload_1,
       attachment2: upload_2,
-      'attachment-info' => '{
-        "attachment2":{"filename":"photo2.jpg","name":"photo2.jpg","type":"image/jpeg"},
-        "attachment1":{"filename":"photo1.jpg","name":"photo1.jpg","type":"image/jpeg"}}'
+     'attachment-info' => <<-eojson
+        {
+          'attachment2': {
+            'filename': 'photo2.jpg',
+            'name': 'photo2.jpg',
+            'type': 'image/jpeg'
+          },
+          'attachment1': {
+            'filename': 'photo1.jpg',
+            'name': 'photo1.jpg',
+            'type': 'image/jpeg'
+          }
+        }
+      eojson
     }
     email = Griddler::Email.new(params)
 
@@ -370,22 +381,24 @@ describe Griddler::Email, '#attachments' do
 
     email.attachments.should be_empty
   end
-end
 
-CWD = File.expand_path File.dirname(__FILE__)
+  def cwd
+    File.expand_path File.dirname(__FILE__)
+  end
 
-def upload_1
-  @upload_1 ||= ActionDispatch::Http::UploadedFile.new({
-    filename: 'photo1.jpg',
-    content_type: 'image/jpeg',
-    tempfile: File.new("#{CWD}/../../spec/fixtures/photo1.jpg")
-  })
-end
+  def upload_1
+    @upload_1 ||= ActionDispatch::Http::UploadedFile.new({
+      filename: 'photo1.jpg',
+      type: 'image/jpeg',
+      tempfile: File.new("#{cwd}/../../spec/fixtures/photo1.jpg")
+    })
+  end
 
-def upload_2
-  @upload_2 ||= ActionDispatch::Http::UploadedFile.new({
-    filename: 'photo2.jpg',
-    content_type: 'image/jpeg',
-    tempfile: File.new("#{CWD}/../../spec/fixtures/photo2.jpg")
-  })
+  def upload_2
+    @upload_2 ||= ActionDispatch::Http::UploadedFile.new({
+      filename: 'photo2.jpg',
+      type: 'image/jpeg',
+      tempfile: File.new("#{cwd}/../../spec/fixtures/photo2.jpg")
+    })
+  end
 end
