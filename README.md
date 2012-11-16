@@ -93,6 +93,40 @@ end
 * `config.to` change the format of the returned value for the `:to` key in the
   email object. `:hash` will return all options within a (surprise!) - hash.
 
+Testing In Your App
+-------------------
+
+You may want to create a factory for when testing the integration of Griddler
+into your application. If you're using factory_girl this can be accomplished
+with the following sample factory.
+
+```ruby
+factory :email, class: OpenStruct do
+  to 'email-token'
+  from 'user@email.com'
+  subject 'email subject'
+  body 'Hello!'
+  attachments {[]}
+
+  trait :with_attachment do
+    attachments {[
+      ActionDispatch::Http::UploadedFile.new({
+        filename: 'img.png',
+        type: 'image/png',
+        tempfile: File.new("#{File.expand_path File.dirname(__FILE__)}/fixtures/img.png")
+      })
+    ]}
+  end
+end
+```
+
+Bear in mind, if you plan on using the :with_attachment trait, that this
+example assumes your factories are in spec/factories.rb and you have
+an image file in spec/fixtures/
+
+To use it in your test(s) just build with `email = build(:email)`
+or `email = build(:email, :with_attachment)`
+
 More Information
 ----------------
 
