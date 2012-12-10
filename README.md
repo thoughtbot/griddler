@@ -78,7 +78,7 @@ Griddler.configure do |config|
   # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
   # :token  => 's13.6b2d13dc6a1d33db7644'
   # :hash   => { raw: '', email: '', token: '', host: '' }
-  config.reply_delimeter = '-- REPLY ABOVE THIS LINE --'
+  config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
 end
 ```
 
@@ -86,10 +86,10 @@ end
   incoming emails.
 * `config.handler_method` change the class method called on
   `config.handler_class`.
-* `config.reply_delimeter` change the string searched for that will split your
+* `config.reply_delimiter` change the string searched for that will split your
   body.
 * `config.raw_body` use the full email body whether or not
-  `config.reply_delimeter` is set.
+  `config.reply_delimiter` is set.
 * `config.to` change the format of the returned value for the `:to` key in the
   email object. `:hash` will return all options within a (surprise!) - hash.
 
