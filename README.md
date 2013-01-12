@@ -40,25 +40,25 @@ class EmailProcessor
 end
 ```
 
-The contents of the `email` object passed into your process method is a hash
-containing:
+The contents of the `email` object passed into your process method is an object
+that responds to:
 
-* `:to`
-* `:from`
-* `:subject`
-* `:body`
+* `.to`
+* `.from`
+* `.subject`
+* `.body`
 
 Each of those has some sensible defaults.
 
-`:from` and `:subject` will contain the obvious values found in the email, the
+`.from` and `.subject` will contain the obvious values found in the email, the
 raw from and subject values.
 
-`:body` will contain the full contents of the email body **unless** there is a
+`.body` will contain the full contents of the email body **unless** there is a
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
-case `:body` will contain everything before that line.
+case `.body` will contain everything before that line.
 
-`:to` will contain all of the text before the email's "@" character. We've found
-that this is the most often use portion of the email address and consider it to
+`.to` will contain all of the text before the email's "@" character. We've found
+that this is the most often used portion of the email address and consider it to
 be the token we'll key off of for interaction with our application.
 
 Configuration Options
