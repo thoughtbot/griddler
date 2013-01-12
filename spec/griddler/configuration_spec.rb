@@ -20,7 +20,7 @@ describe Griddler::Configuration do
         config.to = :hash
       end
 
-      Griddler.configuration.to.should == :hash
+      Griddler.configuration.to.should eq :hash
     end
 
     it 'stores a processor_class' do
@@ -34,7 +34,7 @@ describe Griddler::Configuration do
         config.processor_class = DummyProcessor
       end
 
-      Griddler.configuration.processor_class.should == ::DummyProcessor
+      Griddler.configuration.processor_class.should eq ::DummyProcessor
     end
   end
 end
