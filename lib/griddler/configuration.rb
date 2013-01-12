@@ -18,18 +18,14 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :handler_class, :handler_method, :raw_body, :reply_delimiter, :to
+    attr_accessor :processor_class, :raw_body, :reply_delimiter, :to
 
     def to
       @to ||= :token
     end
 
-    def handler_class
-      @handler_class ||= EmailProcessor
-    end
-
-    def handler_method
-      @handler_method ||= :process
+    def processor_class
+      @processor_class ||= EmailProcessor
     end
 
     def raw_body

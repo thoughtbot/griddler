@@ -7,8 +7,7 @@ describe Griddler::Configuration do
     end
 
     it 'provides defaults' do
-      Griddler.configuration.handler_class.should eq(EmailProcessor)
-      Griddler.configuration.handler_method.should eq(:process)
+      Griddler.configuration.processor_class.should eq(EmailProcessor)
       Griddler.configuration.to.should eq(:token)
       Griddler.configuration.raw_body.should eq(false)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
@@ -24,7 +23,7 @@ describe Griddler::Configuration do
       Griddler.configuration.to.should == :hash
     end
 
-    it 'stores a handler_class' do
+    it 'stores a processor_class' do
       class DummyProcessor
         def self.process(email)
           true
@@ -32,10 +31,10 @@ describe Griddler::Configuration do
       end
 
       Griddler.configure do |config|
-        config.handler_class = DummyProcessor
+        config.processor_class = DummyProcessor
       end
 
-      Griddler.configuration.handler_class.should == ::DummyProcessor
+      Griddler.configuration.processor_class.should == ::DummyProcessor
     end
   end
 end

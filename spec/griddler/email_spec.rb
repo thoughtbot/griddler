@@ -242,15 +242,6 @@ describe Griddler::Email, 'with custom configuration' do
     Griddler.configure
   end
 
-  describe 'raw_body = true' do
-    it 'does not modify the body' do
-      Griddler.configuration.stub(raw_body: true)
-      email = Griddler::Email.new(params)
-
-      email.body.should == params[:text]
-    end
-  end
-
   describe 'reply_delimiter = "Stuff and things"' do
     it 'does not split on Reply ABOVE THIS LINE' do
       Griddler.configuration.stub(reply_delimiter: 'Stuff and things')
@@ -316,25 +307,15 @@ describe Griddler::Email, 'with custom configuration' do
     end
   end
 
-  describe 'handler_class' do
+  describe 'processor_class' do
     before do
       class MyHandler; end
     end
 
-    it 'calls process on the custom handler class' do
+    it 'calls process on the custom processor class' do
       MyHandler.stub(:process).and_return('success')
-      Griddler.configuration.stub(:handler_class).and_return(MyHandler)
+      Griddler.configuration.stub(:processor_class).and_return(MyHandler)
       MyHandler.should_receive(:process)
-
-      email = Griddler::Email.new(params)
-    end
-  end
-
-  describe 'handler_method' do
-    it 'calls the custom handler method on implied EmailProcessor' do
-      EmailProcessor.stub(:foo_bar).and_return('success')
-      Griddler.configuration.stub(:handler_method).and_return(:foo_bar)
-      EmailProcessor.should_receive(:foo_bar)
 
       email = Griddler::Email.new(params)
     end

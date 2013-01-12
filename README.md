@@ -1,10 +1,8 @@
+
 Griddler
 ========
 
-Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[Sendgrid parse
-api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) that hands
-off a built email object to a class implemented by you.
+Griddler is a Rails engine (full plugin) that provides an endpoint for the [Sendgrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) that hands off a built email object to a class implemented by you.
 
 Installation
 ------------
@@ -15,10 +13,7 @@ Add griddler to your application's Gemfile and run `bundle install`:
 gem 'griddler'
 ```
 
-Griddler comes with a default endpoint that will be displayed at the bottom of
-the output of `rake routes`. If there is a previously defined route that matches
-`/email_processor`–or you would like to rename the matched path–you may
-add the route to the desired position in routes.rb with the following:
+Griddler comes with a default endpoint that will be displayed at the bottom of the output of `rake routes`. If there is a previously defined route that matches `/email_processor`–or you would like to rename the matched path–you may add the route to the desired position in routes.rb with the following:
 
 ```ruby
 match '/email_processor' => 'griddler/emails#create', via: :post
@@ -27,15 +22,13 @@ match '/email_processor' => 'griddler/emails#create', via: :post
 Defaults
 --------
 
-By default Griddler will look for a class to be created in your application
-called EmailProcessor with a class method implemented named process, taking in
-one argument (presumably `email`). For example, in `./lib/email_processor.rb`:
+By default Griddler will look for a class to be created in your application called EmailProcessor with a class method implemented named process, taking in one argument (presumably `email`). For example, in `./lib/email_processor.rb`:
 
 ```ruby
 class EmailProcessor
   def self.process(email)
-    # all of your application-specific code here - creating models, processing
-    # reports, etc
+    # all of your application-specific code here - creating models, 
+    # processing reports, etc
   end
 end
 ```
@@ -47,11 +40,11 @@ that responds to:
 * `.from`
 * `.subject`
 * `.body`
+* `.raw_body`
 
 Each of those has some sensible defaults.
 
-`.from` and `.subject` will contain the obvious values found in the email, the
-raw from and subject values.
+`.from`, `.raw_body` and `.subject` will contain the obvious values found in the email, the raw values from those fields.
 
 `.body` will contain the full contents of the email body **unless** there is a
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
@@ -64,15 +57,11 @@ be the token we'll key off of for interaction with our application.
 Configuration Options
 ---------------------
 
-An initializer can be created to control some of the options in Griddler.
-Defaults are shown below with sample overrides following. In
-`config/initializer/griddler.rb`:
+An initializer can be created to control some of the options in Griddler. Defaults are shown below with sample overrides following. In `config/initializer/griddler.rb`:
 
 ```ruby
 Griddler.configure do |config|
-  config.handler_class = EmailProcessor # MyEmailProcessor
-  config.handler_method = :process # :go
-  config.raw_body = false # true
+  config.processor_class = EmailProcessor # MyEmailProcessor
   config.to = :token # :raw, :email, :hash
   # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
   # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
@@ -82,23 +71,15 @@ Griddler.configure do |config|
 end
 ```
 
-* `config.handler_class` change the class Griddler will use to handle your
-  incoming emails.
-* `config.handler_method` change the class method called on
-  `config.handler_class`.
-* `config.reply_delimiter` change the string searched for that will split your
-  body.
-* `config.raw_body` use the full email body whether or not
-  `config.reply_delimiter` is set.
-* `config.to` change the format of the returned value for the `:to` key in the
-  email object. `:hash` will return all options within a (surprise!) - hash.
+* `config.processor_class` change the class Griddler will use to handle your incoming emails.
+* `config.reply_delimiter` change the string searched for that will split your body.
+* `config.raw_body` use the full email body whether or not `config.reply_delimiter` is set.
+* `config.to` change the format of the returned value for the `:to` key in the email object. `:hash` will return all options within a (surprise!) - hash.
 
 Testing In Your App
 -------------------
 
-You may want to create a factory for when testing the integration of Griddler
-into your application. If you're using factory_girl this can be accomplished
-with the following sample factory.
+You may want to create a factory for when testing the integration of Griddler into your application. If you're using factory_girl this can be accomplished with the following sample factory.
 
 ```ruby
 factory :email, class: OpenStruct do
