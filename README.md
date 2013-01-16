@@ -83,7 +83,6 @@ end
 
 * `config.processor_class` change the class Griddler will use to handle your incoming emails.
 * `config.reply_delimiter` change the string searched for that will split your body.
-* `config.raw_body` use the full email body whether or not `config.reply_delimiter` is set.
 * `config.to` change the format of the returned value for the `:to` key in
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 

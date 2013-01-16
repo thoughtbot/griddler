@@ -18,7 +18,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :raw_body, :reply_delimiter, :to
+    attr_accessor :processor_class, :reply_delimiter, :to
 
     def to
       @to ||= :token
@@ -26,10 +26,6 @@ module Griddler
 
     def processor_class
       @processor_class ||= EmailProcessor
-    end
-
-    def raw_body
-      @raw_body ||= false
     end
 
     def reply_delimiter

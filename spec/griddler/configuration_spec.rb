@@ -9,7 +9,6 @@ describe Griddler::Configuration do
     it 'provides defaults' do
       Griddler.configuration.processor_class.should eq(EmailProcessor)
       Griddler.configuration.to.should eq(:token)
-      Griddler.configuration.raw_body.should eq(false)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
     end
   end
