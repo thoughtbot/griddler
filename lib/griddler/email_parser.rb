@@ -26,9 +26,9 @@ module EmailParser
       body.split(delimeter).first.
         split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
         split(/^\s*--\s*$/).first.
+        gsub(/On.*wrote:/, '').
         split(/[\r]*\n/).reject do |line|
           line =~ /^\s*>/ ||
-            line =~ /^\s*On.*wrote:$/ ||
             line =~ /^\s*Sent from my /
         end.
         join("\n").

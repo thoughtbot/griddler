@@ -1,6 +1,31 @@
 require 'spec_helper'
 
+describe Griddler::Email, 'text param missing' do
+  it 'uses the html field and sanitizes it' do
+    body = <<-EOF
+      <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
+    EOF
+
+    email = Griddler::Email.new(html: body, to: 'hi@example.com', from: 'bye@example.com')
+    email.body.should eq 'Hello.'
+  end
+end
+
 describe Griddler::Email, 'body formatting' do
+  it 'raises error when no body is provided' do
+    expect { Griddler::Email.new(to: 'hi@example.com', from: 'bye@example.com') }.
+      to raise_error(Griddler::Errors::EmailBodyNotFound)
+  end
+
+  it 'handles everything on one line' do
+    body = <<-EOF
+      Hello. On 01/12/13, Tristan <email@example.com> wrote: Reply ABOVE THIS LINE or visit your website to respond.
+    EOF
+
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
+    email.body.should eq 'Hello.'
+  end
+
   it 'handles "On [date] [soandso] wrote:" format' do
     body = <<-EOF
       Hello.
@@ -13,7 +38,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -29,7 +54,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -45,7 +70,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -61,7 +86,7 @@ describe Griddler::Email, 'body formatting' do
       Check out this report!
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -74,7 +99,7 @@ describe Griddler::Email, 'body formatting' do
       Hey!
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -89,7 +114,7 @@ describe Griddler::Email, 'body formatting' do
       Hey!
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -104,7 +129,7 @@ describe Griddler::Email, 'body formatting' do
       Hey!
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -122,7 +147,7 @@ describe Griddler::Email, 'body formatting' do
       > Hey!
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -140,7 +165,7 @@ describe Griddler::Email, 'body formatting' do
       > Hey!
     EOF
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq 'Hello.'
   end
 
@@ -167,8 +192,8 @@ describe Griddler::Email, 'body formatting' do
     }.to_json
     email = Griddler::Email.new(
       text: body,
-      to: 'hi@e.com',
-      from: 'bye@e.com',
+      to: 'hi@example.com',
+      from: 'bye@example.com',
       charsets: charsets
     )
 
@@ -178,7 +203,7 @@ describe Griddler::Email, 'body formatting' do
   it 'should preserve empty lines' do
     body = "Hello.\n\nWhat's up?"
 
-    email = Griddler::Email.new(text: body, to: 'hi@e.com', from: 'bye@e.com')
+    email = Griddler::Email.new(text: body, to: 'hi@example.com', from: 'bye@example.com')
     email.body.should eq body
   end
 end
@@ -190,32 +215,35 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 
   it 'handles normal e-mail address' do
-    email = Griddler::Email.new(to: @address, from: @address)
+    email = Griddler::Email.new(text: 'hi', to: @address, from: @address)
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles new lines' do
-    email = Griddler::Email.new(to: "#{@address}\n", from: "#{@address}\n")
+    email = Griddler::Email.new(text: 'hi', to: "#{@address}\n",
+      from: "#{@address}\n")
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles angle brackets around address' do
-    email = Griddler::Email.new(to: "<#{@address}>", from: "<#{@address}>")
+    email = Griddler::Email.new(text: 'hi', to: "<#{@address}>",
+      from: "<#{@address}>")
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles name and angle brackets around address' do
-    email = Griddler::Email.new(to: "Bob <#{@address}>",
+    email = Griddler::Email.new(text: 'hi', to: "Bob <#{@address}>",
       from: "Bob <#{@address}>")
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles multiple e-mails, with priority to the bracketed' do
-    email = Griddler::Email.new(to: "fake@example.com <#{@address}>",
+    email = Griddler::Email.new(text: 'hi',
+      to: "fake@example.com <#{@address}>",
       from: "fake@example.com <#{@address}>")
     email.to.should eq @token
     email.from.should eq @address
@@ -225,7 +253,7 @@ end
 describe Griddler::Email, 'with custom configuration' do
   let(:params) do
     {
-      to: 'Some Identifier <some-identifier@thisapp.com>',
+      to: 'Some Identifier <some-identifier@example.com>',
       from: 'Joe User <joeuser@example.com>',
       subject: 'Re: [ThisApp] That thing',
       text: <<-EOS.strip_heredoc.strip
@@ -271,9 +299,9 @@ describe Griddler::Email, 'with custom configuration' do
       email = Griddler::Email.new(params)
       expected_hash = {
         token: 'some-identifier',
-        host: 'thisapp.com',
-        email: 'some-identifier@thisapp.com',
-        full: 'Some Identifier <some-identifier@thisapp.com>',
+        host: 'example.com',
+        email: 'some-identifier@example.com',
+        full: 'Some Identifier <some-identifier@example.com>',
       }
 
       email.to.should be_an_instance_of(Hash)
@@ -295,7 +323,7 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler.configuration.stub(to: :email)
       email = Griddler::Email.new(params)
 
-      email.to.should eq 'some-identifier@thisapp.com'
+      email.to.should eq 'some-identifier@example.com'
     end
   end
 
@@ -327,8 +355,8 @@ describe Griddler::Email, '#attachments' do
   it 'assigns 2 attachments' do
     params = {
       text: 'hi',
-      to: 'hi@me.com',
-      from: 'there@them.com',
+      to: 'hi@example.com',
+      from: 'there@example.com',
       attachments: '2',
       attachment1: upload_1,
       attachment2: upload_2,
@@ -355,8 +383,8 @@ describe Griddler::Email, '#attachments' do
   it 'has no attachments' do
     params = {
       text: 'hi',
-      to: 'hi@me.com',
-      from: 'there@them.com',
+      to: 'hi@example.com',
+      from: 'there@example.com',
       attachments: '0'
     }
     email = Griddler::Email.new(params)
