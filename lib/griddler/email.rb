@@ -1,18 +1,16 @@
-require 'iconv'
-
 class Griddler::Email
-  attr_accessor :to, :from, :body, :subject, :attachments
+  attr_accessor :to, :from, :body, :raw_body, :subject, :attachments
 
   def initialize(params)
     @to = extract_address(params[:to], config.to)
     @from = extract_address(params[:from], :email)
     @subject = params[:subject]
-    @body = raw_or_extracted_body(params)
+    @body = extract_body(params)
+    @raw_body = params[:text]
     @attachments = extract_attachments(params)
 
-    handler_class = config.handler_class
-    handler_method = config.handler_method
-    handler_class.send(handler_method, self)
+    processor_class = config.processor_class
+    processor_class.process(self)
   end
 
   private
@@ -41,20 +39,16 @@ class Griddler::Email
     attachment_files
   end
 
-  def extract_body(body_text, charsets)
+  def extract_body(params)
+    body_text = params[:text]
+    charsets = params[:charsets]
+
     if charsets.present?
       charsets = ActiveSupport::JSON.decode(charsets)
-      body_text = Iconv.new('utf-8', charsets['text']).iconv(body_text)
+      body_text = body_text.encode('UTF-8', invalid: :replace,
+        undef: :replace, replace: '').force_encoding('UTF-8')
     end
 
     EmailParser.extract_reply_body(body_text)
-  end
-
-  def raw_or_extracted_body(params)
-    if config.raw_body
-      @body = params[:text]
-    else
-      @body = extract_body(params[:text], params[:charsets])
-    end
   end
 end
