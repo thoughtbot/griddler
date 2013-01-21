@@ -1,4 +1,7 @@
+require 'htmlentities'
+
 class Griddler::Email
+  include ActionView::Helpers::SanitizeHelper
   attr_accessor :to, :from, :body, :raw_body, :subject, :attachments
 
   def initialize(params)
@@ -6,7 +9,7 @@ class Griddler::Email
     @from = extract_address(params[:from], :email)
     @subject = params[:subject]
     @body = extract_body(params)
-    @raw_body = params[:text]
+    @raw_body = params[:text] || params[:html]
     @attachments = extract_attachments(params)
 
     processor_class = config.processor_class
@@ -40,7 +43,7 @@ class Griddler::Email
   end
 
   def extract_body(params)
-    body_text = params[:text]
+    body_text = text_or_sanitized_html(params)
     charsets = params[:charsets]
 
     if charsets.present?
@@ -50,5 +53,15 @@ class Griddler::Email
     end
 
     EmailParser.extract_reply_body(body_text)
+  end
+
+  def text_or_sanitized_html(params)
+    if params.key? :text
+      params[:text]
+    elsif params.key? :html
+      HTMLEntities.new.decode(strip_tags(params[:html]))
+    else
+      raise Griddler::Errors::EmailBodyNotFound
+    end
   end
 end
