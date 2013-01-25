@@ -30,7 +30,7 @@ Defaults
 --------
 
 By default Griddler will look for a class to be created in your application
-called EmailProcessor with a class method implemented named process, taking
+called EmailProcessor with a class method implemented, named process, taking
 in one argument (presumably `email`). For example, in `./lib/email_processor.rb`:
 
 ```ruby
