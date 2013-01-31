@@ -24,6 +24,7 @@ class Griddler::Email
 
   def extract_address(address, type)
     parsed = EmailParser.parse_address(address)
+
     if type == :hash
       parsed
     else
@@ -57,11 +58,29 @@ class Griddler::Email
 
   def text_or_sanitized_html(params)
     if params.key? :text
-      params[:text]
+      clean_text(params[:text])
     elsif params.key? :html
-      HTMLEntities.new.decode(strip_tags(params[:html]))
+      clean_html(params[:html])
     else
       raise Griddler::Errors::EmailBodyNotFound
     end
+  end
+
+  private
+
+  def clean_text(text)
+    clean_invalid_utf8_bytes(text)
+  end
+
+  def clean_html(html)
+    cleaned_html = clean_invalid_utf8_bytes(html)
+    cleaned_html = strip_tags(cleaned_html)
+    cleaned_html = HTMLEntities.new.decode(cleaned_html)
+    cleaned_html
+  end
+
+  def clean_invalid_utf8_bytes(text)
+    text.encode('UTF-8', 'binary',
+      invalid: :replace, undef: :replace, replace: '')
   end
 end
