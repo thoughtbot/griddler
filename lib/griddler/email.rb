@@ -5,18 +5,21 @@ class Griddler::Email
   attr_accessor :to, :from, :body, :raw_body, :subject, :attachments
 
   def initialize(params)
+    @params = params
     @to = extract_address(params[:to], config.to)
     @from = extract_address(params[:from], :email)
     @subject = params[:subject]
-    @body = extract_body(params)
+    @body = extract_body
     @raw_body = params[:text] || params[:html]
-    @attachments = extract_attachments(params)
+    @attachments = extract_attachments
 
     processor_class = config.processor_class
     processor_class.process(self)
   end
 
   private
+
+  attr_reader :params
 
   def config
     Griddler.configuration
@@ -32,7 +35,7 @@ class Griddler::Email
     end
   end
 
-  def extract_attachments(params)
+  def extract_attachments
     attachment_count = params[:attachments].to_i
     attachment_files = []
 
@@ -43,20 +46,24 @@ class Griddler::Email
     attachment_files
   end
 
-  def extract_body(params)
-    body_text = text_or_sanitized_html(params)
+  def extract_body
+    body_text = text_or_sanitized_html
     charsets = params[:charsets]
 
     if charsets.present?
       charsets = ActiveSupport::JSON.decode(charsets)
-      body_text = body_text.encode('UTF-8', invalid: :replace,
-        undef: :replace, replace: '').force_encoding('UTF-8')
+      body_text = body_text.encode(
+        'UTF-8',
+        invalid: :replace,
+        undef: :replace,
+        replace: ''
+      ).force_encoding('UTF-8')
     end
 
     EmailParser.extract_reply_body(body_text)
   end
 
-  def text_or_sanitized_html(params)
+  def text_or_sanitized_html
     if params.key? :text
       clean_text(params[:text])
     elsif params.key? :html
@@ -65,8 +72,6 @@ class Griddler::Email
       raise Griddler::Errors::EmailBodyNotFound
     end
   end
-
-  private
 
   def clean_text(text)
     clean_invalid_utf8_bytes(text)
@@ -80,7 +85,12 @@ class Griddler::Email
   end
 
   def clean_invalid_utf8_bytes(text)
-    text.encode('UTF-8', 'binary',
-      invalid: :replace, undef: :replace, replace: '')
+    text.encode(
+      'UTF-8',
+      'binary',
+      invalid: :replace,
+      undef: :replace,
+      replace: ''
+    )
   end
 end
