@@ -12,6 +12,20 @@ describe Griddler::Email, 'text param missing' do
 end
 
 describe Griddler::Email, 'body formatting' do
+  it 'handles invalid utf-8 bytes in html' do
+    html = "Hello.\xF5".force_encoding('UTF-8')
+
+    email = Griddler::Email.new(html: html, to: 'hi@example.com', from: 'bye@example.com')
+    email.body.should eq 'Hello.'
+  end
+
+  it 'handles invalid utf-8 bytes in text' do
+    text = "Hello.\xF5".force_encoding('UTF-8')
+
+    email = Griddler::Email.new(text: text, to: 'hi@example.com', from: 'bye@example.com')
+    email.body.should eq 'Hello.'
+  end
+
   it 'raises error when no body is provided' do
     expect { Griddler::Email.new(to: 'hi@example.com', from: 'bye@example.com') }.
       to raise_error(Griddler::Errors::EmailBodyNotFound)
