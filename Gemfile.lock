@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    griddler (0.3.0)
+    griddler (0.3.1)
       htmlentities
       rails (>= 3.2.0)
 
