@@ -23,17 +23,13 @@ describe Griddler::Configuration do
     end
 
     it 'stores a processor_class' do
-      class DummyProcessor
-        def self.process(email)
-          true
-        end
-      end
+      dummy_processor = Class.new
 
       Griddler.configure do |config|
-        config.processor_class = DummyProcessor
+        config.processor_class = dummy_processor
       end
 
-      Griddler.configuration.processor_class.should eq ::DummyProcessor
+      Griddler.configuration.processor_class.should eq dummy_processor
     end
   end
 end
