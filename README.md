@@ -7,12 +7,14 @@ Griddler is a Rails engine (full plugin) that provides an endpoint for the
 [SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html)
 that hands off a built email object to a class implemented by you.
 
-Tutorial
---------
+Tutorials
+---------
 
-SendGrid has done a
-[great tutorial](http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/)
-on integrating Griddler with your application.
+* SendGrid has done a
+  [great tutorial](http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/)
+  on integrating Griddler with your application.
+* And of course, view our own blog post on the subject over at
+  [Giant Robots](http://robots.thoughtbot.com/post/42286882447/handle-incoming-email-with-griddler).
 
 Installation
 ------------
