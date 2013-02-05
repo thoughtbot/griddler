@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://thoughtbot.com'
   s.summary     = 'SendGrid Parse API client Rails Engine'
 
+  s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
   s.files = Dir['{app,config,lib}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
   s.require_paths = %w{app lib}
 
