@@ -37,13 +37,10 @@ class Griddler::Email
 
   def extract_attachments
     attachment_count = params[:attachments].to_i
-    attachment_files = []
 
-    attachment_count.times do |index|
-      attachment_files << params["attachment#{index + 1}".to_sym]
+    attachment_count.times.map do |index|
+      params["attachment#{index + 1}".to_sym]
     end
-
-    attachment_files
   end
 
   def extract_body
