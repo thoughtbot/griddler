@@ -18,7 +18,7 @@ describe Griddler::Email, 'body formatting' do
   end
 
   it 'raises error when no body is provided' do
-    expect { Griddler::Email.new(to: 'hi@example.com', from: 'bye@example.com') }.
+    expect { Griddler::Email.new(to: 'hi@example.com', from: 'bye@example.com').process }.
       to raise_error(Griddler::Errors::EmailBodyNotFound)
   end
 
@@ -191,7 +191,7 @@ describe Griddler::Email, 'body formatting' do
       to: 'hi@example.com',
       from: 'bye@example.com',
       charsets: charsets
-    )
+    ).process
 
     email.body.should eq 'Hello.'
   end
@@ -207,7 +207,7 @@ describe Griddler::Email, 'body formatting' do
       format => text.force_encoding('UTF-8'),
       to: 'hi@example.com',
       from: 'bye@example.com'
-    )
+    ).process
     email.body
   end
 end
@@ -219,28 +219,28 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 
   it 'handles normal e-mail address' do
-    email = Griddler::Email.new(text: 'hi', to: @address, from: @address)
+    email = Griddler::Email.new(text: 'hi', to: @address, from: @address).process
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles new lines' do
     email = Griddler::Email.new(text: 'hi', to: "#{@address}\n",
-      from: "#{@address}\n")
+      from: "#{@address}\n").process
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles angle brackets around address' do
     email = Griddler::Email.new(text: 'hi', to: "<#{@address}>",
-      from: "<#{@address}>")
+      from: "<#{@address}>").process
     email.to.should eq @token
     email.from.should eq @address
   end
 
   it 'handles name and angle brackets around address' do
     email = Griddler::Email.new(text: 'hi', to: "Bob <#{@address}>",
-      from: "Bob <#{@address}>")
+      from: "Bob <#{@address}>").process
     email.to.should eq @token
     email.from.should eq @address
   end
@@ -250,7 +250,7 @@ describe Griddler::Email, 'extracting email addresses' do
       text: 'hi',
       to: "fake@example.com <#{@address}>",
       from: "fake@example.com <#{@address}>"
-    )
+    ).process
     email.to.should eq @token
     email.from.should eq @address
   end
@@ -279,7 +279,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'reply_delimiter = "Stuff and things"' do
     it 'does not split on Reply ABOVE THIS LINE' do
       Griddler.configuration.stub(reply_delimiter: 'Stuff and things')
-      email = Griddler::Email.new(params)
+      email = Griddler::Email.new(params).process
 
       email.body.should eq params[:text]
     end
@@ -294,7 +294,7 @@ describe Griddler::Email, 'with custom configuration' do
       EOS
 
       Griddler.configuration.stub(reply_delimiter: '-- reply above --')
-      email = Griddler::Email.new(params)
+      email = Griddler::Email.new(params).process
       email.body.should eq 'trolololo'
     end
   end
@@ -302,7 +302,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'to = :hash' do
     it 'returns a hash for email.to' do
       Griddler.configuration.stub(to: :hash)
-      email = Griddler::Email.new(params)
+      email = Griddler::Email.new(params).process
       expected_hash = {
         token: 'some-identifier',
         host: 'example.com',
@@ -318,7 +318,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'to = :full' do
     it 'returns the full to for email.to' do
       Griddler.configuration.stub(to: :full)
-      email = Griddler::Email.new(params)
+      email = Griddler::Email.new(params).process
 
       email.to.should eq params[:to]
     end
@@ -327,7 +327,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'to = :email' do
     it 'returns just the email address for email.to' do
       Griddler.configuration.stub(to: :email)
-      email = Griddler::Email.new(params)
+      email = Griddler::Email.new(params).process
 
       email.to.should eq 'some-identifier@example.com'
     end
@@ -336,7 +336,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'to = :token' do
     it 'returns the local portion of the email for email.to' do
       Griddler.configuration.stub(to: :token)
-      email = Griddler::Email.new(params)
+      email = Griddler::Email.new(params).process
 
       email.to.should eq 'some-identifier'
     end
@@ -348,7 +348,7 @@ describe Griddler::Email, 'with custom configuration' do
       my_handler.should_receive(:process)
       Griddler.configuration.stub(processor_class: my_handler)
 
-      email = Griddler::Email.new(params)
+      Griddler::Email.new(params).process
     end
   end
 end
