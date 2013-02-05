@@ -48,10 +48,8 @@ class Griddler::Email
 
   def extract_body
     body_text = text_or_sanitized_html
-    charsets = params[:charsets]
 
-    if charsets.present?
-      charsets = ActiveSupport::JSON.decode(charsets)
+    if params[:charsets].present?
       body_text = body_text.encode(
         'UTF-8',
         invalid: :replace,
