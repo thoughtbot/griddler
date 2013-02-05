@@ -10,9 +10,9 @@ that hands off a built email object to a class implemented by you.
 Tutorial
 --------
 
-SendGrid has done a [great tutorial] on integrating Griddler with your application.
-
-[great tutorial]: http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/
+SendGrid has done a
+[great tutorial](http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/)
+on integrating Griddler with your application.
 
 Installation
 ------------
