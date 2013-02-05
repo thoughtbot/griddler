@@ -8,12 +8,11 @@ describe Griddler::EmailsController do
       response.should be_success
     end
 
-    it 'creates a new Griddler::Email' do
-      controller.stub(:params).and_return({})
-      Griddler::Email.stub(:new).and_return('something')
-      Griddler::Email.should_receive(:new).with({})
+    it 'creates a new Griddler::Email with the given params' do
+      Griddler::Email.should_receive(:new).
+        with(hash_including('to' => 'tb@example.com'))
 
-      post :create
+      post :create, { to: 'tb@example.com' }
     end
   end
 
