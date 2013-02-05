@@ -31,7 +31,7 @@ matches `/email_processor` - or you would like to rename the matched path - you
 may add the route to the desired position in routes.rb with the following:
 
 ```ruby
-match '/email_processor' => 'griddler/emails#create', via: :post
+post '/email_processor' => 'griddler/emails#create'
 ```
 
 Defaults

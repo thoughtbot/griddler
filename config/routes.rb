@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  match '/email_processor' => 'griddler/emails#create', via: :post, as: :email_processor
+  post '/email_processor' => 'griddler/emails#create', as: :email_processor
 end
