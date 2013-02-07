@@ -27,11 +27,11 @@ gem 'griddler'
 
 Griddler comes with a default endpoint that will be displayed at the bottom
 of the output of `rake routes`. If there is a previously defined route that
-matches `/email_processor`–or you would like to rename the matched path–you
+matches `/email_processor` -- or you would like to rename the matched path -- you
 may add the route to the desired position in routes.rb with the following:
 
 ```ruby
-match '/email_processor' => 'griddler/emails#create', via: :post
+post '/email_processor' => 'griddler/emails#create'
 ```
 
 Defaults
@@ -89,9 +89,9 @@ Griddler.configure do |config|
 end
 ```
 
-* `config.processor_class` change the class Griddler will use to handle your incoming emails.
-* `config.reply_delimiter` change the string searched for that will split your body.
-* `config.to` change the format of the returned value for the `:to` key in
+* `config.processor_class` is the class Griddler will use to handle your incoming emails.
+* `config.reply_delimiter` is the string searched for that will split your body.
+* `config.to` is the format of the returned value for the `:to` key in
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 
 Testing In Your App
@@ -121,9 +121,9 @@ factory :email, class: OpenStruct do
 end
 ```
 
-Bear in mind, if you plan on using the :with_attachment trait, that this
-example assumes your factories are in spec/factories.rb and you have
-an image file in spec/fixtures/
+Bear in mind, if you plan on using the `:with_attachment` trait, that this
+example assumes your factories are in `spec/factories.rb` and you have
+an image file in `spec/fixtures/`.
 
 To use it in your test(s) just build with `email = build(:email)`
 or `email = build(:email, :with_attachment)`

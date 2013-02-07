@@ -343,14 +343,10 @@ describe Griddler::Email, 'with custom configuration' do
   end
 
   describe 'processor_class' do
-    before do
-      class MyHandler; end
-    end
-
     it 'calls process on the custom processor class' do
-      MyHandler.stub(:process).and_return('success')
-      Griddler.configuration.stub(:processor_class).and_return(MyHandler)
-      MyHandler.should_receive(:process)
+      my_handler = double
+      my_handler.should_receive(:process)
+      Griddler.configuration.stub(processor_class: my_handler)
 
       email = Griddler::Email.new(params)
     end
