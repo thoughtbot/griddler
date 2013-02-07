@@ -12,7 +12,9 @@ class Griddler::Email
     @body = extract_body
     @raw_body = params[:text] || params[:html]
     @attachments = extract_attachments
+  end
 
+  def process
     processor_class = config.processor_class
     processor_class.process(self)
   end
