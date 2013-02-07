@@ -1,20 +1,18 @@
 module Griddler
-  class << self
-    attr_accessor :configuration
-  end
+  @@configuration = nil
 
   def self.configure
-    self.configuration = Configuration.new
+    @@configuration = Configuration.new
 
     if block_given?
       yield configuration
     end
 
-    self.configuration
+    configuration
   end
 
   def self.configuration
-    @configuration || self.configure
+    @@configuration || configure
   end
 
   class Configuration
