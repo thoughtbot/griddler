@@ -27,7 +27,7 @@ gem 'griddler'
 
 Griddler comes with a default endpoint that will be displayed at the bottom
 of the output of `rake routes`. If there is a previously defined route that
-matches `/email_processor` - or you would like to rename the matched path - you
+matches `/email_processor` -- or you would like to rename the matched path -- you
 may add the route to the desired position in routes.rb with the following:
 
 ```ruby
