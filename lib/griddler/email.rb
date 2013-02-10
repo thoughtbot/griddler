@@ -11,12 +11,14 @@ class Griddler::Email
     when :cloud_mailin
       post_params = params
       params = {}
-      params = {  to: post_params[:envelope][:to],
-                  from: post_params[:envelope][:from],
-                  subject: post_params[:headers][:Subject],
-                  text: post_params[:plain],
-                  html: post_params[:html],
-                  attachments: post_params[:attachments]}
+      params = {  
+        to: post_params[:envelope][:to],
+        from: post_params[:envelope][:from],
+        subject: post_params[:headers][:Subject],
+        text: post_params[:plain],
+        html: post_params[:html],
+        attachments: post_params[:attachments]
+        }
       load_post_params(params)
     end
       
