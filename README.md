@@ -36,7 +36,7 @@ post '/email_processor' => 'griddler/emails#create'
 Defaults
 --------
 
-By default Griddler will assume its receiving its emails from SendGrid. To use Griddler with 
+By default Griddler will assume it is receiving emails from SendGrid. To use Griddler with 
 CloudMailin see below.
 
 By default Griddler will look for a class to be created in your application
@@ -100,9 +100,9 @@ the email object. `:hash` will return all options within a -- (surprise!) -- has
 Using Griddler with CloudMailin instead of SendGrid
 -------------------------------------
 
-To use Griddler with CloudMailin tell it you want to do so in the initializer 
-(see above). Griddler will now expect to receive CloudMailin's JSON format. Be
-sure to set the post format in your CloudMailin account to JSON [CloudMailin post formats](http://docs.cloudmailin.com/http_post_formats/).
+To use Griddler with CloudMailin, tell it you want to do so in the initializer 
+by adding `config.mail_service = :cloud_mailin`. Griddler will now expect to receive CloudMailin's JSON format. Be
+sure to set the post format in your CloudMailin account to JSON ([CloudMailin post formats](http://docs.cloudmailin.com/http_post_formats/)).
 
 
 Testing In Your App
