@@ -3,17 +3,35 @@ require 'htmlentities'
 class Griddler::Email
   include ActionView::Helpers::SanitizeHelper
   attr_reader :to, :from, :body, :raw_body, :subject, :attachments
-
+  
   def initialize(params)
+    case config.mail_service
+    when :send_grid
+      load_post_params(params)
+    when :cloud_mailin
+      post_params = params
+      params = {}
+      params = {  to: post_params[:envelope][:to],
+                  from: post_params[:envelope][:from],
+                  subject: post_params[:headers][:Subject],
+                  text: post_params[:plain],
+                  html: post_params[:html],
+                  attachments: post_params[:attachments]}
+      load_post_params(params)
+    end
+      
+  end
+  
+  def load_post_params(params)
     @params = params
     @to = extract_address(params[:to], config.to)
     @from = extract_address(params[:from], :email)
     @subject = params[:subject]
     @body = extract_body
     @raw_body = params[:text] || params[:html]
-    @attachments = extract_attachments
+    @attachments = config.mail_service == :send_grid ? extract_attachments : params[:attachments]
   end
-
+  
   def process
     processor_class = config.processor_class
     processor_class.process(self)
