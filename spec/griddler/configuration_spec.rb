@@ -35,5 +35,14 @@ describe Griddler::Configuration do
 
       Griddler.configuration.processor_class.should eq dummy_processor
     end
+
+    it 'stores a mail_service' do
+      Griddler.configure do |config|
+        config.mail_service = :cloud_mailin
+      end
+
+      Griddler.configuration.mail_service.should eq :cloud_mailin
+    end
+
   end
 end
