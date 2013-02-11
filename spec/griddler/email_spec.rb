@@ -367,7 +367,7 @@ describe Griddler::Email, 'with custom configuration' do
             hey sup
           EOS
         }
-      Griddler.configuration.stub(mail_service: :cloud_mailin)
+      Griddler.configuration.stub(mail_service: :cloudmailin)
 
       email = Griddler::Email.new(params)
 

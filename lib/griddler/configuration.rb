@@ -31,7 +31,7 @@ module Griddler
     end
     
     def mail_service
-      @mail_service ||= :send_grid
+      @mail_service ||= :sendgrid
     end
 
   end

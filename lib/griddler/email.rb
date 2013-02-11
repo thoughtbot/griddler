@@ -6,9 +6,9 @@ class Griddler::Email
 
   def initialize(params)
     case config.mail_service
-    when :send_grid
+    when :sendgrid
       load_post_params(params)
-    when :cloud_mailin
+    when :cloudmailin
       formatted_params = format_post_from_cloudmailin(params)
       load_post_params(formatted_params)
     end
@@ -60,7 +60,7 @@ class Griddler::Email
   end
 
   def extract_attachments
-    return params[:attachments] if config.mail_service == :cloud_mailin
+    return params[:attachments] if config.mail_service == :cloudmailin
     attachment_count = params[:attachments].to_i
 
     attachment_count.times.map do |index|
