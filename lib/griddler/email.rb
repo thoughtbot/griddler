@@ -5,6 +5,17 @@ class Griddler::Email
   attr_reader :to, :from, :body, :raw_body, :subject, :attachments
 
   def initialize(params)
+    case config.mail_service
+    when :send_grid
+      load_post_params(params)
+    when :cloud_mailin
+      formatted_params = format_post_from_cloudmailin(params)
+      load_post_params(formatted_params)
+    end
+
+  end
+
+  def load_post_params(params)
     @params = params
     @to = extract_address(params[:to], config.to)
     @from = extract_address(params[:from], :email)
@@ -27,6 +38,17 @@ class Griddler::Email
     Griddler.configuration
   end
 
+  def format_post_from_cloudmailin(params)
+    params = {
+      to: params[:envelope][:to],
+      from: params[:envelope][:from],
+      subject: params[:headers][:Subject],
+      text: params[:plain],
+      html: params[:html],
+      attachments: params[:attachments]
+      }
+  end
+
   def extract_address(address, type)
     parsed = EmailParser.parse_address(address)
 
@@ -38,6 +60,7 @@ class Griddler::Email
   end
 
   def extract_attachments
+    return params[:attachments] if config.mail_service == :cloud_mailin
     attachment_count = params[:attachments].to_i
 
     attachment_count.times.map do |index|
