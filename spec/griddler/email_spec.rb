@@ -351,13 +351,12 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler::Email.new(params).process
     end
   end
-  
+
   describe 'mail_service: cloud_mailin' do
     it 'correctly maps fields' do
-      envelope = { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>'}
+      envelope = { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>' }
       headers = { Subject: 'Re: [ThisApp] That thing' }
-      params =
-        {
+      params = {
           envelope: envelope,
           headers: headers,
           plain: <<-EOS.strip_heredoc.strip
@@ -369,7 +368,9 @@ describe Griddler::Email, 'with custom configuration' do
           EOS
         }
       Griddler.configuration.stub(mail_service: :cloud_mailin)
+
       email = Griddler::Email.new(params)
+
       email.to.should eq 'some-identifier'
       email.from.should eq 'joeuser@example.com'
       email.subject.should eq 'Re: [ThisApp] That thing'

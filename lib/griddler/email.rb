@@ -3,27 +3,18 @@ require 'htmlentities'
 class Griddler::Email
   include ActionView::Helpers::SanitizeHelper
   attr_reader :to, :from, :body, :raw_body, :subject, :attachments
-  
+
   def initialize(params)
     case config.mail_service
     when :send_grid
       load_post_params(params)
     when :cloud_mailin
-      post_params = params
-      params = {}
-      params = {  
-        to: post_params[:envelope][:to],
-        from: post_params[:envelope][:from],
-        subject: post_params[:headers][:Subject],
-        text: post_params[:plain],
-        html: post_params[:html],
-        attachments: post_params[:attachments]
-        }
-      load_post_params(params)
+      formatted_params = format_post_from_cloudmailin(params)
+      load_post_params(formatted_params)
     end
-      
+
   end
-  
+
   def load_post_params(params)
     @params = params
     @to = extract_address(params[:to], config.to)
@@ -31,9 +22,9 @@ class Griddler::Email
     @subject = params[:subject]
     @body = extract_body
     @raw_body = params[:text] || params[:html]
-    @attachments = config.mail_service == :send_grid ? extract_attachments : params[:attachments]
+    @attachments = extract_attachments
   end
-  
+
   def process
     processor_class = config.processor_class
     processor_class.process(self)
@@ -47,6 +38,17 @@ class Griddler::Email
     Griddler.configuration
   end
 
+  def format_post_from_cloudmailin(params)
+    params = {
+      to: params[:envelope][:to],
+      from: params[:envelope][:from],
+      subject: params[:headers][:Subject],
+      text: params[:plain],
+      html: params[:html],
+      attachments: params[:attachments]
+      }
+  end
+
   def extract_address(address, type)
     parsed = EmailParser.parse_address(address)
 
@@ -58,6 +60,7 @@ class Griddler::Email
   end
 
   def extract_attachments
+    return params[:attachments] if config.mail_service == :cloud_mailin
     attachment_count = params[:attachments].to_i
 
     attachment_count.times.map do |index|
