@@ -360,7 +360,7 @@ describe Griddler::Email, 'with custom configuration' do
           envelope: envelope,
           headers: headers,
           plain: <<-EOS.strip_heredoc.strip
-            lololololo hi
+            body above the line
 
             Reply ABOVE THIS LINE
 
@@ -374,7 +374,7 @@ describe Griddler::Email, 'with custom configuration' do
       email.to.should eq 'some-identifier'
       email.from.should eq 'joeuser@example.com'
       email.subject.should eq 'Re: [ThisApp] That thing'
-      email.body.should include('lololololo')
+      email.body.should include('body above the line')
     end
   end
 end

@@ -88,7 +88,7 @@ Griddler.configure do |config|
   # :token  => 's13.6b2d13dc6a1d33db7644'
   # :hash   => { raw: '', email: '', token: '', host: '' }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
-  config.mail_service = :sendgrid # :cloudmailin
+  config.mail_service = :sendgrid
 end
 ```
 
@@ -98,7 +98,7 @@ end
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 
 Using Griddler with CloudMailin instead of SendGrid
--------------------------------------
+---------------------------------------------------
 
 To use Griddler with CloudMailin, tell it you want to do so in the initializer
 by adding `config.mail_service = :cloudmailin`. Griddler will now expect to receive CloudMailin's JSON format. Be
