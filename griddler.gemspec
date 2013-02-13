@@ -5,8 +5,8 @@ require 'griddler/version'
 Gem::Specification.new do |s|
   s.name        = 'griddler'
   s.version     = Griddler::VERSION
-  s.authors     = ['Caleb Thompson', 'Joel Oliveira', 'thoughtbot']
-  s.email       = ['cjaysson@gmail.com', 'joel@thoughtbot.com']
+  s.authors     = ['Caleb Thompson', 'Joel Oliveira', 'thoughtbot', 'Swift']
+  s.email       = ['cjaysson@gmail.com', 'joel@thoughtbot.com', 'theycallmeswift@gmail.com']
   s.homepage    = 'http://thoughtbot.com'
   s.summary     = 'SendGrid Parse API client Rails Engine'
 
