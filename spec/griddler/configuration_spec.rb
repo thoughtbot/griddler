@@ -35,5 +35,19 @@ describe Griddler::Configuration do
 
       Griddler.configuration.processor_class.should eq dummy_processor
     end
+
+    it 'defaults the email service to SendGrid' do
+      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendGridAdapter)
+    end
+
+    it 'raises an error when setting a non-existent email service adapter' do
+      config = -> {
+        Griddler.configure do |config|
+          config.email_service = :non_existent
+        end
+      }
+
+      config.should raise_error(Griddler::Errors::EmailServiceAdapterNotFound)
+    end
   end
 end
