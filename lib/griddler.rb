@@ -1,3 +1,5 @@
+require 'rails/engine'
+require 'action_view'
 require 'griddler/errors'
 require 'griddler/engine'
 require 'griddler/email'
