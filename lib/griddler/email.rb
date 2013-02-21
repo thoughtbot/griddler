@@ -60,11 +60,11 @@ class Griddler::Email
   end
 
   def clean_text(text)
-    clean_invalid_utf8_bytes(text, :text)
+    clean_invalid_utf8_bytes(text, 'text')
   end
 
   def clean_html(html)
-    cleaned_html = clean_invalid_utf8_bytes(html, :html)
+    cleaned_html = clean_invalid_utf8_bytes(html, 'html')
     cleaned_html = strip_tags(cleaned_html)
     cleaned_html = HTMLEntities.new.decode(cleaned_html)
     cleaned_html

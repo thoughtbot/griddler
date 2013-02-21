@@ -216,7 +216,10 @@ describe Griddler::Email, 'body formatting' do
       to: 'hi@example.com',
       from: 'bye@example.com'
     }
-    params[:charsets] = charsets.to_json if charsets.present?
+    if charsets.present?
+      params[:charsets] = charsets.to_json
+    end
+
     email = Griddler::Email.new(params).process
     email.body
   end
