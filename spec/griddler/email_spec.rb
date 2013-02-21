@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe Griddler::Email, 'body formatting' do
@@ -15,6 +17,18 @@ describe Griddler::Email, 'body formatting' do
 
   it 'handles invalid utf-8 bytes in text' do
     body_from_email(:text, "Hello.\xF5").should eq 'Hello.'
+  end
+
+  it 'doesnt remove invalid utf-8 bytes if charset is set' do
+    charsets = {
+      to: 'UTF-8',
+      html: 'utf-8',
+      subject: 'UTF-8',
+      from: 'UTF-8',
+      text: 'iso-8859-1'
+    }
+
+    body_from_email(:text, "Helló.", charsets).should eq 'Helló.'
   end
 
   it 'raises error when no body is provided' do
@@ -198,7 +212,7 @@ describe Griddler::Email, 'body formatting' do
   def body_from_email(format, text, charsets={})
     src_encoding = charsets[format] || 'utf-8'
     params = {
-      format => text.force_encoding(src_encoding),
+      format => text.encode(src_encoding),
       to: 'hi@example.com',
       from: 'bye@example.com'
     }

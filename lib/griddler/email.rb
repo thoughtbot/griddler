@@ -46,18 +46,7 @@ class Griddler::Email
   end
 
   def extract_body
-    body_text = text_or_sanitized_html
-
-    if params[:charsets].present?
-      body_text = body_text.encode(
-        'UTF-8',
-        invalid: :replace,
-        undef: :replace,
-        replace: ''
-      ).force_encoding('UTF-8')
-    end
-
-    EmailParser.extract_reply_body(body_text)
+    EmailParser.extract_reply_body(text_or_sanitized_html)
   end
 
   def text_or_sanitized_html
@@ -71,23 +60,31 @@ class Griddler::Email
   end
 
   def clean_text(text)
-    clean_invalid_utf8_bytes(text)
+    clean_invalid_utf8_bytes(text, :text)
   end
 
   def clean_html(html)
-    cleaned_html = clean_invalid_utf8_bytes(html)
+    cleaned_html = clean_invalid_utf8_bytes(html, :html)
     cleaned_html = strip_tags(cleaned_html)
     cleaned_html = HTMLEntities.new.decode(cleaned_html)
     cleaned_html
   end
 
-  def clean_invalid_utf8_bytes(text)
+  def clean_invalid_utf8_bytes(text, email_part)
     text.encode(
       'UTF-8',
-      'binary',
+      src_encoding(email_part),
       invalid: :replace,
       undef: :replace,
       replace: ''
     )
+  end
+
+  def src_encoding(email_part)
+    if params[:charsets]
+      charsets = ActiveSupport::JSON.decode(params[:charsets])
+      return charsets[email_part]
+     end
+    'binary'
   end
 end
