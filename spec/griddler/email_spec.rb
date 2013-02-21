@@ -184,16 +184,9 @@ describe Griddler::Email, 'body formatting' do
       subject: 'UTF-8',
       from: 'UTF-8',
       text: 'utf-8'
-    }.to_json
+    }
 
-    email = Griddler::Email.new(
-      text: body,
-      to: 'hi@example.com',
-      from: 'bye@example.com',
-      charsets: charsets
-    ).process
-
-    email.body.should eq 'Hello.'
+    body_from_email(:text, body, charsets).should eq 'Hello.'
   end
 
   it 'should preserve empty lines' do
@@ -202,12 +195,15 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq body
   end
 
-  def body_from_email(format, text)
-    email = Griddler::Email.new(
-      format => text.force_encoding('UTF-8'),
+  def body_from_email(format, text, charsets={})
+    src_encoding = charsets[format] || 'utf-8'
+    params = {
+      format => text.force_encoding(src_encoding),
       to: 'hi@example.com',
       from: 'bye@example.com'
-    ).process
+    }
+    params[:charsets] = charsets.to_json if charsets.present?
+    email = Griddler::Email.new(params).process
     email.body
   end
 end
