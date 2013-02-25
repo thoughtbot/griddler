@@ -31,7 +31,7 @@ module Griddler
     end
 
     def email_service
-      @email_service_adapter ||= adapter_class[:send_grid]
+      @email_service_adapter ||= adapter_class[:sendgrid]
     end
 
     def email_service=(foo)
@@ -42,7 +42,7 @@ module Griddler
 
     def adapter_class
       {
-        send_grid: Griddler::Adapters::SendGridAdapter,
+        sendgrid: Griddler::Adapters::SendGridAdapter,
       }
     end
   end
