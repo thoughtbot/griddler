@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe Griddler::Email, 'body formatting' do
@@ -15,6 +17,18 @@ describe Griddler::Email, 'body formatting' do
 
   it 'handles invalid utf-8 bytes in text' do
     body_from_email(:text, "Hello.\xF5").should eq 'Hello.'
+  end
+
+  it 'does not remove invalid utf-8 bytes if charset is set' do
+    charsets = {
+      to: 'UTF-8',
+      html: 'utf-8',
+      subject: 'UTF-8',
+      from: 'UTF-8',
+      text: 'iso-8859-1'
+    }
+
+    body_from_email(:text, "Helló.", charsets).should eq 'Helló.'
   end
 
   it 'raises error when no body is provided' do
@@ -184,16 +198,9 @@ describe Griddler::Email, 'body formatting' do
       subject: 'UTF-8',
       from: 'UTF-8',
       text: 'utf-8'
-    }.to_json
+    }
 
-    email = Griddler::Email.new(
-      text: body,
-      to: 'hi@example.com',
-      from: 'bye@example.com',
-      charsets: charsets
-    ).process
-
-    email.body.should eq 'Hello.'
+    body_from_email(:text, body, charsets).should eq 'Hello.'
   end
 
   it 'should preserve empty lines' do
@@ -202,12 +209,22 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq body
   end
 
-  def body_from_email(format, text)
-    email = Griddler::Email.new(
-      format => text.force_encoding('UTF-8'),
+  def body_from_email(format, text, charsets = {})
+    if charsets.present?
+      text = text.encode(charsets[format])
+    end
+
+    params = {
+      format => text.force_encoding('utf-8'),
       to: 'hi@example.com',
       from: 'bye@example.com'
-    ).process
+    }
+
+    if charsets.present?
+      params[:charsets] = charsets.to_json
+    end
+
+    email = Griddler::Email.new(params).process
     email.body
   end
 end
