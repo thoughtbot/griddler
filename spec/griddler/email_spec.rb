@@ -19,7 +19,7 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, "Hello.\xF5").should eq 'Hello.'
   end
 
-  it 'doesnt remove invalid utf-8 bytes if charset is set' do
+  it 'does not remove invalid utf-8 bytes if charset is set' do
     charsets = {
       to: 'UTF-8',
       html: 'utf-8',

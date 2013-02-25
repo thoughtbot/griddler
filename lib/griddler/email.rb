@@ -83,8 +83,9 @@ class Griddler::Email
   def src_encoding(email_part)
     if params[:charsets]
       charsets = ActiveSupport::JSON.decode(params[:charsets])
-      return charsets[email_part]
-     end
-    'binary'
+      charsets[email_part]
+    else
+      'binary'
+    end
   end
 end
