@@ -42,7 +42,7 @@ module Griddler
 
     def adapter_class
       {
-        sendgrid: Griddler::Adapters::SendGridAdapter,
+        sendgrid: Griddler::Adapters::SendgridAdapter,
       }
     end
   end

@@ -37,7 +37,7 @@ describe Griddler::Configuration do
     end
 
     it 'defaults the email service to SendGrid' do
-      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendGridAdapter)
+      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
     end
 
     it 'raises an error when setting a non-existent email service adapter' do

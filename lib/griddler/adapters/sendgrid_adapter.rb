@@ -1,6 +1,6 @@
 module Griddler
   module Adapters
-    class SendGridAdapter
+    class SendgridAdapter
       attr_accessor :params
 
       def initialize(params)

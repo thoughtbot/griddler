@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Griddler::Adapters::SendGridAdapter, '.normalize_params' do
+describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
   it 'changes attachments to an array of files' do
     params = {
       text: 'hi',
@@ -25,7 +25,7 @@ describe Griddler::Adapters::SendGridAdapter, '.normalize_params' do
       eojson
     }
 
-    normalized_params = Griddler::Adapters::SendGridAdapter.normalize_params(params)
+    normalized_params = Griddler::Adapters::SendgridAdapter.normalize_params(params)
     normalized_params[:attachments].should eq [upload_1, upload_2]
     normalized_params.should_not have_key(:attachment1)
     normalized_params.should_not have_key(:attachment2)
@@ -40,7 +40,7 @@ describe Griddler::Adapters::SendGridAdapter, '.normalize_params' do
       attachments: '0'
     }
 
-    normalized_params = Griddler::Adapters::SendGridAdapter.normalize_params(params)
+    normalized_params = Griddler::Adapters::SendgridAdapter.normalize_params(params)
     normalized_params[:attachments].should be_empty
   end
 
