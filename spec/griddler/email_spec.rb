@@ -351,6 +351,32 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler::Email.new(params).process
     end
   end
+
+  describe 'mail_service: cloud_mailin' do
+    it 'correctly maps fields' do
+      envelope = { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>' }
+      headers = { Subject: 'Re: [ThisApp] That thing' }
+      params = {
+          envelope: envelope,
+          headers: headers,
+          plain: <<-EOS.strip_heredoc.strip
+            body above the line
+
+            Reply ABOVE THIS LINE
+
+            hey sup
+          EOS
+        }
+      Griddler.configuration.stub(mail_service: :cloudmailin)
+
+      email = Griddler::Email.new(params)
+
+      email.to.should eq 'some-identifier'
+      email.from.should eq 'joeuser@example.com'
+      email.subject.should eq 'Re: [ThisApp] That thing'
+      email.body.should include('body above the line')
+    end
+  end
 end
 
 describe Griddler::Email, '#attachments' do

@@ -4,8 +4,7 @@ Griddler
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html)
-that hands off a built email object to a class implemented by you.
+[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) and [CloudMailin parse api](http://cloudmailin.com) that hands off a built email object to a class implemented by you.
 
 Tutorials
 ---------
@@ -36,6 +35,9 @@ post '/email_processor' => 'griddler/emails#create'
 
 Defaults
 --------
+
+By default Griddler will assume it is receiving emails from SendGrid. To use Griddler with
+CloudMailin see below.
 
 By default Griddler will look for a class to be created in your application
 called EmailProcessor with a class method implemented, named process, taking
@@ -86,6 +88,7 @@ Griddler.configure do |config|
   # :token  => 's13.6b2d13dc6a1d33db7644'
   # :hash   => { raw: '', email: '', token: '', host: '' }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
+  config.mail_service = :sendgrid
 end
 ```
 
@@ -93,6 +96,14 @@ end
 * `config.reply_delimiter` is the string searched for that will split your body.
 * `config.to` is the format of the returned value for the `:to` key in
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
+
+Using Griddler with CloudMailin instead of SendGrid
+---------------------------------------------------
+
+To use Griddler with CloudMailin, tell it you want to do so in the initializer
+by adding `config.mail_service = :cloudmailin`. Griddler will now expect to receive CloudMailin's JSON format. Be
+sure to set the post format in your CloudMailin account to JSON ([CloudMailin post formats](http://docs.cloudmailin.com/http_post_formats/)).
+
 
 Testing In Your App
 -------------------
@@ -133,6 +144,7 @@ More Information
 
 * [SendGrid](http://www.sendgrid.com)
 * [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
+* [CloudMailin](http://cloudmailin.com)
 
 Credits
 -------

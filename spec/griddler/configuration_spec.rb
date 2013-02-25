@@ -10,6 +10,7 @@ describe Griddler::Configuration do
       Griddler.configuration.processor_class.should eq(EmailProcessor)
       Griddler.configuration.to.should eq(:token)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
+      Griddler.configuration.mail_service.should eq(:sendgrid)
     end
   end
 
@@ -35,5 +36,14 @@ describe Griddler::Configuration do
 
       Griddler.configuration.processor_class.should eq dummy_processor
     end
+
+    it 'stores a mail_service' do
+      Griddler.configure do |config|
+        config.mail_service = :cloudmailin
+      end
+
+      Griddler.configuration.mail_service.should eq :cloudmailin
+    end
+
   end
 end

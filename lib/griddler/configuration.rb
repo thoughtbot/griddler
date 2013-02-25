@@ -16,7 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :reply_delimiter, :to
+    attr_writer :processor_class, :reply_delimiter, :to, :mail_service
 
     def to
       @to ||= :token
@@ -29,5 +29,10 @@ module Griddler
     def reply_delimiter
       @reply_delimiter ||= 'Reply ABOVE THIS LINE'
     end
+
+    def mail_service
+      @mail_service ||= :sendgrid
+    end
+
   end
 end
