@@ -41,11 +41,13 @@ describe Griddler::Configuration do
     end
 
     it 'raises an error when setting a non-existent email service adapter' do
-      Proc.new do
+      config = lambda do
         Griddler.configure do |config|
           config.email_service = :non_existent
         end
-      end.should raise_error(Griddler::Errors::EmailServiceAdapterNotFound)
+      end
+
+      config.should raise_error(Griddler::Errors::EmailServiceAdapterNotFound)
     end
   end
 end
