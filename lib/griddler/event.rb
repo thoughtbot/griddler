@@ -8,7 +8,7 @@ class Griddler::Event
     parser.on_parse_complete = proc do |event_attributes|
       config.event_processor_class.process Event.new(event_attributes)
     end
-    parser.parse(stream)
+    parser.parse(body)
   end
 
   def initialize(attributes)
@@ -29,5 +29,13 @@ class Griddler::Event
 
   def [](key)
     @attributes[key]
+  end
+
+  class << self
+    private
+
+    def config
+      Griddler.configuration
+    end
   end
 end
