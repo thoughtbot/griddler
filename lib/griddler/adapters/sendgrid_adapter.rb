@@ -1,8 +1,6 @@
 module Griddler
   module Adapters
     class SendgridAdapter
-      attr_accessor :params
-
       def initialize(params)
         @params = params
       end
@@ -18,6 +16,8 @@ module Griddler
       end
 
       private
+
+      attr_reader :params
 
       def attachment_files
         params.delete('attachment-info')

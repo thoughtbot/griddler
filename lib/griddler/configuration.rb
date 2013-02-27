@@ -34,8 +34,8 @@ module Griddler
       @email_service_adapter ||= adapter_class[:sendgrid]
     end
 
-    def email_service=(foo)
-      @email_service_adapter = adapter_class.fetch(foo) { raise Griddler::Errors::EmailServiceAdapterNotFound }
+    def email_service=(new_email_service)
+      @email_service_adapter = adapter_class.fetch(new_email_service) { raise Griddler::Errors::EmailServiceAdapterNotFound }
     end
 
     private
