@@ -29,5 +29,21 @@ module Griddler
     def reply_delimiter
       @reply_delimiter ||= 'Reply ABOVE THIS LINE'
     end
+
+    def email_service
+      @email_service_adapter ||= adapter_class[:sendgrid]
+    end
+
+    def email_service=(new_email_service)
+      @email_service_adapter = adapter_class.fetch(new_email_service) { raise Griddler::Errors::EmailServiceAdapterNotFound }
+    end
+
+    private
+
+    def adapter_class
+      {
+        sendgrid: Griddler::Adapters::SendgridAdapter,
+      }
+    end
   end
 end
