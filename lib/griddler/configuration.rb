@@ -26,6 +26,10 @@ module Griddler
       @processor_class ||= EmailProcessor
     end
 
+    def event_processor_class
+      @event_processor_class ||= EmailEventProcessor
+    end
+
     def reply_delimiter
       @reply_delimiter ||= 'Reply ABOVE THIS LINE'
     end
