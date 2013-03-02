@@ -11,7 +11,7 @@ class Griddler::Email
     @subject = params[:subject]
     @body = extract_body
     @raw_body = params[:text] || params[:html]
-    @attachments = extract_attachments
+    @attachments = params[:attachments]
   end
 
   def process
@@ -34,14 +34,6 @@ class Griddler::Email
       parsed
     else
       parsed[type]
-    end
-  end
-
-  def extract_attachments
-    attachment_count = params[:attachments].to_i
-
-    attachment_count.times.map do |index|
-      params["attachment#{index + 1}".to_sym]
     end
   end
 

@@ -5,5 +5,8 @@ module Griddler
   module Errors
     class EmailBodyNotFound < Griddler::Error
     end
+
+    class EmailServiceAdapterNotFound < Griddler::Error
+    end
   end
 end
