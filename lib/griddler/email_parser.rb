@@ -21,7 +21,9 @@ module EmailParser
   end
 
   def self.extract_reply_body(body)
-    if body
+    if body.blank?
+      ""
+    else
       delimeter = Griddler.configuration.reply_delimiter
       body.split(delimeter).first.
         split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
