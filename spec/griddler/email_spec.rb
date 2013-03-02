@@ -209,6 +209,10 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq body
   end
 
+  it 'handles empty body values' do
+    body_from_email(:text, "").should eq ""
+  end
+
   def body_from_email(format, text, charsets = {})
     if charsets.present?
       text = text.encode(charsets[format])
