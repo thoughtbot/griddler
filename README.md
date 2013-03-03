@@ -4,8 +4,9 @@ Griddler
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html)
-that hands off a built email object to a class implemented by you.
+[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) or
+[Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to
+a class implemented by you.
 
 Tutorials
 ---------
@@ -86,6 +87,7 @@ Griddler.configure do |config|
   # :token  => 's13.6b2d13dc6a1d33db7644'
   # :hash   => { raw: '', email: '', token: '', host: '' }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
+  config.email_service = :sendgrid
 end
 ```
 
@@ -93,6 +95,18 @@ end
 * `config.reply_delimiter` is the string searched for that will split your body.
 * `config.to` is the format of the returned value for the `:to` key in
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
+* `config.email_service` tells Griddler which email service you are using.
+
+Email Services
+--------------
+
+By default Griddlers assumes you are using SendGrid as email service for posting
+incoming emails. Griddler also supports the Cloudmailin service.
+
+To use Griddler with Cloudmailin, tell it you want to do so in the initializer by
+adding `config.email_service = :cloudmailin`.
+
+Griddler expects to receive Cloudmailin's Multipart format.
 
 Testing In Your App
 -------------------
@@ -126,13 +140,15 @@ example assumes your factories are in `spec/factories.rb` and you have
 an image file in `spec/fixtures/`.
 
 To use it in your test(s) just build with `email = build(:email)`
-or `email = build(:email, :with_attachment)`
+or `email = build(:email, :with_attachment)`.
 
 More Information
 ----------------
 
 * [SendGrid](http://www.sendgrid.com)
 * [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
+* [Cloudmailin](http://cloudmailin.com)
+* [Cloudmailin Docs](http://docs.cloudmailin.com/)
 
 Credits
 -------
