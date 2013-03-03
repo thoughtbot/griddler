@@ -10,6 +10,7 @@ describe Griddler::Configuration do
       Griddler.configuration.processor_class.should eq(EmailProcessor)
       Griddler.configuration.to.should eq(:token)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
+      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
     end
   end
 
@@ -35,10 +36,15 @@ describe Griddler::Configuration do
 
       Griddler.configuration.processor_class.should eq dummy_processor
     end
+    
+     it 'sets and stores an email_service' do
 
-    it 'defaults the email service to SendGrid' do
-      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
-    end
+        Griddler.configure do |config|
+          config.email_service = :cloudmailin
+        end
+
+        Griddler.configuration.email_service.should eq(Griddler::Adapters::CloudmailinAdapter)
+      end
 
     it 'raises an error when setting a non-existent email service adapter' do
       config = lambda do
