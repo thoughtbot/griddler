@@ -4,7 +4,8 @@ Griddler
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) and [Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to a class implemented by you.
+[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) or
+[Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to a class implemented by you.
 
 Tutorials
 ---------
@@ -98,9 +99,15 @@ the email object. `:hash` will return all options within a -- (surprise!) -- has
 Email Services
 --------------
 
-By default Griddlers assumes you are using SendGrid as the email service posting incoming emails. Griddler also supports the Cloudmailin service.
+By default Griddlers assumes you are using SendGrid as email service for posting
+incoming emails. Griddler also supports the Cloudmailin service.
 
-To use Griddler with Cloudmailin, tell it you want to do so in the initializer by adding `config.email_service = :cloudmailin`. Griddler will now expect to receive Cloudmailin's Multipart format. Multipart is not the default post format. Be sure to set it in your Cloudmailin account ([Cloudmailin post formats](http://docs.cloudmailin.com/http_post_formats/)).
+To use Griddler with Cloudmailin, tell it you want to do so in the initializer by
+adding `config.email_service = :cloudmailin`. Griddler expects to receive Cloudmailin's
+Multipart format. This format sends Griddler incoming emails together with their attachments
+and allows handling of attachments in a memory efficient way.
+
+Multipart is not the default post format. Be sure to set it in your Cloudmailin account ([Cloudmailin post formats](http://docs.cloudmailin.com/http_post_formats/)).
 
 Testing In Your App
 -------------------
@@ -142,6 +149,7 @@ More Information
 * [SendGrid](http://www.sendgrid.com)
 * [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
 * [Cloudmailin](http://cloudmailin.com)
+* [Cloudmailin Post Formats](http://docs.cloudmailin.com/http_post_formats/)
 
 Credits
 -------

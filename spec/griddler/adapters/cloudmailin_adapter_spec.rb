@@ -2,17 +2,7 @@ require 'spec_helper'
 
 describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
   it 'normalizes parameters' do
-    params = {
-      envelope: envelope,
-      headers: headers,
-      plain: <<-EOS.strip_heredoc.strip
-        Dear bob
-
-        Reply ABOVE THIS LINE
-
-        hey sup
-      EOS
-    }
+    params = default_params
 
     normalized_params = Griddler::Adapters::CloudmailinAdapter.normalize_params(params)
     normalized_params[:to].should eq 'Some Identifier <some-identifier@example.com>'
@@ -22,34 +12,31 @@ describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
   end
 
   it 'passes the received array of files' do
-    params = {
-      plain: 'hi',
-      envelope: envelope,
-      headers: headers,
-      attachments: [ upload_1, upload_2 ]
-    }
+    params = default_params.merge({ attachments: [upload_1, upload_2] })
 
     normalized_params = Griddler::Adapters::CloudmailinAdapter.normalize_params(params)
     normalized_params[:attachments].should eq [upload_1, upload_2]
   end
 
   it 'has no attachments' do
-    params = {
-      text: 'hi',
-      to: 'hi@example.com',
-      from: 'there@example.com'
-    }
+    params = default_params
 
     normalized_params = Griddler::Adapters::SendgridAdapter.normalize_params(params)
     normalized_params[:attachments].should be_empty
   end
 
-  def envelope
-    { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>' }
-  end
+  def default_params
+    params = {
+      envelope: { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>' },
+      headers: { Subject: 'Re: [ThisApp] That thing' },
+      plain: <<-EOS.strip_heredoc.strip
+        Dear bob
 
-  def headers
-    { Subject: 'Re: [ThisApp] That thing' }
+        Reply ABOVE THIS LINE
+
+        hey sup
+      EOS
+    }
   end
 
   def cwd
