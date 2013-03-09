@@ -5,7 +5,8 @@ Griddler
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
 [SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) or
-[Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to a class implemented by you.
+[Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to
+a class implemented by you.
 
 Tutorials
 ---------
@@ -107,8 +108,6 @@ adding `config.email_service = :cloudmailin`. Griddler expects to receive Cloudm
 Multipart format. This format sends Griddler incoming emails together with their attachments
 and allows handling of attachments in a memory efficient way.
 
-Multipart is not the default post format. Be sure to set it in your Cloudmailin account ([Cloudmailin post formats](http://docs.cloudmailin.com/http_post_formats/)).
-
 Testing In Your App
 -------------------
 
@@ -149,7 +148,7 @@ More Information
 * [SendGrid](http://www.sendgrid.com)
 * [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
 * [Cloudmailin](http://cloudmailin.com)
-* [Cloudmailin Post Formats](http://docs.cloudmailin.com/http_post_formats/)
+* [Cloudmailin Docs](http://docs.cloudmailin.com/)
 
 Credits
 -------
