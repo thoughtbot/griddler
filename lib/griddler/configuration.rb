@@ -43,6 +43,7 @@ module Griddler
     def adapter_class
       {
         sendgrid: Griddler::Adapters::SendgridAdapter,
+        cloudmailin: Griddler::Adapters::CloudmailinAdapter,
       }
     end
   end
