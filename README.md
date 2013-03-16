@@ -4,9 +4,8 @@ Griddler
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) or
-[Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to
-a class implemented by you.
+[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html),
+[Cloudmailin parse api](http://cloudmailin.com) or [Postmark parse api](http://developer.postmarkapp.com/developer-inbound-parse.html) that hands off a built email object to a class implemented by you.
 
 Tutorials
 ---------
@@ -59,6 +58,7 @@ that responds to:
 * `.subject`
 * `.body`
 * `.raw_body`
+* `.attachments`
 
 Each of those has some sensible defaults.
 
@@ -71,6 +71,8 @@ case `.body` will contain everything before that line.
 `.to` will contain all of the text before the email's "@" character. We've found
 that this is the most often used portion of the email address and consider it to
 be the token we'll key off of for interaction with our application.
+
+`.attachments` will contain an array of attachments as multipart/form-data files
 
 Configuration Options
 ---------------------
@@ -101,12 +103,15 @@ Email Services
 --------------
 
 By default Griddlers assumes you are using SendGrid as email service for posting
-incoming emails. Griddler also supports the Cloudmailin service.
+incoming emails. Griddler also supports the Cloudmailin and Postmark services.
 
 To use Griddler with Cloudmailin, tell it you want to do so in the initializer by
 adding `config.email_service = :cloudmailin`.
 
 Griddler expects to receive Cloudmailin's Multipart format.
+
+To use Griddler with Postmark, tell it you want to do so in the initializer by
+adding `config.email_service = :postmark`.
 
 Testing In Your App
 -------------------
@@ -149,6 +154,8 @@ More Information
 * [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
 * [Cloudmailin](http://cloudmailin.com)
 * [Cloudmailin Docs](http://docs.cloudmailin.com/)
+* [Postmark](http://postmarkapp.com)
+* [Postmark Docs](http://developer.postmarkapp.com/)
 
 Credits
 -------
