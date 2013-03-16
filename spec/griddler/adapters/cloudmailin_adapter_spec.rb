@@ -21,7 +21,7 @@ describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
   it 'has no attachments' do
     params = default_params
 
-    normalized_params = Griddler::Adapters::SendgridAdapter.normalize_params(params)
+    normalized_params = Griddler::Adapters::CloudmailinAdapter.normalize_params(params)
     normalized_params[:attachments].should be_empty
   end
 
