@@ -72,7 +72,7 @@ case `.body` will contain everything before that line.
 that this is the most often used portion of the email address and consider it to
 be the token we'll key off of for interaction with our application.
 
-`.attachments` will contain an array of attachments as multipart/form-data files
+`.attachments` will contain an array of attachments as multipart/form-data files which can be passed off to attachment libraries like Carrierwave or Paperclip.
 
 Configuration Options
 ---------------------
