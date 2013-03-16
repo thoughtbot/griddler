@@ -15,6 +15,7 @@ module Griddler
         params[:from] = params[:envelope][:from]
         params[:subject] = params[:headers][:Subject]
         params[:text] = params[:plain]
+        params[:attachments] ||= []
         params
       end
 
