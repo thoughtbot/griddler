@@ -147,7 +147,7 @@ Adapters
 
 `Griddler::Email` expects certain parameters to be in place for proper parsing
 to occur. When writing an adapter, ensure that the `normalized_params` method
-of your adapter returns a params hash with these keys:
+of your adapter returns a hash with these keys:
 
 * `:to` The recipient field
 * `:from` The sender field
@@ -155,7 +155,7 @@ of your adapter returns a params hash with these keys:
 * `:text` The text body of the email
 * `:attachments` (can be an empty array) Array of attachments to the email
 * `:headers` (optional) The raw headers of the email
-* `:charsets` (optional) A JSON string contiaining the caracter sets of the
+* `:charsets` (optional) A JSON string containing the character sets of the
   fields extracted from the message
 
 More Information
