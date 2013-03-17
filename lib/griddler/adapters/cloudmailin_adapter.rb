@@ -11,12 +11,13 @@ module Griddler
       end
 
       def normalize_params
-        params[:to] = params[:envelope][:to]
-        params[:from] = params[:envelope][:from]
-        params[:subject] = params[:headers][:Subject]
-        params[:text] = params[:plain]
-        params[:attachments] ||= []
-        params
+        {
+          to: params[:envelope][:to],
+          from: params[:envelope][:from],
+          subject: params[:headers][:Subject],
+          text: params[:plain],
+          attachments: params.fetch(:attachments) { [] },
+        }
       end
 
       private
