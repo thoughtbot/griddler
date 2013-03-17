@@ -25,6 +25,14 @@ describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
     normalized_params[:attachments].should be_empty
   end
 
+  it 'gets rid of the original cloudmailin params' do
+    params = default_params
+
+    normalized_params = Griddler::Adapters::CloudmailinAdapter.normalize_params(params)
+
+    normalized_params[:envelope].should be_nil
+  end
+
   def default_params
     params = {
       envelope: { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>' },
