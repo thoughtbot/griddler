@@ -8,7 +8,9 @@
 #   email: 'somebody@example.com',
 #   full: 'Some Body <somebody@example.com>',
 # }
-module EmailParser
+require 'mail'
+
+module Griddler::EmailParser
   def self.parse_address(full_address)
     email_address = extract_email_address(full_address)
     token, host = split_address(email_address)
@@ -36,6 +38,15 @@ module EmailParser
         join("\n").
         gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'').
         strip
+    end
+  end
+
+  def self.extract_headers(raw_headers)
+    header_fields = Mail::Header.new(raw_headers).fields
+
+    header_fields.inject({}) do |header_hash, header_field|
+      header_hash[header_field.name.to_s] = header_field.value.to_s
+      header_hash
     end
   end
 

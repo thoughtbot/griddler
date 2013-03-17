@@ -59,10 +59,12 @@ that responds to:
 * `.subject`
 * `.body`
 * `.raw_body`
+* `.headers`
+* `.raw_headers`
 
 Each of those has some sensible defaults.
 
-`.from`, `.raw_body` and `.subject` will contain the obvious values found in the email, the raw values from those fields.
+`.from`, `.raw_body`, `.raw_headers`, and `.subject` will contain the obvious values found in the email, the raw values from those fields.
 
 `.body` will contain the full contents of the email body **unless** there is a
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
@@ -71,6 +73,10 @@ case `.body` will contain everything before that line.
 `.to` will contain all of the text before the email's "@" character. We've found
 that this is the most often used portion of the email address and consider it to
 be the token we'll key off of for interaction with our application.
+
+`.headers` will contain a hash of header names and values as parsed by
+the Mail gem. Headers will only be parsed if the adapter supports a
+headers option.
 
 Configuration Options
 ---------------------
