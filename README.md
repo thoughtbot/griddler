@@ -142,6 +142,22 @@ an image file in `spec/fixtures/`.
 To use it in your test(s) just build with `email = build(:email)`
 or `email = build(:email, :with_attachment)`.
 
+Adapters
+--------
+
+`Griddler::Email` expects certain parameters to be in place for proper parsing
+to occur. When writing an adapter, ensure that the `normalized_params` method
+of your adapter returns a params hash with these keys:
+
+* `:to` The recipient field
+* `:from` The sender field
+* `:subject` Email subject
+* `:text` The text body of the email
+* `:attachments` (can be an empty array) Array of attachments to the email
+* `:headers` (optional) The raw headers of the email
+* `:charsets` (optional) A JSON string contiaining the caracter sets of the
+  fields extracted from the message
+
 More Information
 ----------------
 
