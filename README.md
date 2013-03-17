@@ -1,6 +1,9 @@
 Griddler
 ========
 
+[![Build Status](https://travis-ci.org/thoughtbot/griddler.png?branch=master)](https://travis-ci.org/thoughtbot/griddler)
+[![Code Climate](https://codeclimate.com/github/thoughtbot/griddler.png)](https://codeclimate.com/github/thoughtbot/griddler)
+
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
