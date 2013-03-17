@@ -3,6 +3,7 @@ module Griddler
     class CloudmailinAdapter
       def initialize(params)
         @params = params
+        @normalized_params = {}
       end
 
       def self.normalize_params(params)
@@ -11,17 +12,17 @@ module Griddler
       end
 
       def normalize_params
-        params[:to] = params[:envelope][:to]
-        params[:from] = params[:envelope][:from]
-        params[:subject] = params[:headers][:Subject]
-        params[:text] = params[:plain]
-        params[:attachments] ||= []
-        params
+        normalized_params[:to] = params[:envelope][:to]
+        normalized_params[:from] = params[:envelope][:from]
+        normalized_params[:subject] = params[:headers][:Subject]
+        normalized_params[:text] = params[:plain]
+        normalized_params[:attachments] = params[:attachments] || []
+        normalized_params
       end
 
       private
 
-      attr_reader :params
+      attr_reader :params, :normalized_params
 
     end
   end
