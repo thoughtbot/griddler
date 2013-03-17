@@ -7,6 +7,7 @@ require 'griddler/email_parser'
 require 'griddler/configuration'
 require 'griddler/adapters/sendgrid_adapter'
 require 'griddler/adapters/cloudmailin_adapter'
+require 'griddler/adapters/postmark_adapter'
 
 module Griddler
 end

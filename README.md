@@ -7,9 +7,10 @@ Griddler
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html) or
-[Cloudmailin parse api](http://cloudmailin.com) that hands off a built email object to
-a class implemented by you.
+[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html),
+[Cloudmailin parse api](http://cloudmailin.com) or
+[Postmark parse api](http://developer.postmarkapp.com/developer-inbound-parse.html)
+that hands off a built email object to a class implemented by you.
 
 Tutorials
 ---------
@@ -62,10 +63,12 @@ that responds to:
 * `.subject`
 * `.body`
 * `.raw_body`
+* `.attachments`
 
 Each of those has some sensible defaults.
 
-`.from`, `.raw_body` and `.subject` will contain the obvious values found in the email, the raw values from those fields.
+`.from`, `.raw_body` and `.subject` will contain the obvious values found in the
+email, the raw values from those fields.
 
 `.body` will contain the full contents of the email body **unless** there is a
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
@@ -74,6 +77,9 @@ case `.body` will contain everything before that line.
 `.to` will contain all of the text before the email's "@" character. We've found
 that this is the most often used portion of the email address and consider it to
 be the token we'll key off of for interaction with our application.
+
+`.attachments` will contain an array of attachments as multipart/form-data files
+which can be passed off to attachment libraries like Carrierwave or Paperclip.
 
 Configuration Options
 ---------------------
@@ -98,18 +104,9 @@ end
 * `config.reply_delimiter` is the string searched for that will split your body.
 * `config.to` is the format of the returned value for the `:to` key in
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
-* `config.email_service` tells Griddler which email service you are using.
-
-Email Services
---------------
-
-By default Griddlers assumes you are using SendGrid as email service for posting
-incoming emails. Griddler also supports the Cloudmailin service.
-
-To use Griddler with Cloudmailin, tell it you want to do so in the initializer by
-adding `config.email_service = :cloudmailin`.
-
-Griddler expects to receive Cloudmailin's Multipart format.
+* `config.email_service` tells Griddler which email service you are using. The supported
+email service options are :sendgrid (the default), :cloudmailin (expects
+multipart format) and :postmark
 
 Testing In Your App
 -------------------
@@ -169,6 +166,8 @@ More Information
 * [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
 * [Cloudmailin](http://cloudmailin.com)
 * [Cloudmailin Docs](http://docs.cloudmailin.com/)
+* [Postmark](http://postmarkapp.com)
+* [Postmark Docs](http://developer.postmarkapp.com/)
 
 Credits
 -------
