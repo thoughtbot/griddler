@@ -117,9 +117,10 @@ multipart format) and :postmark
 Testing In Your App
 -------------------
 
-You may want to create a factory for when testing the integration of Griddler into
-your application. If you're using factory_girl this can be accomplished with the
-following sample factory.
+You may want to create a factory for when testing the integration of Griddler
+into your application. If you're using
+[factory_girl](https://github.com/thoughtbot/factory_girl) this can be
+accomplished with the following sample factory.
 
 ```ruby
 factory :email, class: OpenStruct do
