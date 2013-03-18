@@ -233,6 +233,39 @@ describe Griddler::Email, 'body formatting' do
   end
 end
 
+describe Griddler::Email, 'extracting email headers' do
+  it 'extracts header names and values as a hash' do
+    header_name = 'Arbitrary-Header'
+    header_value = 'Arbitrary-Value'
+    header = "#{header_name}: #{header_value}"
+
+    headers = header_from_email(header)
+    headers[header_name].should eq header_value
+  end
+
+  it 'handles no matched headers' do
+    headers = header_from_email('')
+    headers.should eq({})
+  end
+
+  it 'handles nil headers' do
+    headers = header_from_email(nil)
+    headers.should eq({})
+  end
+
+  def header_from_email(header)
+    params = {
+      headers: header,
+      to: 'hi@example.com',
+      from: 'bye@example.com',
+      text: ''
+    }
+
+    email = Griddler::Email.new(params).process
+    email.headers
+  end
+end
+
 describe Griddler::Email, 'extracting email addresses' do
   before do
     @address = 'bob@example.com'

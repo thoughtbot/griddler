@@ -64,11 +64,13 @@ that responds to:
 * `.body`
 * `.raw_body`
 * `.attachments`
+* `.headers`
+* `.raw_headers`
 
 Each of those has some sensible defaults.
 
-`.from`, `.raw_body` and `.subject` will contain the obvious values found in the
-email, the raw values from those fields.
+`.from`, `.raw_body`, `.raw_headers`, and `.subject` will contain the obvious
+values found in the email, the raw values from those fields.
 
 `.body` will contain the full contents of the email body **unless** there is a
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
@@ -80,6 +82,9 @@ be the token we'll key off of for interaction with our application.
 
 `.attachments` will contain an array of attachments as multipart/form-data files
 which can be passed off to attachment libraries like Carrierwave or Paperclip.
+
+`.headers` will contain a hash of header names and values as parsed by the Mail
+gem. Headers will only be parsed if the adapter supports a headers option.
 
 Configuration Options
 ---------------------
