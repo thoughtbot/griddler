@@ -90,8 +90,9 @@ gem. Headers will only be parsed if the adapter supports a headers option.
 Configuration Options
 ---------------------
 
-An initializer can be created to control some of the options in Griddler. Defaults
-are shown below with sample overrides following. In `config/initializer/griddler.rb`:
+An initializer can be created to control some of the options in Griddler.
+Defaults are shown below with sample overrides following. In
+`config/initializer/griddler.rb`:
 
 ```ruby
 Griddler.configure do |config|
@@ -106,13 +107,14 @@ Griddler.configure do |config|
 end
 ```
 
-* `config.processor_class` is the class Griddler will use to handle your incoming emails.
+* `config.processor_class` is the class Griddler will use to handle your
+  incoming emails.
 * `config.reply_delimiter` is the string searched for that will split your body.
-* `config.to` is the format of the returned value for the `:to` key in
-the email object. `:hash` will return all options within a -- (surprise!) -- hash.
-* `config.email_service` tells Griddler which email service you are using. The supported
-email service options are :sendgrid (the default), :cloudmailin (expects
-multipart format) and :postmark
+* `config.to` is the format of the returned value for the `:to` key in the email
+  object. `:hash` will return all options within a -- (surprise!) -- hash.
+* `config.email_service` tells Griddler which email service you are using. The
+  supported email service options are `:sendgrid` (the default), `:cloudmailin`
+  (expects multipart format) and `:postmark`.
 
 Testing In Your App
 -------------------
@@ -153,8 +155,8 @@ Adapters
 --------
 
 `Griddler::Email` expects certain parameters to be in place for proper parsing
-to occur. When writing an adapter, ensure that the `normalized_params` method
-of your adapter returns a hash with these keys:
+to occur. When writing an adapter, ensure that the `normalized_params` method of
+your adapter returns a hash with these keys:
 
 * `:to` The recipient field
 * `:from` The sender field
