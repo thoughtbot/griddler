@@ -62,6 +62,8 @@ that responds to:
 * `.from`
 * `.subject`
 * `.body`
+* `.raw_text`
+* `.raw_html`
 * `.raw_body`
 * `.attachments`
 * `.headers`
