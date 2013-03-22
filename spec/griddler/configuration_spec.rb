@@ -36,7 +36,7 @@ describe Griddler::Configuration do
 
       Griddler.configuration.processor_class.should eq dummy_processor
     end
-    
+
      it 'sets and stores an email_service' do
 
         Griddler.configure do |config|
@@ -54,6 +54,18 @@ describe Griddler::Configuration do
       end
 
       config.should raise_error(Griddler::Errors::EmailServiceAdapterNotFound)
+    end
+
+    it "accepts all valid email service adapter settings" do
+      [:sendgrid, :cloudmailin, :postmark].each do |adapter|
+        config = lambda do
+          Griddler.configure do |config|
+            config.email_service = adapter
+          end
+        end
+
+        config.should_not raise_error
+      end
     end
   end
 end
