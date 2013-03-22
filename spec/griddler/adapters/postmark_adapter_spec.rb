@@ -5,7 +5,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
     params = default_params
 
     normalized_params = Griddler::Adapters::PostmarkAdapter.normalize_params(params)
-    normalized_params[:to].should eq 'bob@example.com'
+    normalized_params[:to].should eq ['bob@example.com']
     normalized_params[:from].should eq 'tdurden@example.com'
     normalized_params[:subject].should eq 'Reminder: First and Second Rule'
     normalized_params[:text].should include('Dear bob')

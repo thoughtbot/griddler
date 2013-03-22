@@ -278,6 +278,12 @@ describe Griddler::Email, 'extracting email addresses' do
     email.from.should eq @address
   end
 
+  it "handles list of addresses" do
+    email = Griddler::Email.new(text: 'hi', to: [@address, @address], from: @address).process
+    email.to.should eq [@token, @token]
+    email.from.should eq @address
+  end
+
   it 'handles new lines' do
     email = Griddler::Email.new(text: 'hi', to: "#{@address}\n",
       from: "#{@address}\n").process
