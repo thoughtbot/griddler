@@ -53,10 +53,10 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
         Email: 'tdurden@example.com',
         Name: 'Tyler Durden'
       },
-      ToFull: {
+      ToFull: [{
         Email: 'bob@example.com',
         Name: 'Robert Paulson'
-      },
+      }],
       Subject: 'Reminder: First and Second Rule',
       TextBody: text_body,
       HtmlBody: text_html
