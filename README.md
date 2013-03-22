@@ -110,8 +110,8 @@ end
 * `config.to` is the format of the returned value for the `:to` key in
 the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 * `config.email_service` tells Griddler which email service you are using. The supported
-email service options are :sendgrid (the default), :cloudmailin (expects
-multipart format) and :postmark
+email service options are `:sendgrid` (the default), `:cloudmailin` (expects
+multipart format) and `:postmark`.
 
 Testing In Your App
 -------------------
