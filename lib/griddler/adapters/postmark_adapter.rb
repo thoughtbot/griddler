@@ -12,7 +12,7 @@ module Griddler
 
       def normalize_params
         {
-          to: params[:ToFull].map{|rec| rec[:Email]},
+          to: params[:To].split(',').map(&:strip),
           from: params[:FromFull][:Email],
           subject: params[:Subject],
           text: params[:TextBody],
