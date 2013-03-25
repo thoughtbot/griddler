@@ -36,6 +36,14 @@ module Griddler
     end
 
     def extract_address(address, type)
+      if address.respond_to?(:map)
+        address.map{|single| extract_single_address(single, type)}
+      else
+        extract_single_address(address, type)
+      end
+    end
+
+    def extract_single_address(address, type)
       parsed = EmailParser.parse_address(address)
 
       if type == :hash

@@ -44,6 +44,12 @@ describe Griddler::Configuration do
         end
 
         Griddler.configuration.email_service.should eq(Griddler::Adapters::CloudmailinAdapter)
+
+        Griddler.configure do |config|
+          config.email_service = :postmark
+        end
+
+        Griddler.configuration.email_service.should eq(Griddler::Adapters::PostmarkAdapter)
       end
 
     it 'raises an error when setting a non-existent email service adapter' do
