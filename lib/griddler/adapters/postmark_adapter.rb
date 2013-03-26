@@ -12,7 +12,7 @@ module Griddler
 
       def normalize_params
         {
-          to: params[:ToFull][:Email],
+          to: full_email(params[:ToFull].first),
           from: params[:FromFull][:Email],
           subject: params[:Subject],
           text: params[:TextBody],
@@ -24,6 +24,15 @@ module Griddler
       private
 
       attr_reader :params
+
+      def full_email(contact_info)
+        email = contact_info[:Email]
+        if contact_info[:Name].present?
+          "#{contact_info[:Name]} <#{email}>"
+        else
+          email
+        end
+      end
 
       def attachment_files
         attachments = Array(params[:Attachments])
