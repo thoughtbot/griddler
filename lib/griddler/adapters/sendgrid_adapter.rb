@@ -13,7 +13,7 @@ module Griddler
       def normalize_params
         params.merge(
           {
-            to: split_emails,
+            to: recipients,
             attachments: attachment_files,
           }
         )
@@ -23,7 +23,7 @@ module Griddler
 
       attr_reader :params
 
-      def split_emails
+      def recipients
         params[:to].split(',')
       end
 
