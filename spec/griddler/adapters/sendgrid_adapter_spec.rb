@@ -3,25 +3,23 @@ require 'spec_helper'
 describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
   it 'changes attachments to an array of files' do
     params = default_params.merge(
-      {
-        attachments: '2',
-        attachment1: upload_1,
-        attachment2: upload_2,
-       'attachment-info' => <<-eojson
-          {
-            'attachment2': {
-              'filename': 'photo2.jpg',
-              'name': 'photo2.jpg',
-              'type': 'image/jpeg'
-            },
-            'attachment1': {
-              'filename': 'photo1.jpg',
-              'name': 'photo1.jpg',
-              'type': 'image/jpeg'
-            }
+      attachments: '2',
+      attachment1: upload_1,
+      attachment2: upload_2,
+     'attachment-info' => <<-eojson
+        {
+          'attachment2': {
+            'filename': 'photo2.jpg',
+            'name': 'photo2.jpg',
+            'type': 'image/jpeg'
+          },
+          'attachment1': {
+            'filename': 'photo1.jpg',
+            'name': 'photo1.jpg',
+            'type': 'image/jpeg'
           }
-        eojson
-      }
+        }
+      eojson
     )
 
     normalized_params = normalize_params(params)
@@ -32,11 +30,7 @@ describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
   end
 
   it 'has no attachments' do
-    params = default_params.merge(
-      {
-        attachments: '0',
-      }
-    )
+    params = default_params.merge(attachments: '0')
 
     normalized_params = normalize_params(params)
     normalized_params[:attachments].should be_empty

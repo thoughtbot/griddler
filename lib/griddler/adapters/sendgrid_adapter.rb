@@ -12,10 +12,8 @@ module Griddler
 
       def normalize_params
         params.merge(
-          {
-            to: recipients,
-            attachments: attachment_files,
-          }
+          to: recipients,
+          attachments: attachment_files,
         )
       end
 
