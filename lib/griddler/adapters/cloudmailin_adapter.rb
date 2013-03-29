@@ -12,7 +12,7 @@ module Griddler
 
       def normalize_params
         {
-          to: params[:envelope][:to],
+          to: params[:envelope][:to].split(','),
           from: params[:envelope][:from],
           subject: params[:headers][:Subject],
           text: params[:plain],

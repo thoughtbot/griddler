@@ -23,6 +23,7 @@ def params_for
         from: 'There <there@example.com>',
       },
       plain: 'hi',
+      headers: {},
     },
     postmark: {
       FromFull: {
