@@ -11,13 +11,21 @@ module Griddler
       end
 
       def normalize_params
-        params[:attachments] = attachment_files
-        params
+        params.merge(
+          {
+            to: split_emails,
+            attachments: attachment_files,
+          }
+        )
       end
 
       private
 
       attr_reader :params
+
+      def split_emails
+        params[:to].split(',')
+      end
 
       def attachment_files
         params.delete('attachment-info')

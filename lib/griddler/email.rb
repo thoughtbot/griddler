@@ -9,7 +9,7 @@ module Griddler
     def initialize(params)
       @params = params
 
-      @to = extract_address(params[:to], config.to)
+      @to = extract_recipients(params[:to])
       @from = extract_address(params[:from], :email)
       @subject = params[:subject]
 
@@ -33,6 +33,10 @@ module Griddler
 
     def config
       Griddler.configuration
+    end
+
+    def extract_recipients(recipients)
+      recipients.map { |recipient| extract_address(recipient, config.to) }
     end
 
     def extract_address(address, type)
