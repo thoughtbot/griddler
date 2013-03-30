@@ -56,6 +56,7 @@ module Griddler
         sendgrid: Griddler::Adapters::SendgridAdapter,
         cloudmailin: Griddler::Adapters::CloudmailinAdapter,
         postmark: Griddler::Adapters::PostmarkAdapter,
+        mandrill: Griddler::Adapters::MandrillAdapter,
       }
     end
   end

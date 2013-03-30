@@ -19,7 +19,6 @@ describe Griddler::EmailsController do
     end
   end
 
-
   def email_params
     {
       headers: 'Received: by 127.0.0.1 with SMTP...',
