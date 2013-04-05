@@ -8,7 +8,7 @@ describe Griddler::Configuration do
 
     it 'provides defaults' do
       Griddler.configuration.processor_class.should eq(EmailProcessor)
-      Griddler.configuration.to.should eq(:token)
+      Griddler.configuration.to.should eq(:hash)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
       Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
     end
@@ -21,10 +21,18 @@ describe Griddler::Configuration do
 
     it 'stores config' do
       Griddler.configure do |config|
-        config.to = :hash
+        config.to = :full
       end
 
-      Griddler.configuration.to.should eq :hash
+      Griddler.configuration.to.should eq :full
+    end
+
+    it 'warns when setting token' do
+      Kernel.should_receive(:warn)
+
+      Griddler.configure do |config|
+        config.to = :token
+      end
     end
 
     it 'stores a processor_class' do
@@ -48,8 +56,8 @@ describe Griddler::Configuration do
 
     it 'raises an error when setting a non-existent email service adapter' do
       config = lambda do
-        Griddler.configure do |config|
-          config.email_service = :non_existent
+        Griddler.configure do |c|
+          c.email_service = :non_existent
         end
       end
 
@@ -59,8 +67,8 @@ describe Griddler::Configuration do
     it "accepts all valid email service adapter settings" do
       [:sendgrid, :cloudmailin, :postmark].each do |adapter|
         config = lambda do
-          Griddler.configure do |config|
-            config.email_service = adapter
+          Griddler.configure do |c|
+            c.email_service = adapter
           end
         end
 

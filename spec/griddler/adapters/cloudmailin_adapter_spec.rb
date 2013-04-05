@@ -5,7 +5,7 @@ describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
     params = default_params
 
     normalized_params = Griddler::Adapters::CloudmailinAdapter.normalize_params(params)
-    normalized_params[:to].should eq 'Some Identifier <some-identifier@example.com>'
+    normalized_params[:to].should eq ['Some Identifier <some-identifier@example.com>']
     normalized_params[:from].should eq 'Joe User <joeuser@example.com>'
     normalized_params[:subject].should eq 'Re: [ThisApp] That thing'
     normalized_params[:text].should include('Dear bob')

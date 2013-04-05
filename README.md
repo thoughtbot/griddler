@@ -95,7 +95,7 @@ are shown below with sample overrides following. In `config/initializer/griddler
 ```ruby
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # MyEmailProcessor
-  config.to = :token # :raw, :email, :hash
+  config.to = :token # :full, :email, :hash
   # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
   # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
   # :token  => 's13.6b2d13dc6a1d33db7644'
@@ -117,7 +117,7 @@ Testing In Your App
 -------------------
 
 You may want to create a factory for when testing the integration of Griddler into
-your application. If you're using factory_girl this can be accomplished with the
+your application. If you're using factory\_girl this can be accomplished with the
 following sample factory.
 
 ```ruby
@@ -163,6 +163,39 @@ of your adapter returns a hash with these keys:
 * `:headers` (optional) The raw headers of the email
 * `:charsets` (optional) A JSON string containing the character sets of the
   fields extracted from the message
+
+Upgrading to Griddler 0.5.0
+---------------------------
+
+Because of an issue with the way Griddler handled recipients in the `To` header,
+a breaking change was introduced in Griddler 0.5.0 that requires a minor change
+to `EmailProcessor` or `processor_class`.
+
+Previously, a single address was returned from `Griddler::Email#to`. Moving
+forward, this field will always be an array. Generally speaking, you will want
+to do something like this to handle the change:
+
+```ruby
+# before
+def initialize(email)
+  @to = email.to
+  @from = email.from
+  @body = email.body
+end
+
+# after
+def initialize(email)
+  @to = pick_meaningful_recipient(email.to)
+  @from = email.from
+  @body = email.body
+end
+
+private
+
+def pick_meaningful_recipient(recipients)
+  recipients.find { |address| address =~ /@mydomain.com$/ }
+end
+```
 
 More Information
 ----------------

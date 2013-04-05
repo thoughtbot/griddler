@@ -32,7 +32,7 @@ describe Griddler::Email, 'body formatting' do
   end
 
   it 'raises error when no body is provided' do
-    expect { Griddler::Email.new(to: 'hi@example.com', from: 'bye@example.com').process }.
+    expect { Griddler::Email.new(to: ['hi@example.com'], from: 'bye@example.com').process }.
       to raise_error(Griddler::Errors::EmailBodyNotFound)
   end
 
@@ -220,7 +220,7 @@ describe Griddler::Email, 'body formatting' do
 
     params = {
       format => text.force_encoding('utf-8'),
-      to: 'hi@example.com',
+      to: ['hi@example.com'],
       from: 'bye@example.com'
     }
 
@@ -256,7 +256,7 @@ describe Griddler::Email, 'extracting email headers' do
   def header_from_email(header)
     params = {
       headers: header,
-      to: 'hi@example.com',
+      to: ['hi@example.com'],
       from: 'bye@example.com',
       text: ''
     }
@@ -268,44 +268,49 @@ end
 
 describe Griddler::Email, 'extracting email addresses' do
   before do
-    @address = 'bob@example.com'
-    @token = 'bob'
+    @hash = {
+      full: 'Bob <bob@example.com>',
+      email: 'bob@example.com',
+      token: 'bob',
+      host: 'example.com',
+    }
+    @address = @hash[:email]
   end
 
   it 'handles normal e-mail address' do
-    email = Griddler::Email.new(text: 'hi', to: @address, from: @address).process
-    email.to.should eq @token
+    email = Griddler::Email.new(text: 'hi', to: [@address], from: @address).process
+    email.to.should eq [@hash.merge(full: @address)]
     email.from.should eq @address
   end
 
   it 'handles new lines' do
-    email = Griddler::Email.new(text: 'hi', to: "#{@address}\n",
+    email = Griddler::Email.new(text: 'hi', to: ["#{@address}\n"],
       from: "#{@address}\n").process
-    email.to.should eq @token
+    email.to.should eq [@hash.merge(full: "#{@address}\n")]
     email.from.should eq @address
   end
 
   it 'handles angle brackets around address' do
-    email = Griddler::Email.new(text: 'hi', to: "<#{@address}>",
+    email = Griddler::Email.new(text: 'hi', to: ["<#{@address}>"],
       from: "<#{@address}>").process
-    email.to.should eq @token
+    email.to.should eq [@hash.merge(full: "<#{@address}>")]
     email.from.should eq @address
   end
 
   it 'handles name and angle brackets around address' do
-    email = Griddler::Email.new(text: 'hi', to: "Bob <#{@address}>",
+    email = Griddler::Email.new(text: 'hi', to: ["Bob <#{@address}>"],
       from: "Bob <#{@address}>").process
-    email.to.should eq @token
+    email.to.should eq [@hash]
     email.from.should eq @address
   end
 
   it 'handles multiple e-mails, with priority to the bracketed' do
     email = Griddler::Email.new(
       text: 'hi',
-      to: "fake@example.com <#{@address}>",
+      to: ["fake@example.com <#{@address}>"],
       from: "fake@example.com <#{@address}>"
     ).process
-    email.to.should eq @token
+    email.to.should eq [@hash.merge(full: "fake@example.com <#{@address}>")]
     email.from.should eq @address
   end
 end
@@ -313,7 +318,7 @@ end
 describe Griddler::Email, 'with custom configuration' do
   let(:params) do
     {
-      to: 'Some Identifier <some-identifier@example.com>',
+      to: ['Some Identifier <some-identifier@example.com>'],
       from: 'Joe User <joeuser@example.com>',
       subject: 'Re: [ThisApp] That thing',
       text: <<-EOS.strip_heredoc.strip
@@ -364,8 +369,8 @@ describe Griddler::Email, 'with custom configuration' do
         full: 'Some Identifier <some-identifier@example.com>',
       }
 
-      email.to.should be_an_instance_of(Hash)
-      email.to.should eq expected_hash
+      email.to.first.should be_an_instance_of(Hash)
+      email.to.should eq [expected_hash]
     end
   end
 
@@ -383,7 +388,7 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler.configuration.stub(to: :email)
       email = Griddler::Email.new(params).process
 
-      email.to.should eq 'some-identifier@example.com'
+      email.to.should eq ['some-identifier@example.com']
     end
   end
 
@@ -392,7 +397,7 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler.configuration.stub(to: :token)
       email = Griddler::Email.new(params).process
 
-      email.to.should eq 'some-identifier'
+      email.to.should eq ['some-identifier']
     end
   end
 
@@ -403,6 +408,18 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler.configuration.stub(processor_class: my_handler)
 
       Griddler::Email.new(params).process
+    end
+  end
+
+  context 'with multiple recipients in to field' do
+    it 'includes all of the emails' do
+      recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
+      params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
+      Griddler.configuration.stub(to: :full)
+
+      email = Griddler::Email.new(params).process
+
+      email.to.should eq recipients
     end
   end
 end

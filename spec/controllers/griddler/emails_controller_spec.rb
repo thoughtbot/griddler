@@ -11,7 +11,7 @@ describe Griddler::EmailsController do
     it 'creates a new Griddler::Email with the given params' do
       email = double(process: 'something')
       Griddler::Email.should_receive(:new).
-        with(hash_including('to' => 'tb@example.com')).
+        with(hash_including('to' => ['tb@example.com'])).
         and_return(email)
       email.should_receive(:process)
 

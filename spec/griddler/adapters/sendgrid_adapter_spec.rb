@@ -2,10 +2,7 @@ require 'spec_helper'
 
 describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
   it 'changes attachments to an array of files' do
-    params = {
-      text: 'hi',
-      to: 'hi@example.com',
-      from: 'there@example.com',
+    params = default_params.merge(
       attachments: '2',
       attachment1: upload_1,
       attachment2: upload_2,
@@ -23,9 +20,9 @@ describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
           }
         }
       eojson
-    }
+    )
 
-    normalized_params = Griddler::Adapters::SendgridAdapter.normalize_params(params)
+    normalized_params = normalize_params(params)
     normalized_params[:attachments].should eq [upload_1, upload_2]
     normalized_params.should_not have_key(:attachment1)
     normalized_params.should_not have_key(:attachment2)
@@ -33,15 +30,28 @@ describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
   end
 
   it 'has no attachments' do
-    params = {
+    params = default_params.merge(attachments: '0')
+
+    normalized_params = normalize_params(params)
+    normalized_params[:attachments].should be_empty
+  end
+
+  it 'wraps to in an array' do
+    normalized_params = normalize_params(default_params)
+
+    normalized_params[:to].should eq [default_params[:to]]
+  end
+
+  def normalize_params(params)
+    Griddler::Adapters::SendgridAdapter.normalize_params(params)
+  end
+
+  def default_params
+    {
       text: 'hi',
       to: 'hi@example.com',
       from: 'there@example.com',
-      attachments: '0'
     }
-
-    normalized_params = Griddler::Adapters::SendgridAdapter.normalize_params(params)
-    normalized_params[:attachments].should be_empty
   end
 
   def cwd
