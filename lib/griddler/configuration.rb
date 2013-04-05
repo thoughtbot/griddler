@@ -26,7 +26,7 @@ module Griddler
       if type == :token
         Kernel.warn <<-WARN.strip_heredoc
           [Deprecation] the :token option is deprecated and will be removed in v0.6.
-          For tokens use :hash and retrieve the token from email.to[:token] or choose any of [:email, :full, :hash]"
+          For tokens use :hash and retrieve the token from email.to[:token] or choose any of [:email, :full, :hash]
         WARN
       end
 
