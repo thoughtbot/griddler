@@ -239,15 +239,37 @@ describe Griddler::Email, 'multipart emails' do
       html: '<b>hello there</b>',
       text: 'hello there'
     )
-    email.raw_html.should eq "<b>hello there</b>"
-    email.raw_text.should eq "hello there"
+    email.raw_html.should eq '<b>hello there</b>'
+    email.raw_text.should eq 'hello there'
+  end
+
+  it 'uses text as raw_body if both text and html are present' do
+    email = email_with_params(
+      html: '<b>hello there</b>',
+      text: 'hello there'
+    )
+    email.raw_body.should eq 'hello there'
+  end
+
+  it 'uses text as raw_body' do
+    email = email_with_params(
+      text: 'hello there'
+    )
+    email.raw_body.should eq 'hello there'
+  end
+
+  it 'uses html as raw_body if text is not present' do
+    email = email_with_params(
+      html: '<b>hello there</b>'
+    )
+    email.raw_body.should eq '<b>hello there</b>'
   end
 
   def email_with_params(params)
     params = {
       to: ['hi@example.com'],
       from: 'bye@example.com'
-    }.merge!(params)
+    }.merge(params)
 
     email = Griddler::Email.new(params).process
   end
