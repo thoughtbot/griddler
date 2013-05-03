@@ -21,6 +21,7 @@ upgrade information.
 MESSAGE
 
   s.add_dependency 'rails', '>= 3.2.0'
+  s.add_dependency 'activeresource', '>= 3.2.8'
   s.add_dependency 'htmlentities'
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'sqlite3'
