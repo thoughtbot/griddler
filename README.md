@@ -79,9 +79,20 @@ values found in the email, the raw values from those fields.
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
 case `.body` will contain everything before that line.
 
-`.to` will contain all of the text before the email's "@" character. We've found
-that this is the most often used portion of the email address and consider it to
-be the token we'll key off of for interaction with our application.
+`.to` will contain an array of hashes. Each hash will have the following
+information of each recipient:
+
+  * `token`: All the text before the email's "@". We've found that this is the
+  most often used portion of the email address and consider it to be the token
+  we'll key off of for interaction with our application.
+
+  * `host`: All the text after the email's "@". This is important to filter
+  the recipients sent to the application vs emails to other domains. More
+  info below on the Upgrading to 0.5.0 section.
+
+  * `email`: The email address of the recipient.
+
+  * `full`: The whole recipient field. E.g, `Some User <hello@example.com>`
 
 `.attachments` will contain an array of attachments as multipart/form-data files
 which can be passed off to attachment libraries like Carrierwave or Paperclip.
