@@ -46,6 +46,10 @@ module Griddler
     end
 
     def email_service=(new_email_service)
+      if new_email_service == :default
+        new_email_service = :sendgrid
+      end
+
       @email_service_adapter = adapter_class.fetch(new_email_service) { raise Griddler::Errors::EmailServiceAdapterNotFound }
     end
 
