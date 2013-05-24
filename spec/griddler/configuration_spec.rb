@@ -46,13 +46,20 @@ describe Griddler::Configuration do
     end
 
      it 'sets and stores an email_service' do
-
         Griddler.configure do |config|
           config.email_service = :cloudmailin
         end
 
         Griddler.configuration.email_service.should eq(Griddler::Adapters::CloudmailinAdapter)
+     end
+
+    it 'accepts a :default symbol and uses sendgrid' do
+      Griddler.configure do |c|
+        c.email_service = :default
       end
+
+      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
+    end
 
     it 'raises an error when setting a non-existent email service adapter' do
       config = lambda do

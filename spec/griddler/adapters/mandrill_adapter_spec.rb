@@ -41,6 +41,10 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
     mandrill_events (params_hash*2).to_json
   end
 
+  def mandrill_events(json)
+    { mandrill_events: json }
+  end
+
   def params_hash
     [{
       event: "inbound",
@@ -75,10 +79,6 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
       'photo2.jpg' => upload_2_params
     }
     mandrill_events params.to_json
-  end
-
-  def mandrill_events(json)
-    { mandrill_events: json }
   end
 
   def text_body
