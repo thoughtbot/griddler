@@ -2,16 +2,15 @@ require 'spec_helper'
 
 describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
   it 'normalizes parameters' do
-    params = default_params
-
-    normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
-    normalized_params.each do |params|
-      params[:to].should eq ['The Token <token@reply.example.com>']
-      params[:from].should eq 'hernan@example.com'
-      params[:subject].should eq 'hello'
-      params[:text].should include('Dear bob')
-      params[:html].should include('<p>Dear bob</p>')
-      params[:raw_body].should include('raw')
+    Griddler::Adapters::MandrillAdapter.normalize_params(default_params).each do |params|
+      params.should be_normalized_to({
+        to: ['The Token <token@reply.example.com>'],
+        from: 'hernan@example.com',
+        subject: 'hello',
+        text: %r{Dear bob},
+        html: %r{<p>Dear bob</p>},
+        raw_body: %r{raw}
+      })
     end
   end
 
