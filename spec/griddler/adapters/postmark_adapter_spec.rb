@@ -2,14 +2,13 @@ require 'spec_helper'
 
 describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
   it 'normalizes parameters' do
-    params = default_params
-
-    normalized_params = Griddler::Adapters::PostmarkAdapter.normalize_params(params)
-    normalized_params[:to].should eq ['Robert Paulson <bob@example.com>']
-    normalized_params[:from].should eq 'tdurden@example.com'
-    normalized_params[:subject].should eq 'Reminder: First and Second Rule'
-    normalized_params[:text].should include('Dear bob')
-    normalized_params[:html].should include('<p>Dear bob</p>')
+    Griddler::Adapters::PostmarkAdapter.normalize_params(default_params).should be_normalized_to({
+      to: ['Robert Paulson <bob@example.com>'],
+      from: 'tdurden@example.com',
+      subject: 'Reminder: First and Second Rule',
+      text: /Dear bob/,
+      html: %r{<p>Dear bob</p>}
+    })
   end
 
   it 'passes the received array of files' do
@@ -35,16 +34,14 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
   end
 
   it 'gets rid of the original postmark params' do
-    params = default_params
-
-    normalized_params = Griddler::Adapters::PostmarkAdapter.normalize_params(params)
-
-    normalized_params[:ToFull].should be_nil
-    normalized_params[:FromFull].should be_nil
-    normalized_params[:Subject].should be_nil
-    normalized_params[:TextBody].should be_nil
-    normalized_params[:HtmlBody].should be_nil
-    normalized_params[:Attachments].should be_nil
+    Griddler::Adapters::PostmarkAdapter.normalize_params(default_params).should be_normalized_to({
+      ToFull: nil,
+      FromFull: nil,
+      Subject:  nil,
+      TextBody: nil,
+      HtmlBody: nil,
+      Attachments: nil
+    })
   end
 
   def default_params

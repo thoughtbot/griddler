@@ -2,13 +2,12 @@ require 'spec_helper'
 
 describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
   it 'normalizes parameters' do
-    params = default_params
-
-    normalized_params = Griddler::Adapters::CloudmailinAdapter.normalize_params(params)
-    normalized_params[:to].should eq ['Some Identifier <some-identifier@example.com>']
-    normalized_params[:from].should eq 'Joe User <joeuser@example.com>'
-    normalized_params[:subject].should eq 'Re: [ThisApp] That thing'
-    normalized_params[:text].should include('Dear bob')
+    Griddler::Adapters::CloudmailinAdapter.normalize_params(default_params).should be_normalized_to({
+      to: ['Some Identifier <some-identifier@example.com>'],
+      from: 'Joe User <joeuser@example.com>',
+      subject: 'Re: [ThisApp] That thing',
+      text: /Dear bob/
+    })
   end
 
   it 'passes the received array of files' do
