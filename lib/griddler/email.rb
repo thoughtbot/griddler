@@ -64,8 +64,6 @@ module Griddler
         clean_text(params[:text])
       elsif params.key? :html
         clean_html(params[:html])
-      else
-        raise Errors::EmailBodyNotFound
       end
     end
 

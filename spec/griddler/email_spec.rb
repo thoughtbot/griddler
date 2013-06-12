@@ -31,11 +31,6 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, "Helló.", charsets).should eq 'Helló.'
   end
 
-  it 'raises error when no body is provided' do
-    expect { Griddler::Email.new(to: ['hi@example.com'], from: 'bye@example.com').process }.
-      to raise_error(Griddler::Errors::EmailBodyNotFound)
-  end
-
   it 'handles everything on one line' do
     body = <<-EOF
       Hello. On 01/12/13, Tristan <email@example.com> wrote: Reply ABOVE THIS LINE or visit your website to respond.
