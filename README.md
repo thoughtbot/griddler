@@ -31,14 +31,24 @@ Add griddler to your application's Gemfile and run `bundle install`:
 gem 'griddler'
 ```
 
-Griddler comes with a default endpoint that will be displayed at the bottom
-of the output of `rake routes`. If there is a previously defined route that
-matches `/email_processor` -- or you would like to rename the matched path -- you
-may add the route to the desired position in routes.rb with the following:
+In `config/routes.rb` you may either use the provided method `mount_griddler`
+or set the route manually. Examples:
 
 ```ruby
+# mount using default path
+mount_griddler
+
+# mount using a custom path
+mount_griddler('/email/incoming')
+
+# the "get off my lawn", DIY approach:
 post '/email_processor' => 'griddler/emails#create'
 ```
+
+**NOTE:** Currently the default route is added to the bottom of your route table.
+By version 0.7.0 it will be removed and you will be required to add the route
+with one of the three above methods.
+
 
 Defaults
 --------
