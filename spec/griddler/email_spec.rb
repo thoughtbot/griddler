@@ -208,16 +208,22 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, "").should eq ""
   end
 
-  def body_from_email(format, text, charsets = {})
-    if charsets.present?
-      text = text.encode(charsets[format])
-    end
+  it 'handles missing body keys' do
+    body_from_email(:text, nil).should eq ""
+  end
 
+  def body_from_email(format, text, charsets = {})
     params = {
-      format => text.force_encoding('utf-8'),
       to: ['hi@example.com'],
       from: 'bye@example.com'
     }
+
+    if text
+      if charsets.present?
+        text = text.encode(charsets[format])
+      end
+      params.merge!({ format => text.force_encoding('utf-8') })
+    end
 
     if charsets.present?
       params[:charsets] = charsets.to_json
