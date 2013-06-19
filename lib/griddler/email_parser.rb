@@ -23,22 +23,27 @@ module Griddler::EmailParser
   end
 
   def self.extract_reply_body(body)
+    delimeter = Griddler.configuration.reply_delimiter
     if body.blank?
       ""
+    elsif (bodies = body.split(delimeter).first.split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/)).first.blank?
+      self.get_body(bodies[1])
     else
-      delimeter = Griddler.configuration.reply_delimiter
-      body.split(delimeter).first.
-        split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
-        split(/^\s*--\s*$/).first.
-        gsub(/On.*wrote:/, '').
+      self.get_body(bodies[0])
+    end
+  end
+  
+  # use self.extract_reply_body or self.extract_reply_body_with_forwards to extract the body
+  def self.get_body(text)
+    text.split(/^\s*--\s*$/).first
+        .gsub(/On.*wrote:/, '').
         split(/[\r]*\n/).reject do |line|
           line =~ /^\s*>/ ||
-            line =~ /^\s*Sent from my /
+          line =~ /^\s*Sent from my /
         end.
         join("\n").
         gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'').
         strip
-    end
   end
 
   def self.extract_headers(raw_headers)
