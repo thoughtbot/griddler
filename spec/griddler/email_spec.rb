@@ -222,7 +222,9 @@ describe Griddler::Email, 'body formatting' do
       from: 'bye@example.com'
     }
 
-    params.merge!({ format => text.force_encoding('utf-8') }) if text
+    if text
+      params.merge!({ format => text.force_encoding('utf-8') })
+    end
 
     if charsets.present?
       params[:charsets] = charsets.to_json
