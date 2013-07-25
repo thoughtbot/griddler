@@ -26,8 +26,9 @@ module Griddler::EmailParser
     if body.blank?
       ""
     else
-      delimeter = Griddler.configuration.reply_delimiter
-      body.split(delimeter).first.
+      delimiter = Array(Griddler.configuration.reply_delimiter).join('|')
+      regex = %r{#{delimiter}}
+      body.split(regex).first.
         split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
         split(/^\s*--\s*$/).first.
         gsub(/On.*wrote:/, '').

@@ -402,6 +402,38 @@ describe Griddler::Email, 'with custom configuration' do
     end
   end
 
+  describe 'reply_delimiter = ["-- old reply above --", "-- new reply above --"]' do
+    before do
+      Griddler.configuration.stub(reply_delimiter: ['-- old reply above --', '-- new reply above --'])
+    end
+
+    it 'splits with old delimiter' do
+      params[:text] = <<-EOS.strip_heredoc.strip
+        Hey, split me with the old one!
+
+        -- old reply above --
+
+        wut
+      EOS
+
+      email = Griddler::Email.new(params).process
+      email.body.should eq 'Hey, split me with the old one!'
+    end
+
+    it 'splits with the new delimiter' do
+      params[:text] = <<-EOS.strip_heredoc.strip
+        Hey, split me with the new one!
+
+        -- new reply above --
+
+        wut
+      EOS
+
+      email = Griddler::Email.new(params).process
+      email.body.should eq 'Hey, split me with the new one!'
+    end
+  end
+
   describe 'to = :hash' do
     it 'returns a hash for email.to' do
       Griddler.configuration.stub(to: :hash)
