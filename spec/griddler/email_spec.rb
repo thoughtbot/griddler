@@ -379,7 +379,7 @@ describe Griddler::Email, 'with custom configuration' do
     Griddler.configure
   end
 
-  describe 'reply_delimiter = "Stuff and things"' do
+  describe 'accepts and works with a string reply delimiter' do
     it 'does not split on Reply ABOVE THIS LINE' do
       Griddler.configuration.stub(reply_delimiter: 'Stuff and things')
       email = Griddler::Email.new(params).process
@@ -399,6 +399,38 @@ describe Griddler::Email, 'with custom configuration' do
       Griddler.configuration.stub(reply_delimiter: '-- reply above --')
       email = Griddler::Email.new(params).process
       email.body.should eq 'trolololo'
+    end
+  end
+
+  describe 'accepts and works with an array of reply delimiters' do
+    before do
+      Griddler.configuration.stub(reply_delimiter: ['-- old reply above --', '-- new reply above --'])
+    end
+
+    it 'splits with old delimiter' do
+      params[:text] = <<-EOS.strip_heredoc.strip
+        Hey, split me with the old one!
+
+        -- old reply above --
+
+        wut
+      EOS
+
+      email = Griddler::Email.new(params).process
+      email.body.should eq 'Hey, split me with the old one!'
+    end
+
+    it 'splits with the new delimiter' do
+      params[:text] = <<-EOS.strip_heredoc.strip
+        Hey, split me with the new one!
+
+        -- new reply above --
+
+        wut
+      EOS
+
+      email = Griddler::Email.new(params).process
+      email.body.should eq 'Hey, split me with the new one!'
     end
   end
 
