@@ -17,6 +17,7 @@ shared_examples_for 'configurable email address' do |address|
         host: 'example.com',
         email: 'caleb@example.com',
         full: 'Caleb Thompson <caleb@example.com>',
+        name: 'Caleb Thompson',
       }
     end
   end
