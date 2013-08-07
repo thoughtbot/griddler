@@ -26,16 +26,25 @@ module Griddler::EmailParser
     if body.blank?
       ""
     else
-      body.split(reply_delimeter_regex).first.
-        split(/^\s*[-]+\s*Original Message\s*[-]+\s*$/).first.
-        split(/^\s*--\s*$/).first.
-        gsub(/On.*wrote:/, '').
-        split(/[\r]*\n/).reject do |line|
+      reply_body = body.gsub(/On.*wrote:/, '').
+        gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'')
+
+      split_points = [
+        reply_delimeter_regex,
+        /^\s*[-]+\s*Original Message\s*[-]+\s*$/,
+        /^\s*--\s*$/
+      ]
+
+      split_points.each do |regex|
+        reply_body = reply_body.split(regex).first || ""
+      end
+
+      reply_body.split(/[\r]*\n/)
+        .reject do |line|
           line =~ /^\s*>/ ||
             line =~ /^\s*Sent from my /
         end.
         join("\n").
-        gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'').
         strip
     end
   end
