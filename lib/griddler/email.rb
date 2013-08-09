@@ -10,7 +10,7 @@ module Griddler
       @params = params
 
       @to = recipients
-      @from = extract_address(params[:from], :email)
+      @from = extract_address(params[:from], config.from)
       @subject = params[:subject]
 
       @body = extract_body

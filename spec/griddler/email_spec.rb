@@ -5,6 +5,8 @@ require 'support/examples/configurable_email_address'
 
 describe Griddler::Email, 'body formatting' do
   it_should_behave_like 'configurable email address', :to
+  it_should_behave_like 'configurable email address', :from
+
   it 'uses the html field and sanitizes it when text param missing' do
     body = <<-EOF
       <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
