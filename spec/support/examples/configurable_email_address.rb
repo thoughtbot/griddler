@@ -8,7 +8,6 @@ shared_examples_for 'configurable email address' do |address|
         returned_address = returned_address.first
       end
 
-      returned_address.should be_an_instance_of(Hash)
       returned_address.should eq expected_hash
     end
 
