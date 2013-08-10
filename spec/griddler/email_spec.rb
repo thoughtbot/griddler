@@ -99,7 +99,7 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq 'Hello.'
   end
 
-  it 'handles "-----Original Message-----" format without a prceeding body' do
+  it 'handles "-----Original Message-----" format without a preceding body' do
     body = <<-EOF
       -----Original Message-----
       From: bob@example.com

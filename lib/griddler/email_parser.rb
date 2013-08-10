@@ -26,20 +26,8 @@ module Griddler::EmailParser
     if body.blank?
       ""
     else
-      reply_body = body.gsub(/On.*wrote:/, '').
-        gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'')
-
-      split_points = [
-        reply_delimeter_regex,
-        /^\s*[-]+\s*Original Message\s*[-]+\s*$/,
-        /^\s*--\s*$/
-      ]
-
-      split_points.each do |regex|
-        reply_body = reply_body.split(regex).first || ""
-      end
-
-      reply_body.split(/[\r]*\n/)
+      remove_obvious_replies(body)
+        .split(/[\r]*\n/)
         .reject do |line|
           line =~ /^\s*>/ ||
             line =~ /^\s*Sent from my /
@@ -71,5 +59,29 @@ module Griddler::EmailParser
 
   def self.split_address(email_address)
     email_address.try :split, '@'
+  end
+
+  def self.regex_split_points
+    [
+      reply_delimeter_regex,
+      /^\s*[-]+\s*Original Message\s*[-]+\s*$/,
+      /^\s*--\s*$/
+    ]
+  end
+
+  def self.remove_obvious_replies(body)
+    body = remove_wrote_headers(body)
+
+    regex_split_points.each do |regex|
+      body = body.split(regex).first || ""
+    end
+
+    body
+  end
+
+  def self.remove_wrote_headers(body)
+    body
+      .gsub(/On.*wrote:/, '')
+      .gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'')
   end
 end
