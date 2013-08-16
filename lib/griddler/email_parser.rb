@@ -64,10 +64,10 @@ module Griddler::EmailParser
   def self.regex_split_points
     [
       reply_delimeter_regex,
-      %r{^\s*[-]+\s*Original Message\s*[-]+\s*$},
-      %r{^\s*--\s*$},
-      %r{On.*wrote:},
-      %r{^\s*On.*\r?\n?\s*.*\s*wrote:$}
+      /^\s*[-]+\s*Original Message\s*[-]+\s*$/,
+      /^\s*--\s*$/,
+      /On.*wrote:/,
+      /^\s*On.*\r?\n?\s*.*\s*wrote:$/
     ]
   end
 
