@@ -82,7 +82,7 @@ that responds to:
 
 Each of those has some sensible defaults.
 
-`.from`, `.raw_body`, `.raw_headers`, and `.subject` will contain the obvious
+`.raw_body`, `.raw_headers`, and `.subject` will contain the obvious
 values found in the email, the raw values from those fields.
 
 `.body` will contain the full contents of the email body **unless** there is a
@@ -104,6 +104,9 @@ information of each recipient:
 
   * `full`: The whole recipient field. E.g, `Some User <hello@example.com>`
 
+`.from` will default to the `email` value of a hash like `.to`, and can be
+configured to return the full hash.
+
 `.attachments` will contain an array of attachments as multipart/form-data files
 which can be passed off to attachment libraries like Carrierwave or Paperclip.
 
@@ -119,23 +122,24 @@ are shown below with sample overrides following. In `config/initializer/griddler
 ```ruby
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # MyEmailProcessor
-  config.to = :token # :full, :email, :hash
+  config.to = :hash # :full, :email, :token
+  config.from = :email # :full, :token, :hash
   # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
   # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
   # :token  => 's13.6b2d13dc6a1d33db7644'
-  # :hash   => { raw: '', email: '', token: '', host: '' }
+  # :hash   => { raw: [...], email: [...], token: [...], host: [...] }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
-  config.email_service = :sendgrid
+  config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill
 end
 ```
 
 * `config.processor_class` is the class Griddler will use to handle your incoming emails.
 * `config.reply_delimiter` is the string searched for that will split your body.
-* `config.to` is the format of the returned value for the `:to` key in
-the email object. `:hash` will return all options within a -- (surprise!) -- hash.
-* `config.email_service` tells Griddler which email service you are using. The supported
-email service options are `:sendgrid` (the default), `:cloudmailin` (expects
-multipart format), `:postmark` and `:mandrill`.
+* `config.to` and `config.from` are the format of the returned value for that
+  address in the email object. `:hash` will return all options within a -- (surprise!) -- hash.
+* `config.email_service` tells Griddler which email service you are using. The
+  supported email service options are `:sendgrid` (the default), `:cloudmailin`
+  (expects multipart format), `:postmark` and `:mandrill`.
 
 Testing In Your App
 -------------------

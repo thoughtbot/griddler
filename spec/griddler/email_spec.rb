@@ -1,8 +1,15 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'support/examples/configurable_email_address'
+
+describe Griddler::Email do
+  it_should_behave_like 'configurable email address', :to
+  it_should_behave_like 'configurable email address', :from
+end
 
 describe Griddler::Email, 'body formatting' do
+
   it 'uses the html field and sanitizes it when text param missing' do
     body = <<-EOF
       <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
@@ -273,7 +280,7 @@ describe Griddler::Email, 'multipart emails' do
       from: 'bye@example.com'
     }.merge(params)
 
-    email = Griddler::Email.new(params).process
+    Griddler::Email.new(params).process
   end
 end
 
@@ -431,49 +438,6 @@ describe Griddler::Email, 'with custom configuration' do
 
       email = Griddler::Email.new(params).process
       email.body.should eq 'Hey, split me with the new one!'
-    end
-  end
-
-  describe 'to = :hash' do
-    it 'returns a hash for email.to' do
-      Griddler.configuration.stub(to: :hash)
-      email = Griddler::Email.new(params).process
-      expected_hash = {
-        token: 'some-identifier',
-        host: 'example.com',
-        email: 'some-identifier@example.com',
-        full: 'Some Identifier <some-identifier@example.com>',
-      }
-
-      email.to.first.should be_an_instance_of(Hash)
-      email.to.should eq [expected_hash]
-    end
-  end
-
-  describe 'to = :full' do
-    it 'returns the full to for email.to' do
-      Griddler.configuration.stub(to: :full)
-      email = Griddler::Email.new(params).process
-
-      email.to.should eq params[:to]
-    end
-  end
-
-  describe 'to = :email' do
-    it 'returns just the email address for email.to' do
-      Griddler.configuration.stub(to: :email)
-      email = Griddler::Email.new(params).process
-
-      email.to.should eq ['some-identifier@example.com']
-    end
-  end
-
-  describe 'to = :token' do
-    it 'returns the local portion of the email for email.to' do
-      Griddler.configuration.stub(to: :token)
-      email = Griddler::Email.new(params).process
-
-      email.to.should eq ['some-identifier']
     end
   end
 
