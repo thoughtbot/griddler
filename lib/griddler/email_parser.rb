@@ -26,7 +26,7 @@ module Griddler::EmailParser
     if body.blank?
       ""
     else
-      remove_obvious_replies(body)
+      remove_reply_portion(body)
         .split(/[\r]*\n/)
         .reject do |line|
           line =~ /^\s*>/ ||
@@ -64,24 +64,16 @@ module Griddler::EmailParser
   def self.regex_split_points
     [
       reply_delimeter_regex,
-      /^\s*[-]+\s*Original Message\s*[-]+\s*$/,
-      /^\s*--\s*$/
+      %r{^\s*[-]+\s*Original Message\s*[-]+\s*$},
+      %r{^\s*--\s*$},
+      %r{On.*wrote:},
+      %r{^\s*On.*\r?\n?\s*.*\s*wrote:$}
     ]
   end
 
-  def self.remove_obvious_replies(body)
-    body = remove_wrote_headers(body)
-
-    regex_split_points.each do |regex|
-      body = body.split(regex).first || ""
+  def self.remove_reply_portion(body)
+    regex_split_points.inject(body) do |result, split_point|
+      result.split(split_point).first || ""
     end
-
-    body
-  end
-
-  def self.remove_wrote_headers(body)
-    body
-      .gsub(/On.*wrote:/, '')
-      .gsub(/^\s*On.*\r?\n?\s*.*\s*wrote:$/,'')
   end
 end
