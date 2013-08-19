@@ -13,7 +13,7 @@ module Griddler
       def normalize_params
         {
           to: extract_recipients,
-          from: params[:FromFull][:Email],
+          from: full_email(params[:FromFull]),
           subject: params[:Subject],
           text: params[:TextBody],
           html: params[:HtmlBody],
