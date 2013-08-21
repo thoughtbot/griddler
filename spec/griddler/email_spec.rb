@@ -224,6 +224,12 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq body
   end
 
+  it 'preserves blockquotes' do
+    body = "> Hello.\n\n>another line"
+
+    body_from_email(:text, body).should eq body
+  end
+
   it 'handles empty body values' do
     body_from_email(:text, "").should eq ""
   end
