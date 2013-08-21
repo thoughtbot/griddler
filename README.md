@@ -103,6 +103,7 @@ information of each recipient:
   * `email`: The email address of the recipient.
 
   * `full`: The whole recipient field. E.g, `Some User <hello@example.com>`
+  * `name`: The name of the recipient. E.g, `Some User`
 
 `.from` will default to the `email` value of a hash like `.to`, and can be
 configured to return the full hash.
@@ -127,7 +128,8 @@ Griddler.configure do |config|
   # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
   # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
   # :token  => 's13.6b2d13dc6a1d33db7644'
-  # :hash   => { raw: [...], email: [...], token: [...], host: [...] }
+  # :hash   => { raw: [...], email: [...], token: [...], host: [...],
+name: [...] }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
   config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill
 end
@@ -151,7 +153,7 @@ following sample factory.
 ```ruby
 factory :email, class: OpenStruct do
   # Assumes Griddler.configure.to is :hash (default)
-  to [{ raw: 'to_user@email.com', email: 'to_user@email.com', token: 'to_user', host: 'email.com' }]
+  to [{ full: 'to_user@email.com', email: 'to_user@email.com', token: 'to_user', host: 'email.com', name: nil }]
   from 'user@email.com'
   subject 'email subject'
   body 'Hello!'
