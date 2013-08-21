@@ -31,7 +31,7 @@ module Griddler::EmailParser
       remove_reply_portion(body)
         .split(/[\r]*\n/)
         .reject do |line|
-          line =~ /^\s*>/ ||
+          line =~ /^\s+>/ ||
             line =~ /^\s*Sent from my /
         end.
         join("\n").
