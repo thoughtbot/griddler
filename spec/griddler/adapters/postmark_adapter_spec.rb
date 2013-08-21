@@ -4,7 +4,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
   it 'normalizes parameters' do
     Griddler::Adapters::PostmarkAdapter.normalize_params(default_params).should be_normalized_to({
       to: ['Robert Paulson <bob@example.com>'],
-      from: 'tdurden@example.com',
+      from: 'Tyler Durden <tdurden@example.com>',
       subject: 'Reminder: First and Second Rule',
       text: /Dear bob/,
       html: %r{<p>Dear bob</p>}
