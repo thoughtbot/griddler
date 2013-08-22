@@ -131,6 +131,16 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq 'Hello.'
   end
 
+  it 'removes > in "> Reply ABOVE THIS LINE" ' do
+    body = <<-EOF
+      Hello.
+
+      > Reply ABOVE THIS LINE
+    EOF
+
+    body_from_email(:text, body).should eq 'Hello.'
+  end
+
   it 'removes any non-content things above Reply ABOVE THIS LINE' do
     body = <<-EOF
       Hello.
