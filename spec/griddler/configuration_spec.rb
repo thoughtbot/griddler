@@ -36,6 +36,14 @@ describe Griddler::Configuration do
       end
     end
 
+    it 'stores a from' do
+      Griddler.configure do |config|
+        config.from = :hash
+      end
+
+      Griddler.configuration.from.should eq :hash
+    end
+
     it 'stores a processor_class' do
       dummy_processor = Class.new
 
