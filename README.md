@@ -132,6 +132,8 @@ Griddler.configure do |config|
 name: [...] }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
   config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill
+  config.auth_token = 'some-auth-token' # if present, use
+/email_processor?token=some-auth-token to be successful
 end
 ```
 
@@ -142,6 +144,8 @@ end
 * `config.email_service` tells Griddler which email service you are using. The
   supported email service options are `:sendgrid` (the default), `:cloudmailin`
   (expects multipart format), `:postmark` and `:mandrill`.
+* `config.auth_token` tells Griddler if it should use a token in the
+  email webhook and what it should be.
 
 Testing In Your App
 -------------------
