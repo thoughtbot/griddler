@@ -28,6 +28,18 @@ describe Griddler::Configuration do
       Griddler.configuration.to.should eq :full
     end
 
+    it 'stores auth token' do
+      Griddler.configure do |config|
+        config.auth_token = 'auth_token'
+      end
+
+      Griddler.configuration.auth_token.should eq 'auth_token'
+    end
+
+    it 'defaults auth_token to nil' do
+      Griddler.configuration.auth_token.should be_nil
+    end
+
     it 'warns when setting token' do
       Kernel.should_receive(:warn)
 

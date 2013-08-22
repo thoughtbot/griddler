@@ -8,6 +8,22 @@ describe Griddler::EmailsController do
       response.should be_success
     end
 
+    it 'is successful with auth token' do
+      Griddler.configuration.stub(auth_token: 'auth_token')
+
+      post :create, email_params.merge(token: Griddler.configuration.auth_token)
+
+      response.should be_success
+    end
+
+    it 'returns unauthorized if wrong token' do
+      Griddler.configuration.stub(auth_token: 'auth_token')
+
+      post :create, email_params.merge(token: 'wrong token')
+
+      response.response_code.should eq 401
+    end
+
     it 'creates a new Griddler::Email with the given params' do
       email = double(process: 'something')
       Griddler::Email.should_receive(:new).

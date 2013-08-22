@@ -16,7 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :reply_delimiter
+    attr_accessor :processor_class, :reply_delimiter, :auth_token
 
     def to
       @to ||= :hash
