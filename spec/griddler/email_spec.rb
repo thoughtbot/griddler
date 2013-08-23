@@ -219,7 +219,7 @@ describe Griddler::Email, 'body formatting' do
   end
 
   it 'should preserve empty lines' do
-    body = "Hello.\n\nWhat's up?"
+    body = "Hello.\n\nWhat's up?\n"
 
     body_from_email(:text, body).should eq body
   end
