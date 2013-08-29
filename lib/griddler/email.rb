@@ -68,33 +68,24 @@ module Griddler
     end
 
     def clean_text(text)
-      clean_invalid_utf8_bytes(text, 'text')
+      clean_invalid_utf8_bytes(text)
     end
 
     def clean_html(html)
-      cleaned_html = clean_invalid_utf8_bytes(html, 'html')
+      cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = strip_tags(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
       cleaned_html
     end
 
-    def clean_invalid_utf8_bytes(text, email_part)
-      text.encode(
-        'UTF-8',
-        src_encoding(email_part),
-        invalid: :replace,
-        undef: :replace,
-        replace: ''
-      )
-    end
-
-    def src_encoding(email_part)
-      if params[:charsets]
-        charsets = ActiveSupport::JSON.decode(params[:charsets])
-        charsets[email_part]
-      else
-        'binary'
+    def clean_invalid_utf8_bytes(text)
+      if !text.valid_encoding?
+        text = text
+          .force_encoding('ISO-8859-1')
+          .encode('UTF-8')
       end
+
+      text
     end
   end
 end
