@@ -132,7 +132,7 @@ Griddler.configure do |config|
   # :hash   => { raw: [...], email: [...], token: [...], host: [...],
 name: [...] }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
-  config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill
+  config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill, :mailgun
 end
 ```
 
