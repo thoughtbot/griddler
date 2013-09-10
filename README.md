@@ -11,6 +11,7 @@ Griddler is a Rails engine (full plugin) that provides an endpoint for the
 [Cloudmailin parse api](http://cloudmailin.com),
 [Postmark parse api](http://developer.postmarkapp.com/developer-inbound-parse.html) or
 [Mandrill parse api](http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview)
+[Mailgun routes](http://documentation.mailgun.com/user_manual.html#receiving-messages-via-http-through-a-forward-action)
 that hands off a built email object to a class implemented by you.
 
 Tutorials
@@ -257,6 +258,8 @@ More Information
 * [Postmark Docs](http://developer.postmarkapp.com/)
 * [Mandrill](http://mandrill.com)
 * [Mandrill Docs](http://help.mandrill.com/forums/21092258-Inbound-Email-Processing)
+* [Mailgun](http://mailgun.com)
+* [Mailgun Docs](http://documentation.mailgun.com/user_manual.html#receiving-forwarding-and-storing-messages)
 
 Credits
 -------
