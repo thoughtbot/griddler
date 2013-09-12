@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
+  include Griddler::FixturesHelper
+
   it 'normalizes parameters' do
     Griddler::Adapters::MailgunAdapter.normalize_params(default_params).should be_normalized_to({
       to: ['alice@example.mailgun.org'],

@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'helpers/fixtures_helper'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -35,9 +36,4 @@ RSpec::Matchers.define :be_normalized_to do |expected|
       end
     end
   end
-end
-
-def fixture_file(file_name)
-  cwd = File.expand_path File.dirname(__FILE__)
-  File.new(File.join(cwd, 'fixtures', file_name))
 end
