@@ -40,15 +40,11 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
     }
   end
 
-  def cwd
-    File.expand_path File.dirname(__FILE__)
-  end
-
   def upload_1
     @upload_1 ||= ActionDispatch::Http::UploadedFile.new({
       filename: 'photo1.jpg',
       type: 'image/jpeg',
-      tempfile: File.new("#{cwd}/../../../spec/fixtures/photo1.jpg")
+      tempfile: fixture_file('photo1.jpg')
     })
   end
 
@@ -56,7 +52,7 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
     @upload_2 ||= ActionDispatch::Http::UploadedFile.new({
       filename: 'photo2.jpg',
       type: 'image/jpeg',
-      tempfile: File.new("#{cwd}/../../../spec/fixtures/photo2.jpg")
+      tempfile: fixture_file('photo2.jpg')
     })
   end
 
