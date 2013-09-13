@@ -19,11 +19,27 @@ describe Griddler::Email, 'body formatting' do
   end
 
   it 'handles invalid utf-8 bytes in html' do
-    body_from_email(:html, "Hello.\xF5").should eq 'Hello.'
+    body_from_email(:html, "Hell\xC0.").should eq 'HellÀ.'
   end
 
   it 'handles invalid utf-8 bytes in text' do
-    body_from_email(:text, "Hello.\xF5").should eq 'Hello.'
+    body_from_email(:text, "Hell\xF6.").should eq 'Hellö.'
+  end
+
+  it 'handles valid utf-8 bytes in html' do
+    body_from_email(:html, "Hell\xF1.").should eq 'Hellñ.'
+  end
+
+  it 'handles valid utf-8 bytes in text' do
+    body_from_email(:text, "Hell\xF2.").should eq 'Hellò.'
+  end
+
+  it 'handles valid utf-8 char in html' do
+    body_from_email(:html, "Hellö.").should eq 'Hellö.'
+  end
+
+  it 'handles valid utf-8 char in text' do
+    body_from_email(:text, "Hellö.").should eq 'Hellö.'
   end
 
   it 'does not remove invalid utf-8 bytes if charset is set' do
