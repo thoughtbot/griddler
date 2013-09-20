@@ -10,6 +10,7 @@ require 'griddler/adapters/sendgrid_adapter'
 require 'griddler/adapters/cloudmailin_adapter'
 require 'griddler/adapters/postmark_adapter'
 require 'griddler/adapters/mandrill_adapter'
+require 'griddler/adapters/mailgun_adapter'
 
 module Griddler
 end

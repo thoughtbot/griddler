@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
+  include Griddler::FixturesHelper
+
   it 'normalizes parameters' do
     Griddler::Adapters::PostmarkAdapter.normalize_params(default_params).should be_normalized_to({
       to: ['Robert Paulson <bob@example.com>'],
@@ -80,13 +82,9 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
     EOS
   end
 
-  def cwd
-    File.expand_path File.dirname(__FILE__)
-  end
-
   def upload_1_params
     @upload_1_params ||= begin
-      file = File.new("#{cwd}/../../../spec/fixtures/photo1.jpg")
+      file = fixture_file('photo1.jpg')
       size = file.size
       {
         Name: 'photo1.jpg',
@@ -99,7 +97,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
 
   def upload_2_params
     @upload_2_params ||= begin
-      file = File.new("#{cwd}/../../../spec/fixtures/photo2.jpg")
+      file = fixture_file('photo2.jpg')
       size = file.size
       {
         Name: 'photo2.jpg',
@@ -114,7 +112,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
     @upload_1 ||= ActionDispatch::Http::UploadedFile.new({
       filename: 'photo1.jpg',
       type: 'image/jpeg',
-      tempfile: File.new("#{cwd}/../../../spec/fixtures/photo1.jpg")
+      tempfile: fixture_file('photo1.jpg')
     })
   end
 
@@ -122,7 +120,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
     @upload_2 ||= ActionDispatch::Http::UploadedFile.new({
       filename: 'photo2.jpg',
       type: 'image/jpeg',
-      tempfile: File.new("#{cwd}/../../../spec/fixtures/photo2.jpg")
+      tempfile: fixture_file('photo2.jpg')
     })
   end
 end
