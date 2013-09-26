@@ -242,7 +242,7 @@ application that can handle the HEAD request:
 
 ```ruby
 # routes.rb
-get '/email_processor', :to => proc { [200, {}, ["OK"]] }
+get "/email_processor", to: proc { [200, {}, ["OK"]] }, as: "mandrill_head_test_request"
 ```
 
 Once you have correctly configured Mandrill, you can go ahead and delete this code.
