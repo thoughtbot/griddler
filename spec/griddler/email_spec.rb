@@ -134,6 +134,34 @@ describe Griddler::Email, 'body formatting' do
 
     body_from_email(:text, body).should eq ''
   end
+  
+  it 'handles "-----Original message-----" case insensitively' do
+    body = <<-EOF
+      Hello.
+
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+
+      Check out this report!
+    EOF
+
+    body_from_email(:text, body).should eq 'Hello.'
+  end
+
+  it 'handles "-----Original message-----" case insensitively without a preceding body' do
+    body = <<-EOF
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+
+      Check out this report!
+    EOF
+
+    body_from_email(:text, body).should eq ''
+  end
 
   it 'handles "Reply ABOVE THIS LINE" format' do
     body = <<-EOF
