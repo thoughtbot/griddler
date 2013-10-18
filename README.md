@@ -251,7 +251,7 @@ Using Griddler with the 'Simplemail' Adapter
 --------------------------------------------
 
 The 'Simplemail' Adapter provides an easy way of posting HTML forms data or JSON messages to
-an RAILS application and process this data as an email.
+an RAILS application and process this data like an email.
 
 The JSON message is expected to contain these attributes:
 
@@ -262,6 +262,7 @@ The JSON message is expected to contain these attributes:
   "subject" : "test email",
   "text" : "Howdy ! This is an email sent to RAILS !"
 }
+```
 
 Additional attributes are ignored. The Simplemail Adapter does not support HTML bodies or attachements.
 
