@@ -11,7 +11,7 @@ require 'griddler/adapters/cloudmailin_adapter'
 require 'griddler/adapters/postmark_adapter'
 require 'griddler/adapters/mandrill_adapter'
 require 'griddler/adapters/mailgun_adapter'
-require 'griddler/adapters/restmail_adapter'
+require 'griddler/adapters/simplemail_adapter'
 
 module Griddler
 end

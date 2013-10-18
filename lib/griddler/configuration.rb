@@ -66,7 +66,7 @@ module Griddler
         postmark: Griddler::Adapters::PostmarkAdapter,
         mandrill: Griddler::Adapters::MandrillAdapter,
         mailgun: Griddler::Adapters::MailgunAdapter,
-        restmail: Griddler::Adapters::RestmailAdapter
+        simplemail: Griddler::Adapters::SimplemailAdapter
       }
     end
   end
