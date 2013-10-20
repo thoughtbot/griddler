@@ -56,7 +56,7 @@ module Griddler::EmailParser
   end
 
   def self.extract_email_address(full_address)
-    full_address.split('<').last.delete('>').strip
+    full_address.split('<').last.delete('>').strip if full_address.include?('<') else full_address
   end
 
   def self.extract_name(full_address)
