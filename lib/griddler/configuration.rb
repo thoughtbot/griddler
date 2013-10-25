@@ -16,7 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :reply_delimiter, :from
+    attr_accessor :processor_class, :processor_method, :reply_delimiter, :from
 
     def to
       @to ||= :hash
@@ -39,6 +39,10 @@ module Griddler
 
     def processor_class
       @processor_class ||= EmailProcessor
+    end
+
+    def processor_method
+      @processor_method ||= :process
     end
 
     def reply_delimiter

@@ -544,6 +544,17 @@ describe Griddler::Email, 'with custom configuration' do
     end
   end
 
+  describe 'processor_method' do
+    it 'calls the custom processor method on the processor class' do
+      Griddler.configuration.stub(processor_method: :perform)
+      griddler_email = Griddler::Email.new(params)
+
+      EmailProcessor.should_receive(:perform).with(griddler_email)
+
+      griddler_email.process
+    end
+  end
+
   context 'with multiple recipients in to field' do
     it 'includes all of the emails' do
       recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
