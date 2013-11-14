@@ -45,8 +45,9 @@ module Griddler
     def included_emails
       return @included_emails unless @included_emails.nil?
       emails = recipients.collect{|r| r[:email]} + cc.collect{|r| r[:email]} + bcc.collect{|r| r[:email]}
-      emails += addresses(raw_html.scan(email_regex)) unless raw_html.nil? || raw_html == ""
-      emails += addresses(raw_text.scan(email_regex)) unless raw_text.nil? || raw_text == ""
+      emails += addresses(raw_html.scan(email_regex), :email) unless raw_html.nil? || raw_html == ""
+      emails += addresses(raw_text.scan(email_regex), :email) unless raw_text.nil? || raw_text == ""
+      emails = emails.compact.uniq
       @included_emails = emails
     end
 
@@ -106,9 +107,10 @@ module Griddler
       Griddler.configuration
     end
 
-    def addresses(emails)
+    def addresses(emails, kind = nil)
+      kind ||= config.to
       return [] if emails.nil? || emails == ""
-      emails.map { |recipient| extract_address(recipient, config.to) }
+      emails.map { |recipient| extract_address(recipient, kind) }
     end
 
     def recipients
