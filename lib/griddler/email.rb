@@ -98,6 +98,7 @@ module Griddler
     end
 
     def addresses(emails)
+      return [] if emails.nil? || emails == ""
       emails.map { |recipient| extract_address(recipient, config.to) }
     end
 

@@ -397,6 +397,7 @@ describe Griddler::Email, 'extracting email addresses' do
       email: 'bob@example.com',
       token: 'bob',
       host: 'example.com',
+      original_email: 'bob@example.com',
       name: 'Bob',
     }
     @address = @hash[:full]
