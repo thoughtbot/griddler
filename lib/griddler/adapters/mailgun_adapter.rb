@@ -53,7 +53,7 @@ module Griddler
 
       def headers
         return "" if params['message-headers'].nil? || params['message-headers'] == ""
-        JSON(params['message-headers'])
+        Hash[JSON(params['message-headers'])]
       end
 
       def attachment_files
