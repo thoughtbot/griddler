@@ -32,15 +32,11 @@ module Griddler
       attr_reader :params
 
       def smtp
-        scrub_smtp(params['Message-Id'] || params['Message-ID'])
+        params['Message-Id'] || params['Message-ID']
       end
 
       def in_reply_to
-        scrub_smtp(params['In-Reply-To'])
-      end
-
-      def scrub_smtp(message_id)
-        message_id.to_s.gsub(/\</, '').gsub(/\>/, '').strip
+        params['In-Reply-To']
       end
 
       def recipients

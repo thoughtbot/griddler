@@ -51,11 +51,20 @@ module Griddler
     end
 
     def smtp
-      params[:smtp]
+      return scrub_smtp(params[:smtp]) unless params[:smtp].nil? || params[:smtp] == ""
+      return scrub_smtp(headers['Message-ID']) unless headers.nil? || headers['Message-ID'].nil? || headers['Message-ID'] == ""
+      return scrub_smtp(headers['Message-Id']) unless headers.nil? || headers['Message-Id'].nil? || headers['Message-Id'] == ""
+      return nil
     end
 
     def in_reply_to
-      params[:in_reply_to]
+      return scrub_smtp(params[:in_reply_to]) unless params[:in_reply_to].nil? || params[:in_reply_to] == ""
+      return scrub_smtp(headers['In-Reply-To']) unless headers.nil? || headers['In-Reply-To'].nil? || headers['In-Reply-To'] == ""
+      return nil
+    end
+
+    def scrub_smtp(message_id)
+      message_id.to_s.gsub(/\</, '').gsub(/\>/, '').strip
     end
 
     def bounced?
@@ -111,7 +120,7 @@ module Griddler
     end
 
     def parse_bccs
-      addresses(params[:cc])
+      addresses(params[:bcc])
     end
 
     def extract_address(address, type)

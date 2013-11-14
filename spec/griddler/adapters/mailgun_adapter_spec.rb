@@ -31,6 +31,18 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
     normalized_params[:attachments].should be_empty
   end
 
+  it 'processes headers' do
+    params = default_params
+    headers = {
+      "X-Frame-Options" => "SAMEORIGIN", 
+      "X-XSS-Protection" => "1; mode=block", 
+      "X-Content-Type-Options" => "nosniff", 
+      "X-UA-Compatible" => "chrome=1"
+      }
+    normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params.merge('message-headers' => headers.to_json))
+    normalized_params[:headers].should eq headers
+  end
+
   def default_params
     params = {
       recipient: 'alice@example.mailgun.org',
