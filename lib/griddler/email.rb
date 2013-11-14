@@ -35,7 +35,7 @@ module Griddler
     end
 
     def email_regex
-      /([\w+.=-]+(?<!(?:jpg|png|jpeg|gif))@(?!.*(?:jpg|png|jpeg|gif))[\w.-]*[\w])/
+      /[\w+.=-]+(?<!(?:jpg|png|jpeg|gif))@(?!.*(?:jpg|png|jpeg|gif))[\w.-]*[\w]/
     end
 
     def bounce_format
