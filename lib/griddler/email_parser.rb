@@ -54,6 +54,7 @@ module Griddler::EmailParser
   end
 
   def self.extract_replies(body)
+    return "" if body.nil? || body == ""
     regex_split_points.each do |split|
       result = body.split(split)
       return result.last if result.present? && result.count > 1

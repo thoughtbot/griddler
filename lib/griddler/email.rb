@@ -45,8 +45,8 @@ module Griddler
     def included_emails
       return @included_emails unless @included_emails.nil?
       emails = recipients.collect{|r| r[:email]} + cc.collect{|r| r[:email]} + bcc.collect{|r| r[:email]}
-      emails += addresses(raw_html.scan(email_regex))
-      emails += addresses(raw_text.scan(email_regex))
+      emails += addresses(raw_html.scan(email_regex)) unless raw_html.nil? || raw_html == ""
+      emails += addresses(raw_text.scan(email_regex)) unless raw_text.nil? || raw_text == ""
       @included_emails = emails
     end
 
@@ -114,6 +114,7 @@ module Griddler
     end
 
     def extract_address(address, type)
+      return nil if address.nil? || address == ""
       parsed = EmailParser.parse_address(address)
 
       if type == :hash
@@ -124,23 +125,36 @@ module Griddler
     end
 
     def extract_body
+      stripped = stripped_text_or_html
+      return stripped unless stripped.nil? || stripped == ""
       EmailParser.extract_reply_body(text_or_sanitized_html)
     end
 
     def extract_text
+      return clean_text(params[:stripped_text]) if params.key?(:stripped_text)
       EmailParser.extract_reply_body(clean_text(params[:text].to_s))
     end
 
     def extract_html
+      return clean_html(params[:stripped_html]) if params.key?(:stripped_html)
       EmailParser.extract_reply_body(clean_html(params[:html].to_s))
     end
 
     def extract_signature
+      return clean_html(params[:stripped_signature]) if params.key?(:stripped_signature)
       EmailParser.extract_replies(clean_html(text_or_sanitized_html))
     end
 
     def extract_headers
       EmailParser.extract_headers(params[:headers])
+    end
+
+    def stripped_text_or_html
+      if params.key? :stripped_text
+        clean_text(params[:stripped_text])
+      elsif params.key? :stripped_html
+        clean_html(params[:stripped_html])
+      end
     end
 
     def text_or_sanitized_html
@@ -156,6 +170,7 @@ module Griddler
     end
 
     def clean_html(html)
+      return html if html.nil? || html == ""
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = strip_tags(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
@@ -163,6 +178,7 @@ module Griddler
     end
 
     def clean_invalid_utf8_bytes(text)
+      return text if text.nil? || text == ""
       if !text.valid_encoding?
         text = text
           .force_encoding('ISO-8859-1')

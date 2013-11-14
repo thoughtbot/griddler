@@ -36,7 +36,7 @@ module Griddler
       end
 
       def recipients
-        params[:to].split(',')
+        params[:to].to_s.split(',')
       end
 
       def cc

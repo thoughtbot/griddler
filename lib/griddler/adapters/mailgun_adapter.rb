@@ -17,10 +17,13 @@ module Griddler
           bcc: bcc,
           smtp: smtp,
           in_reply_to: in_reply_to,
-          text: params['body-plain'],
-          html: params['body-html'],
-          headers: JSON(params['message-headers']),
-          attachments: attachment_files
+          text: params['body-plain'].to_s,
+          html: params['body-html'].to_s,
+          headers: headers,
+          attachments: attachment_files,
+          stripped_text: params['stripped-text'],
+          stripped_html: params['stripped-html'],
+          stripped_signature: params['stripped-signature']
         )
       end
 
@@ -50,6 +53,11 @@ module Griddler
 
       def bcc
         params['Bcc'].to_s.split(',')
+      end
+
+      def headers
+        return "" if params['message-headers'].nil? || params['message-headers'] == ""
+        JSON(params['message-headers'])
       end
 
       def attachment_files
