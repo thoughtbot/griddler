@@ -394,6 +394,22 @@ describe Griddler::Email, 'multipart emails' do
     EOF
   end
 
+  it 'returns raw html body block' do
+    html_body = <<-EOF
+      <blink>hello there</blink>
+
+      <div>
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+      </div>
+    EOF
+
+    email = email_with_params(html: html_body)
+    email.raw_body_html.should eq "<blink>hello there</blink>"
+  end
+
   def email_with_params(params)
     params = {
       to: ['hi@example.com'],

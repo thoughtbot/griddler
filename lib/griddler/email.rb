@@ -1,11 +1,13 @@
 # encoding: utf-8
 require 'htmlentities'
+require 'nokogiri'
 
 module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
-    attr_reader :to, :from, :subject, :body, :body_text, :body_html, :raw_body, :raw_text, :raw_html,
-      :headers, :raw_headers, :attachments, :cc, :bcc, :signature
+    attr_reader :to, :from, :subject, :body, :body_text, :body_html, 
+                :raw_body, :raw_text, :raw_html, :raw_body_html,
+                :headers, :raw_headers, :attachments, :cc, :bcc, :signature
 
     def initialize(params)
       @params = params
@@ -22,6 +24,7 @@ module Griddler
       @signature = extract_signature
       @raw_text = params[:text]
       @raw_html = params[:html]
+      @raw_body_html = extract_body_html
       @raw_body = @raw_text || @raw_html
 
       @headers = extract_headers
@@ -151,6 +154,16 @@ module Griddler
     def extract_html
       return clean_html(params[:stripped_html]) if params.key?(:stripped_html)
       EmailParser.extract_reply_body(clean_html(params[:html].to_s))
+    end
+
+    def extract_body_html
+      cleaned = params[:stripped_html] if params.key?(:stripped_html)
+      cleaned ||= extract_html
+      return nil if cleaned.nil? || cleaned == "" || params[:html].nil?
+      html = clean_invalid_utf8_bytes(params[:html]).encode('UTF-8')
+      html = $1 if html =~ /(.*#{ Regexp.escape(clean_invalid_utf8_bytes(cleaned).encode('UTF-8').split("\n").last) })/im
+      html = Nokogiri.parse(html).to_html.strip # close any open tags
+      html
     end
 
     def extract_signature

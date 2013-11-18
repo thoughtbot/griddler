@@ -111,7 +111,8 @@ module Griddler::EmailParser
       /On.*wrote:/,                               # apple mail
       /^\s*On.*\r?\n?\s*.*\s*wrote:$/,            # apple mail
       /^From:\s+/,                                # failsafe
-      /^Sent from my/                             # mobile clients
+      /^Sent from my/,                            # mobile clients
+      /^(?:IMPORTANT )?NOTICE:/
     ]
   end
 
