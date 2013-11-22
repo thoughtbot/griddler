@@ -11,14 +11,28 @@
 require 'mail'
 
 module Griddler::EmailParser
+
+  BOUNCE_FORMAT = /^bounce.*-(.+)=(.+)@/
+  AUTOREPLY_FORMAT = /(.+)=(.+)@.*/
+
+  def self.bounce_format
+    BOUNCE_FORMAT
+  end
+
+  def self.autoreply_format
+    AUTOREPLY_FORMAT
+  end
+
   def self.parse_address(full_address)
-    email_address = extract_email_address(full_address)
+    original_address = extract_email_address(full_address)
+    email_address = reformat_email_address(original_address)
     name = extract_name(full_address)
     token, host = split_address(email_address)
     {
       token: token,
       host: host,
       email: email_address,
+      original_email: original_address,
       full: full_address,
       name: name,
     }
@@ -39,7 +53,17 @@ module Griddler::EmailParser
     end
   end
 
+  def self.extract_replies(body)
+    return "" if body.nil? || body == ""
+    regex_split_points.each do |split|
+      result = body.split(split)
+      return result.last if result.present? && result.count > 1
+    end
+    ""
+  end
+
   def self.extract_headers(raw_headers)
+    return raw_headers if raw_headers.is_a?(Hash)
     header_fields = Mail::Header.new(raw_headers).fields
 
     header_fields.inject({}) do |header_hash, header_field|
@@ -56,7 +80,14 @@ module Griddler::EmailParser
   end
 
   def self.extract_email_address(full_address)
-    full_address.split('<').last.delete('>').strip
+    full_address.to_s.split('<').last.delete('>').strip
+  end
+
+  # outlook reformats reply-to address on bounce / autoresponse if from != reply-to
+  def self.reformat_email_address(email)
+    email = "#{$1}@#{$2}" if email =~ BOUNCE_FORMAT
+    email = "#{$1}@#{$2}" if email =~ AUTOREPLY_FORMAT
+    email
   end
 
   def self.extract_name(full_address)
@@ -74,10 +105,14 @@ module Griddler::EmailParser
   def self.regex_split_points
     [
       reply_delimeter_regex,
-      /^\s*[-]+\s*Original Message\s*[-]+\s*$/i,
-      /^\s*--\s*$/,
-      /On.*wrote:/,
-      /^\s*On.*\r?\n?\s*.*\s*wrote:$/
+      /^\s*[-]+\s*Original Message\s*[-]+\s*$/i,  # outlook default
+      /^\s*--\s*$/,                               # standard sig delimeter
+      /^_+$/,                                     # outlook default
+      /On.*wrote:/,                               # apple mail
+      /^\s*On.*\r?\n?\s*.*\s*wrote:$/,            # apple mail
+      /^From:\s+/,                                # failsafe
+      /^Sent from my/,                            # mobile clients
+      /^(?:IMPORTANT )?NOTICE:/
     ]
   end
 

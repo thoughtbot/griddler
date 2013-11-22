@@ -347,6 +347,69 @@ describe Griddler::Email, 'multipart emails' do
     email.raw_body.should eq '<b>hello there</b>'
   end
 
+  it 'allows access to stripped text and html bodies' do
+    html_body = <<-EOF
+      <blink>hello there</blink>
+
+      <div>
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+      </div>
+    EOF
+
+    text_body = <<-EOF
+      Hello there
+
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+    EOF
+    email = email_with_params(html: html_body, text: text_body)
+    email.body_html.should eq 'hello there'
+    email.body_text.should eq 'Hello there'
+  end
+
+  it 'allows access to signature / replies block' do
+    html_body = <<-EOF
+      <blink>hello there</blink>
+
+      <div>
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+      </div>
+    EOF
+
+    email = email_with_params(html: html_body)
+    email.signature.should eq <<-EOF
+
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+      
+    EOF
+  end
+
+  it 'returns raw html body block' do
+    html_body = <<-EOF
+      <blink>hello there</blink>
+
+      <div>
+      -----Original message-----
+      From: bob@example.com
+      Sent: Today
+      Subject: Awesome report.
+      </div>
+    EOF
+
+    email = email_with_params(html: html_body)
+    email.raw_body_html.should eq "<blink>hello there</blink>"
+  end
+
   def email_with_params(params)
     params = {
       to: ['hi@example.com'],
@@ -377,6 +440,18 @@ describe Griddler::Email, 'extracting email headers' do
     headers.should eq({})
   end
 
+  it "handles x-gm-original-to header" do
+    params = {
+      headers: 'X-Gm-Original-To: Robocop <robocop@detroit.com>',
+      to: ['hi@example.com'],
+      from: 'bye@example.com',
+      text: ''
+    }
+
+    email = Griddler::Email.new(params).process
+    email.included_emails.include?('robocop@detroit.com').should eq(true)
+  end
+
   def header_from_email(header)
     params = {
       headers: header,
@@ -397,6 +472,7 @@ describe Griddler::Email, 'extracting email addresses' do
       email: 'bob@example.com',
       token: 'bob',
       host: 'example.com',
+      original_email: 'bob@example.com',
       name: 'Bob',
     }
     @address = @hash[:full]
@@ -442,6 +518,171 @@ describe Griddler::Email, 'extracting email addresses' do
     ).process
     email.to.should eq [@hash.merge(full: "fake@example.com <#{@hash[:email]}>", name: 'fake@example.com')]
     email.from.should eq @hash[:email]
+  end
+
+  it 'handles outlook-bounce formatted emails' do
+    bounce_email = "bounce+b6da78.7d2ee-person=example.com@domain.com"
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [bounce_email],
+      from: "fake@example.com <#{@hash[:email]}>"
+    ).process
+    expected = { full: bounce_email, 
+      email: "person@example.com", 
+      original_email: bounce_email, 
+      token: 'person', 
+      name: nil, 
+      host: 'example.com'
+    }
+    email.to.should eq [expected]
+  end
+
+  it 'handles outlook vacation responder formatted emails' do
+    auto_email = "person=example.com@domain.com"
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [auto_email],
+      from: "fake@example.com <#{@hash[:email]}>"
+    ).process
+    expected = { full: auto_email, 
+      email: "person@example.com", 
+      original_email: auto_email, 
+      token: 'person', 
+      name: nil, 
+      host: 'example.com'
+    }
+    email.to.should eq [expected]
+  end
+
+  context 'with secondary emails' do
+    let :johnson do
+      {
+        full: 'Wat Johnson <wat@corporate.com>',
+        email: 'wat@corporate.com',
+        token: 'wat',
+        host: 'corporate.com',
+        original_email: 'wat@corporate.com',
+        name: 'Wat Johnson'
+      }
+    end
+
+    let :karl do
+      {
+        full: 'Karl the Fog <karlthefog@sffog.com>',
+        email: 'karlthefog@sffog.com',
+        token: 'karlthefog',
+        host: 'sffog.com',
+        original_email: 'karlthefog@sffog.com',
+        name: 'Karl the Fog'
+      }
+    end
+
+    it 'stores cc information' do
+      email = Griddler::Email.new(
+        text: 'hi',
+        to: ['person@example.com'],
+        from: "fake@example.com <#{@hash[:email]}>",
+        cc: [johnson[:full], karl[:full]]
+      ).process
+
+      email.cc.should eq [johnson, karl]
+    end
+
+    it 'stores bcc information' do
+      email = Griddler::Email.new(
+        text: 'hi',
+        to: ['person@example.com'],
+        from: "fake@example.com <#{@hash[:email]}>",
+        bcc: [johnson[:full], karl[:full]]
+      ).process
+
+      email.bcc.should eq [johnson, karl]
+    end
+  end
+
+  it 'stores smtp info in stripped format' do
+    email = Griddler::Email.new(text: 'hi', to: ["<#{@hash[:email]}>"], from: "<#{@hash[:email]}>", smtp: '<1234@company.com>').process
+    email.smtp.should eq '1234@company.com'
+  end
+
+  it 'extracts smtp info from headers' do
+    email = Griddler::Email.new(
+      text: 'hi', 
+      to: ["<#{@hash[:email]}>"], 
+      from: "<#{@hash[:email]}>", 
+      headers: {'Message-ID' => '<1234@company.com>'}
+    ).process
+    email.smtp.should eq '1234@company.com'
+  end
+
+  it 'stores reply_to info in stripped format' do
+    email = Griddler::Email.new(text: 'hi', to: ["<#{@hash[:email]}>"], from: "<#{@hash[:email]}>", in_reply_to: '<1234@company.com>').process
+    email.in_reply_to.should eq '1234@company.com'
+  end
+
+  it 'extracts reply_to info from headers' do
+    email = Griddler::Email.new(
+      text: 'hi', 
+      to: ["<#{@hash[:email]}>"], 
+      from: "<#{@hash[:email]}>", 
+      headers: {'In-Reply-To' => '<1234@company.com>'}
+    ).process
+    email.in_reply_to.should eq '1234@company.com'
+  end
+end
+
+describe Griddler::Email, 'classifying emails' do
+  before do
+    @hash = {
+      full: 'Bob <bob@example.com>',
+      email: 'bob@company.com',
+      token: 'bob',
+      host: 'company.com',
+      original_email: 'bob=company.com@example.com',
+      name: 'Bob',
+    }
+    @address = @hash[:original_email]
+  end
+
+  it 'inferences bounce from email format' do
+    bounce_email = "bounce+b6da78.7d2ee-person=example.com@domain.com"
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [bounce_email],
+      from: "fake@example.com <#{@hash[:email]}>"
+    ).process
+    email.bounced?.should eq true
+  end
+
+  it "inferences auto replies from email address" do
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [@address],
+      from: 'fake@example.com'
+    ).process
+    email.autoreply?.should eq true
+  end
+
+  it "inferences auto replies from header info" do
+    hash = {
+      text: 'hi',
+      to: ['fake@example.com'],
+      from: 'fake@example.com'
+    }
+    email = Griddler::Email.new(hash.merge(headers: {'x-auto-response-suppress' => true})).process
+    email.autoreply?.should eq true
+
+    email = Griddler::Email.new(hash.merge(headers: {'x-autorespond' => true})).process
+    email.autoreply?.should eq true
+
+    email = Griddler::Email.new(hash.merge(headers: {'precedence' => 'bulk'})).process
+    email.autoreply?.should eq true
+
+    email = Griddler::Email.new(hash.merge(headers: {'auto-submitted' => 'auto-replied'})).process
+    email.autoreply?.should eq true
+
+    email = Griddler::Email.new(hash.merge(subject: "Auto: this is an automatic reply")).process
+    email.autoreply?.should eq true
   end
 end
 

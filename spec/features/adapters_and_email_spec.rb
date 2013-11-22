@@ -15,6 +15,7 @@ describe 'Adapters act the same' do
             token: 'hi',
             host: 'example.com',
             full: 'Hello World <hi@example.com>',
+            original_email: "hi@example.com",
             email: 'hi@example.com',
             name: 'Hello World',
           }])

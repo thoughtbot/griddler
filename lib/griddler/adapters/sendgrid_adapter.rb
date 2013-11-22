@@ -13,6 +13,10 @@ module Griddler
       def normalize_params
         params.merge(
           to: recipients,
+          cc: cc,
+          cc: bcc,
+          smtp: smtp,
+          in_reply_to: in_reply_to,
           attachments: attachment_files,
         )
       end
@@ -21,8 +25,26 @@ module Griddler
 
       attr_reader :params
 
+      def smtp
+        return @smtp unless @smtp.nil?
+        @smtp = $1 if params['headers'] =~ /Message-ID:\s+\<([^\>\s]+)\>/im
+      end
+
+      def in_reply_to
+        return @in_reply_to unless @in_reply_to.nil?
+        @in_reply_to = $1 if params['headers'] =~ /In-Reply-To:\s+\<([^\>\s]+)\>?/im
+      end
+
       def recipients
-        params[:to].split(',')
+        params[:to].to_s.split(',')
+      end
+
+      def cc
+        params[:cc].to_s.split(',')
+      end
+
+      def bcc
+        params[:bcc].to_s.split(',')
       end
 
       def attachment_files
