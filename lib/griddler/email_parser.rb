@@ -77,7 +77,8 @@ module Griddler::EmailParser
       /^\s*[-]+\s*Original Message\s*[-]+\s*$/i,
       /^\s*--\s*$/,
       /On.*wrote:/,
-      /^\s*On.*\r?\n?\s*.*\s*wrote:$/
+      /^\s*On.*\r?\n?\s*.*\s*wrote:$/,
+      /From:.*$/i
     ]
   end
 
