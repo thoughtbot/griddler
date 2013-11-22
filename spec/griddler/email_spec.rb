@@ -440,6 +440,18 @@ describe Griddler::Email, 'extracting email headers' do
     headers.should eq({})
   end
 
+  it "handles x-gm-original-to header" do
+    params = {
+      headers: 'X-Gm-Original-To: Robocop <robocop@detroit.com>',
+      to: ['hi@example.com'],
+      from: 'bye@example.com',
+      text: ''
+    }
+
+    email = Griddler::Email.new(params).process
+    email.included_emails.include?('robocop@detroit.com').should eq(true)
+  end
+
   def header_from_email(header)
     params = {
       headers: header,
