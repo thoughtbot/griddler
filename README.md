@@ -124,6 +124,7 @@ are shown below with sample overrides following. In `config/initializer/griddler
 ```ruby
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # MyEmailProcessor
+  config.processor_method = :process # :custom_method
   config.to = :hash # :full, :email, :token
   config.from = :email # :full, :token, :hash
   # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
@@ -137,6 +138,7 @@ end
 ```
 
 * `config.processor_class` is the class Griddler will use to handle your incoming emails.
+* `config.processor_method` is the method Griddler will call on the processor class when handling your incoming emails.
 * `config.reply_delimiter` is the string searched for that will split your body.
 * `config.to` and `config.from` are the format of the returned value for that
   address in the email object. `:hash` will return all options within a -- (surprise!) -- hash.

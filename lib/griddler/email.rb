@@ -25,8 +25,9 @@ module Griddler
     end
 
     def process
-      processor_class = config.processor_class
-      processor_class.process(self)
+      processor_class  = config.processor_class
+      processor_method = config.processor_method
+      processor_class.public_send(processor_method, self)
     end
 
     private
@@ -34,7 +35,7 @@ module Griddler
     attr_reader :params
 
     def config
-      Griddler.configuration
+      @config ||= Griddler.configuration
     end
 
     def recipients

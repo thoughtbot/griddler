@@ -12,6 +12,7 @@ describe Griddler::Configuration do
       Griddler.configuration.from.should eq(:email)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
       Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
+      Griddler.configuration.processor_method.should eq(:process)
     end
   end
 
@@ -52,6 +53,14 @@ describe Griddler::Configuration do
       end
 
       Griddler.configuration.processor_class.should eq dummy_processor
+    end
+
+    it 'stores a processor_method' do
+      Griddler.configure do |config|
+        config.processor_method = :perform
+      end
+
+      Griddler.configuration.processor_method.should eq(:perform)
     end
 
      it 'sets and stores an email_service' do
