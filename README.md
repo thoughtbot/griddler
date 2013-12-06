@@ -31,9 +31,18 @@ Add griddler to your application's Gemfile and run `bundle install`:
 ```ruby
 gem 'griddler'
 ```
+A route is needed for the endpoint which receives `POST` messages. Currently,
+the route is automatically appended to the route table like so:
 
-In `config/routes.rb` you may either use the provided method `mount_griddler`
-or set the route manually. Examples:
+```ruby
+email_processor POST /email_processor(.:format)   griddler/emails#create
+```
+
+**NOTE: This behavior is deprecated and will be removed by version 0.7.0 in favor
+of manually adding the route.**
+
+To manually add the route, in `config/routes.rb` you may either use the provided
+routing method `mount_griddler` or set the route explicitly. Examples:
 
 ```ruby
 # mount using default path
@@ -45,11 +54,6 @@ mount_griddler('/email/incoming')
 # the "get off my lawn", DIY approach:
 post '/email_processor' => 'griddler/emails#create'
 ```
-
-**NOTE:** Currently the default route is added to the bottom of your route table.
-By version 0.7.0 it will be removed and you will be required to add the route
-with one of the three above methods.
-
 
 Defaults
 --------
