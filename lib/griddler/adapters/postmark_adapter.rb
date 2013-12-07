@@ -18,6 +18,7 @@ module Griddler
           text: params[:TextBody],
           html: params[:HtmlBody],
           attachments: attachment_files,
+          mailboxhash: params[:MailboxHash],
         }
       end
 

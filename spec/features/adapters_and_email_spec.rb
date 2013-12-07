@@ -45,6 +45,7 @@ def params_for
         Name: 'Hello World',
       }],
       TextBody: 'hi',
+      MailboxHash: '12_1998989',
     },
     sendgrid: {
       text: 'hi',

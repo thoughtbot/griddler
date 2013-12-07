@@ -8,6 +8,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
       to: ['Robert Paulson <bob@example.com>'],
       from: 'Tyler Durden <tdurden@example.com>',
       subject: 'Reminder: First and Second Rule',
+      mailboxhash: '12_909090',
       text: /Dear bob/,
       html: %r{<p>Dear bob</p>}
     })
@@ -42,7 +43,8 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
       Subject:  nil,
       TextBody: nil,
       HtmlBody: nil,
-      Attachments: nil
+      Attachments: nil,
+      MailboxHash: nil
     })
   end
 
@@ -57,6 +59,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
         Name: 'Robert Paulson'
       }],
       Subject: 'Reminder: First and Second Rule',
+      MailboxHash: '12_909090',
       TextBody: text_body,
       HtmlBody: text_html
     }
