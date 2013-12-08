@@ -14,7 +14,7 @@ module Griddler
         events.map do |event|
           {
             to: recipients(event),
-            from: event[:from_email],
+            from: full_email([ event[:from_email], event[:from_name] ]),
             subject: event[:subject],
             text: event[:text],
             html: event[:html],
