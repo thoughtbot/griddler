@@ -4,12 +4,13 @@ module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
     attr_reader :to, :from, :subject, :body, :raw_body, :raw_text, :raw_html,
-      :headers, :raw_headers, :attachments
+      :headers, :raw_headers, :attachments, :recipient
 
     def initialize(params)
       @params = params
 
-      @to = recipients
+      @to = tos
+      @recipient = params[:recipient]
       @from = extract_address(params[:from], config.from)
       @subject = params[:subject]
 
@@ -38,7 +39,7 @@ module Griddler
       @config ||= Griddler.configuration
     end
 
-    def recipients
+    def tos
       params[:to].map { |recipient| extract_address(recipient, config.to) }
     end
 

@@ -12,7 +12,7 @@ module Griddler
 
       def normalize_params
         params.merge(
-          to: recipients,
+          to: tos,
           text: params['body-plain'],
           html: params['body-html'],
           headers: params['message-headers'],
@@ -24,8 +24,8 @@ module Griddler
 
       attr_reader :params
 
-      def recipients
-        params[:recipient].split(',')
+      def tos
+        params["To"].split(',')
       end
 
       def attachment_files
