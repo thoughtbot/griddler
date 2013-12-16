@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Adapters act the same' do
-  [:sendgrid, :postmark, :cloudmailin, :mandrill, :mailgun].each do |adapter|
+  [:sendgrid, :postmark, :cloudmailin, :mandrill, :mailgun, :simplemail].each do |adapter|
     context adapter do
       it "wraps recipients in an array and passes them to Email by #{adapter}" do
         Griddler.configuration.email_service = adapter
@@ -65,6 +65,11 @@ def params_for
       recipient: 'Hello World <hi@example.com>',
       from: 'There <there@example.com>',
       'body-plain' => 'hi'
+    },
+    simplemail: {
+        text: 'hi',
+        to: 'Hello World <hi@example.com>',
+        from: 'There <there@example.com>',
     }
   }
 end

@@ -141,7 +141,7 @@ Griddler.configure do |config|
   # :hash   => { raw: [...], email: [...], token: [...], host: [...],
 name: [...] }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
-  config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill, :mailgun
+  config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill, :mailgun, :simplemail
 end
 ```
 
@@ -152,7 +152,7 @@ end
   address in the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 * `config.email_service` tells Griddler which email service you are using. The
   supported email service options are `:sendgrid` (the default), `:cloudmailin`
-  (expects multipart format), `:postmark` and `:mandrill`.
+  (expects multipart format), `:postmark`, `:mandrill`, `:mailgun` and `:simplemail`.
 
 Testing In Your App
 -------------------
@@ -256,6 +256,25 @@ get "/email_processor", to: proc { [200, {}, ["OK"]] }, as: "mandrill_head_test_
 ```
 
 Once you have correctly configured Mandrill, you can go ahead and delete this code.
+
+Using Griddler with the 'Simplemail' Adapter
+--------------------------------------------
+
+The 'Simplemail' Adapter provides an easy way of posting HTML forms data or JSON messages to
+an RAILS application and process this data like an email.
+
+The JSON message is expected to contain these attributes:
+
+```json
+{
+  "from" : "foo@bar.com",
+  "to" : "alice@example.com,bob@example.com",
+  "subject" : "test email",
+  "text" : "Howdy ! This is an email sent to RAILS !"
+}
+```
+
+Additional attributes are ignored. The Simplemail Adapter does not support HTML bodies or attachements.
 
 More Information
 ----------------

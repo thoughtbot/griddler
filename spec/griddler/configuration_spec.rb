@@ -90,7 +90,7 @@ describe Griddler::Configuration do
     end
 
     it "accepts all valid email service adapter settings" do
-      [:sendgrid, :cloudmailin, :postmark, :mandrill, :mailgun].each do |adapter|
+      [:sendgrid, :cloudmailin, :postmark, :mandrill, :mailgun, :simplemail].each do |adapter|
         config = lambda do
           Griddler.configure do |c|
             c.email_service = adapter
