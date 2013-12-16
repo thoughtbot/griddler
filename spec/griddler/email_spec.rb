@@ -148,7 +148,7 @@ describe Griddler::Email, 'body formatting' do
 
     body_from_email(:text, body).should eq ''
   end
-  
+
   it 'handles "-----Original message-----" case insensitively' do
     body = <<-EOF
       Hello.
@@ -456,6 +456,30 @@ describe Griddler::Email, 'extracting email addresses' do
     ).process
     email.to.should eq [@hash.merge(full: "fake@example.com <#{@hash[:email]}>", name: 'fake@example.com')]
     email.from.should eq @hash[:email]
+  end
+end
+
+describe Griddler::Email, 'extracting email addresses from CC field' do
+  before do
+    @address = 'bob@example.com'
+    @headers = 'Cc: reply@example.com, foo <foo@example.com>'
+  end
+
+  it 'extracts the cc addresses as Array' do
+    email = Griddler::Email.new(to: [@address], from: @address, headers: @headers).process
+    email.cc.class.should eq Array
+  end
+
+
+  it 'returns an empty array when no CC address is added' do
+    email = Griddler::Email.new(to: [@address], from: @address).process
+    email.cc.should be_empty
+  end
+
+  it 'parses multiple emails' do
+    email = Griddler::Email.new(to: [@address], from: @address, headers: @headers).process
+    email.cc.should include('reply@example.com')
+    email.cc.should include('foo@example.com')
   end
 end
 
