@@ -48,6 +48,12 @@ module Griddler::EmailParser
     end
   end
 
+  def self.extract_cc(headers)
+    headers.fetch('Cc', '').split(',').map do |address|
+      extract_email_address(address)
+    end
+  end
+
   private
 
   def self.reply_delimeter_regex

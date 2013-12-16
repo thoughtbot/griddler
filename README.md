@@ -76,6 +76,7 @@ that responds to:
 
 * `.to`
 * `.from`
+* `.cc`
 * `.subject`
 * `.body`
 * `.raw_text`
@@ -112,6 +113,9 @@ information of each recipient:
 
 `.from` will default to the `email` value of a hash like `.to`, and can be
 configured to return the full hash.
+
+`.cc` will be an array of the addresses in the Cc header, with an empty array
+if no addresses were present.
 
 `.attachments` will contain an array of attachments as multipart/form-data files
 which can be passed off to attachment libraries like Carrierwave or Paperclip.
