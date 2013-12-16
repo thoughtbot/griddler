@@ -25,7 +25,7 @@ module Griddler
       attr_reader :params
 
       def recipients
-        params[:recipient].split(',')
+        params[:recipient].to_s.split(',')
       end
 
       def attachment_files
