@@ -127,7 +127,7 @@ Configuration Options
 ---------------------
 
 An initializer can be created to control some of the options in Griddler. Defaults
-are shown below with sample overrides following. In `config/initializer/griddler.rb`:
+are shown below with sample overrides following. In `config/initializers/griddler.rb`:
 
 ```ruby
 Griddler.configure do |config|
