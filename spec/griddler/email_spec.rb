@@ -177,6 +177,19 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq ''
   end
 
+  it 'handles "[date] [soandso] <email@example>" format' do
+    body = <<-EOF
+      2013/12/15 Bob Example <bob@example.com>
+      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+    EOF
+
+    body_from_email(:text, body).should eq ''
+  end
+
   it 'handles "Reply ABOVE THIS LINE" format' do
     body = <<-EOF
       Hello.
