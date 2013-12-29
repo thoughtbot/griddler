@@ -6,11 +6,21 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
   it 'normalizes parameters' do
     Griddler::Adapters::MailgunAdapter.normalize_params(default_params).should be_normalized_to({
       to: ['alice@example.mailgun.org'],
+      cc: ['robert@example.mailgun.org'],
       from: 'Bob <bob@11crows.mailgun.org>',
       subject: 'Re: Sample POST request',
       text: %r{Dear bob},
       html: %r{<p>Dear bob</p>}
     })
+  end
+
+  it 'falls back to headers for cc' do
+    params = default_params.merge({
+      Cc: '',
+      'message-headers' => [['Cc', 'emily@example.mailgun.org']]
+    })
+    normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params)
+    expect(normalized_params[:cc]).to eq ['emily@example.mailgun.org']
   end
 
   it 'passes the received array of files' do
@@ -34,11 +44,13 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
   def default_params
     params = {
       recipient: 'alice@example.mailgun.org',
+      Cc: 'robert@example.mailgun.org',
       sender: 'bob@example.mailgun.org',
       subject: 'Re: Sample POST request',
       from: 'Bob <bob@11crows.mailgun.org>',
       'body-plain' => text_body,
       'body-html' => text_html,
+      'message-headers' => []
     }
   end
 

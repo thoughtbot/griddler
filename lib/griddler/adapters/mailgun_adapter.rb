@@ -13,6 +13,7 @@ module Griddler
       def normalize_params
         params.merge(
           to: recipients,
+          cc: ccs,
           text: params['body-plain'],
           html: params['body-html'],
           headers: params['message-headers'],
@@ -26,6 +27,22 @@ module Griddler
 
       def recipients
         params[:recipient].split(',')
+      end
+
+      def ccs
+        cc = if params[:Cc].present?
+          params[:Cc]
+        else
+          extract_header_cc
+        end
+        cc.split(',').map(&:strip)
+      end
+
+      def extract_header_cc
+        header = params['message-headers'].select{|h|
+          h.first == 'Cc'
+        }.first
+        header.to_a.last
       end
 
       def attachment_files

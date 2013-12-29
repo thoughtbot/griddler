@@ -114,8 +114,8 @@ information of each recipient:
 `.from` will default to the `email` value of a hash like `.to`, and can be
 configured to return the full hash.
 
-`.cc` will be an array of the addresses in the Cc header, with an empty array
-if no addresses were present.
+`.cc` behaves and can be configured like `.to`. If the adapter does not
+pass along a `cc` key then the headers will be parsed.
 
 `.attachments` will contain an array of attachments as multipart/form-data files
 which can be passed off to attachment libraries like Carrierwave or Paperclip.
@@ -134,6 +134,7 @@ Griddler.configure do |config|
   config.processor_class = EmailProcessor # MyEmailProcessor
   config.processor_method = :process # :custom_method
   config.to = :hash # :full, :email, :token
+  config.cc = :email # :full, :hash, :token
   config.from = :email # :full, :token, :hash
   # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
   # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
@@ -148,7 +149,7 @@ end
 * `config.processor_class` is the class Griddler will use to handle your incoming emails.
 * `config.processor_method` is the method Griddler will call on the processor class when handling your incoming emails.
 * `config.reply_delimiter` is the string searched for that will split your body.
-* `config.to` and `config.from` are the format of the returned value for that
+* `config.to`, `config.cc` and `config.from` are the format of the returned value for that
   address in the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 * `config.email_service` tells Griddler which email service you are using. The
   supported email service options are `:sendgrid` (the default), `:cloudmailin`

@@ -44,6 +44,19 @@ describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
     normalized_params[:to].should eq [default_params[:to]]
   end
 
+  it 'wraps cc in an array' do
+    normalized_params = normalize_params(default_params)
+
+    normalized_params[:cc].should eq [default_params[:cc]]
+  end
+
+  it 'returns an array even if cc is empty' do
+    params = default_params.merge(cc: nil)
+    normalized_params = normalize_params(params)
+
+    normalized_params[:cc].should eq []
+  end
+
   def normalize_params(params)
     Griddler::Adapters::SendgridAdapter.normalize_params(params)
   end
@@ -52,6 +65,7 @@ describe Griddler::Adapters::SendgridAdapter, '.normalize_params' do
     {
       text: 'hi',
       to: 'hi@example.com',
+      cc: 'cc@example.com',
       from: 'there@example.com',
     }
   end

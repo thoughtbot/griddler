@@ -6,6 +6,7 @@ describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
   it 'normalizes parameters' do
     Griddler::Adapters::CloudmailinAdapter.normalize_params(default_params).should be_normalized_to({
       to: ['Some Identifier <some-identifier@example.com>'],
+      cc: ['emily@example.com'],
       from: 'Joe User <joeuser@example.com>',
       subject: 'Re: [ThisApp] That thing',
       text: /Dear bob/
@@ -27,9 +28,9 @@ describe Griddler::Adapters::CloudmailinAdapter, '.normalize_params' do
   end
 
   def default_params
-    params = {
+    {
       envelope: { to: 'Some Identifier <some-identifier@example.com>', from: 'Joe User <joeuser@example.com>' },
-      headers: { Subject: 'Re: [ThisApp] That thing' },
+      headers: { Subject: 'Re: [ThisApp] That thing', Cc: 'emily@example.com' },
       plain: <<-EOS.strip_heredoc.strip
         Dear bob
 
