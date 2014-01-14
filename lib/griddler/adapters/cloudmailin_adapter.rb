@@ -13,6 +13,7 @@ module Griddler
       def normalize_params
         {
           to: params[:envelope][:to].split(','),
+          cc: ccs,
           from: params[:envelope][:from],
           subject: params[:headers][:Subject],
           text: params[:plain],
@@ -23,6 +24,10 @@ module Griddler
       private
 
       attr_reader :params
+
+      def ccs
+        params[:headers][:Cc].to_s.split(',').map(&:strip)
+      end
 
     end
   end

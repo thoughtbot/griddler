@@ -18,6 +18,7 @@ describe 'Adapters act the same' do
             email: 'hi@example.com',
             name: 'Hello World',
           }])
+          email.cc.should eq ['emily@example.com']
         end
 
       end
@@ -33,7 +34,7 @@ def params_for
         from: 'There <there@example.com>',
       },
       plain: 'hi',
-      headers: {},
+      headers: { Cc: 'emily@example.com' },
     },
     postmark: {
       FromFull: {
@@ -44,11 +45,16 @@ def params_for
         Email: 'hi@example.com',
         Name: 'Hello World',
       }],
+      CcFull: [{
+        Email: 'emily@example.com',
+        Name: '',
+      }],
       TextBody: 'hi',
     },
     sendgrid: {
       text: 'hi',
       to: 'Hello World <hi@example.com>',
+      cc: 'emily@example.com',
       from: 'There <there@example.com>',
     },
     mandrill: {
@@ -58,13 +64,15 @@ def params_for
           from_email: "there@example.com",
           from_name: "There",
           to: [["hi@example.com", "Hello World"]],
+          headers: [['Cc', 'emily@example.com']]
         }
       }])
     },
     mailgun: {
       recipient: 'Hello World <hi@example.com>',
       from: 'There <there@example.com>',
-      'body-plain' => 'hi'
+      Cc: 'emily@example.com',
+      'body-plain' => 'hi',
     }
   }
 end

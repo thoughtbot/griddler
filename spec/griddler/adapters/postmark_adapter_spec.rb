@@ -6,11 +6,20 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
   it 'normalizes parameters' do
     Griddler::Adapters::PostmarkAdapter.normalize_params(default_params).should be_normalized_to({
       to: ['Robert Paulson <bob@example.com>'],
+      cc: ['Jack <jack@example.com>'],
       from: 'Tyler Durden <tdurden@example.com>',
       subject: 'Reminder: First and Second Rule',
       text: /Dear bob/,
       html: %r{<p>Dear bob</p>}
     })
+  end
+
+  it 'handles CcFull of nil' do
+    no_cc_params = default_params
+    no_cc_params[:CcFull] = nil
+    normalized = Griddler::Adapters::PostmarkAdapter.normalize_params(no_cc_params)
+
+    expect(normalized[:cc]).to eq []
   end
 
   it 'passes the received array of files' do
@@ -39,6 +48,7 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
     Griddler::Adapters::PostmarkAdapter.normalize_params(default_params).should be_normalized_to({
       ToFull: nil,
       FromFull: nil,
+      CcFull: nil,
       Subject:  nil,
       TextBody: nil,
       HtmlBody: nil,
@@ -55,6 +65,10 @@ describe Griddler::Adapters::PostmarkAdapter, '.normalize_params' do
       ToFull: [{
         Email: 'bob@example.com',
         Name: 'Robert Paulson'
+      }],
+      CcFull: [{
+        Email: 'jack@example.com',
+        Name: 'Jack'
       }],
       Subject: 'Reminder: First and Second Rule',
       TextBody: text_body,

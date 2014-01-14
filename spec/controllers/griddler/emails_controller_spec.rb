@@ -23,6 +23,7 @@ describe Griddler::EmailsController do
     {
       headers: 'Received: by 127.0.0.1 with SMTP...',
       to: 'thoughtbot <tb@example.com>',
+      cc: 'CC <cc@example.com>',
       from: 'John Doe <someone@example.com>',
       subject: 'hello there',
       text: 'this is an email message',
