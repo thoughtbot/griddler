@@ -107,6 +107,22 @@ describe Griddler::Email, 'body formatting' do
     body_from_email(:text, body).should eq 'Hello.'
   end
 
+  it 'handles "> On [date] [soandso] <email@example.com> wrote:" format' do
+    body = <<-EOF.strip_heredoc
+      Hello.
+
+      > On 10 janv. 2014, at 18:00, Tristan <email@example.com> wrote:
+      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+      > 
+    EOF
+
+    body_from_email(:text, body).should eq 'Hello.'
+  end
+
   it 'handles "From: email@email.com" format' do
     body = <<-EOF
       Hello.
