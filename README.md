@@ -286,6 +286,6 @@ The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 License
 -------
 
-Griddler is Copyright © 2013 Caleb Thompson, Joel Oliveira and thoughtbot. It is
+Griddler is Copyright © 2014 Caleb Thompson, Joel Oliveira and thoughtbot. It is
 free software, and may be redistributed under the terms specified in the LICENSE
 file.
