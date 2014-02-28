@@ -40,8 +40,8 @@ module Griddler
       end
 
       def ccs(event)
-        found = event[:headers].select { |header| header.first == 'Cc' }.first
-        Array(found).last.to_s.split(',').map(&:strip)
+        found = event[:headers][:Cc]
+        found.to_s.split(',').map(&:strip)
       end
 
       def full_email(contact_info)
