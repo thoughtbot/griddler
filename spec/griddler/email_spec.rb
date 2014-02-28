@@ -389,6 +389,12 @@ describe Griddler::Email, 'multipart emails' do
     )
     email.raw_body.should eq '<b>hello there</b>'
   end
+  
+  it 'handles nil text on email initialization' do
+    expect { email = email_with_params(
+      text: nil
+    ) }.not_to raise_error #NoMethodError
+  end
 
   def email_with_params(params)
     params = {
