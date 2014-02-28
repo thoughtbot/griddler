@@ -17,8 +17,8 @@ module Griddler
             cc: ccs(event),
             from: full_email([ event[:from_email], event[:from_name] ]),
             subject: event[:subject],
-            text: event[:text],
-            html: event[:html],
+            text: event.fetch(:text, ''),
+            html: event.fetch(:html, ''),
             raw_body: event[:raw_msg],
             attachments: attachment_files(event)
           }

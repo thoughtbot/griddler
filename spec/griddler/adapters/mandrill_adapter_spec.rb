@@ -39,8 +39,38 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
     normalized_params[0][:attachments].should be_empty
   end
 
-  def default_params
-    mandrill_events (params_hash*2).to_json
+  describe 'when the email has no text part' do
+    before do
+      @params = params_hash
+      @params.first[:msg].delete(:text)
+    end
+
+    it 'sets :text to an empty string' do
+      params = default_params(@params)
+      normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
+      normalized_params.each do |p|
+        p[:text].should eq ''
+      end
+    end
+  end
+
+  describe 'when the email has no html part' do
+    before do
+      @params = params_hash
+      @params.first[:msg].delete(:html)
+    end
+
+    it 'sets :html to an empty string' do
+      params = default_params(@params)
+      normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
+      normalized_params.each do |p|
+        p[:html].should eq ''
+      end
+    end
+  end
+
+  def default_params(params = params_hash)
+    mandrill_events (params*2).to_json
   end
 
   def mandrill_events(json)
