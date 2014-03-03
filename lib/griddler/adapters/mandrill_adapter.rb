@@ -13,8 +13,8 @@ module Griddler
       def normalize_params
         events.map do |event|
           {
-            to: recipients(event),
-            cc: ccs(event),
+            to: recipients(:to, event),
+            cc: recipients(:cc, event),
             from: full_email([ event[:from_email], event[:from_name] ]),
             subject: event[:subject],
             text: event.fetch(:text, ''),
@@ -35,13 +35,8 @@ module Griddler
         end
       end
 
-      def recipients(event)
-        event[:to].map { |recipient| full_email(recipient) }
-      end
-
-      def ccs(event)
-        found = event[:headers][:Cc]
-        found.to_s.split(',').map(&:strip)
+      def recipients(field, event)
+        event[field].map { |recipient| full_email(recipient) }
       end
 
       def full_email(contact_info)

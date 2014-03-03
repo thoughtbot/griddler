@@ -64,7 +64,7 @@ def params_for
           from_email: "there@example.com",
           from_name: "There",
           to: [["hi@example.com", "Hello World"]],
-          headers: {'Cc' => 'emily@example.com'}
+          cc: [["emily@example.com", "Emily"]],
         }
       }])
     },

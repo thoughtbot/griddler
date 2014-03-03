@@ -7,7 +7,7 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
     Griddler::Adapters::MandrillAdapter.normalize_params(default_params).each do |params|
       params.should be_normalized_to({
         to: ['The Token <token@reply.example.com>'],
-        cc: ['emily@example.mandrillapp.com', 'joey@example.mandrillapp.com'],
+        cc: ['Emily <emily@example.mandrillapp.com>', 'Joey <joey@example.mandrillapp.com>'],
         from: 'Hernan Example <hernan@example.com>',
         subject: 'hello',
         text: %r{Dear bob},
@@ -84,12 +84,13 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
       msg:
         {
           raw_msg: "raw",
-          headers: {"Cc" => "emily@example.mandrillapp.com, joey@example.mandrillapp.com"},
+          headers: {},
           text: text_body,
           html: text_html,
           from_email: "hernan@example.com",
           from_name: "Hernan Example",
           to: [["token@reply.example.com", "The Token"]],
+          cc: [["emily@example.mandrillapp.com", "Emily"],["joey@example.mandrillapp.com", "Joey"]],
           subject: "hello",
           spam_report: {
             score: -0.8,
