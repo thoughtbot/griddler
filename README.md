@@ -95,7 +95,7 @@ values found in the email, the raw values from those fields.
 line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that
 case `.body` will contain everything before that line.
 
-`.to` will contain an array of hashes. Each hash will have the following
+`.to` will contain an array of a hash. Each key will have the following
 information of each recipient:
 
   * `token`: All the text before the email's "@". We've found that this is the
