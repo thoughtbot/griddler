@@ -16,7 +16,7 @@ module Griddler
       @body = extract_body
       @raw_text = params[:text]
       @raw_html = params[:html]
-      @raw_body = @raw_text || @raw_html
+      @raw_body = @raw_text.presence || @raw_html
 
       @headers = extract_headers
 
@@ -68,11 +68,8 @@ module Griddler
     end
 
     def text_or_sanitized_html
-      if params.key? :text
-        clean_text(params[:text])
-      elsif params.key? :html
-        clean_html(params[:html])
-      end
+      text = clean_text(params.fetch(:text, ''))
+      text.presence || clean_html(params.fetch(:html, '')).presence
     end
 
     def clean_text(text)
