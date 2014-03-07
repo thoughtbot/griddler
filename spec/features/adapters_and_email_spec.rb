@@ -61,10 +61,10 @@ def params_for
       mandrill_events: ActiveSupport::JSON.encode([{
         msg: {
           text: 'hi',
-          from_email: "there@example.com",
-          from_name: "There",
-          to: [["hi@example.com", "Hello World"]],
-          cc: [["emily@example.com", "Emily"]],
+          from_email: 'there@example.com',
+          from_name: 'There',
+          to: [['hi@example.com', 'Hello World']],
+          cc: [['emily@example.com', 'Emily']],
         }
       }])
     },

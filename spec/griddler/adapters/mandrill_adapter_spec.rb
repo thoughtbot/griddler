@@ -7,7 +7,8 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
     Griddler::Adapters::MandrillAdapter.normalize_params(default_params).each do |params|
       params.should be_normalized_to({
         to: ['The Token <token@reply.example.com>'],
-        cc: ['Emily <emily@example.mandrillapp.com>', 'Joey <joey@example.mandrillapp.com>'],
+        cc: ['Emily <emily@example.mandrillapp.com>',
+             'Joey <joey@example.mandrillapp.com>'],
         from: 'Hernan Example <hernan@example.com>',
         subject: 'hello',
         text: %r{Dear bob},
@@ -20,7 +21,8 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
   it 'passes the received array of files' do
     params = params_with_attachments
 
-    normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
+    normalized_params =
+      Griddler::Adapters::MandrillAdapter.normalize_params(params)
 
     first, second = *normalized_params[0][:attachments]
 
@@ -34,7 +36,8 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
   it 'has no attachments' do
     params = default_params
 
-    normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
+    normalized_params =
+      Griddler::Adapters::MandrillAdapter.normalize_params(params)
 
     normalized_params[0][:attachments].should be_empty
   end
@@ -47,7 +50,8 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
 
     it 'sets :text to an empty string' do
       params = default_params(@params)
-      normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
+      normalized_params =
+        Griddler::Adapters::MandrillAdapter.normalize_params(params)
       normalized_params.each do |p|
         p[:text].should eq ''
       end
@@ -62,7 +66,8 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
 
     it 'sets :html to an empty string' do
       params = default_params(@params)
-      normalized_params = Griddler::Adapters::MandrillAdapter.normalize_params(params)
+      normalized_params =
+        Griddler::Adapters::MandrillAdapter.normalize_params(params)
       normalized_params.each do |p|
         p[:html].should eq ''
       end
@@ -70,7 +75,7 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
   end
 
   def default_params(params = params_hash)
-    mandrill_events (params*2).to_json
+    mandrill_events (params * 2).to_json
   end
 
   def mandrill_events(json)
@@ -79,26 +84,27 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
 
   def params_hash
     [{
-      event: "inbound",
+      event: 'inbound',
       ts: 1364601140,
       msg:
         {
-          raw_msg: "raw",
+          raw_msg: 'raw',
           headers: {},
           text: text_body,
           html: text_html,
-          from_email: "hernan@example.com",
-          from_name: "Hernan Example",
-          to: [["token@reply.example.com", "The Token"]],
-          cc: [["emily@example.mandrillapp.com", "Emily"],["joey@example.mandrillapp.com", "Joey"]],
+          from_email: 'hernan@example.com',
+          from_name: 'Hernan Example',
+          to: [['token@reply.example.com', 'The Token']],
+          cc: [['emily@example.mandrillapp.com', 'Emily'],
+               ['joey@example.mandrillapp.com', 'Joey']],
           subject: "hello",
           spam_report: {
             score: -0.8,
-            matched_rules: "..."
+            matched_rules: '...'
             },
-          dkim: {signed: true, valid: true},
-          spf: {result: "pass", detail: "sender SPF authorized"},
-          email: "token@reply.example.com",
+          dkim: { signed: true, valid: true },
+          spf: { result: 'pass', detail: 'sender SPF authorized' },
+          email: 'token@reply.example.com',
           tags: [],
           sender: nil
         }
@@ -142,7 +148,7 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
         name: 'photo1.jpg',
         content: Base64.encode64(file.read),
         type: 'image/jpeg',
-        length: file.size
+        length: size
       }
     end
   end
@@ -155,7 +161,7 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
         name: 'photo2.jpg',
         content: Base64.encode64(file.read),
         type: 'image/jpeg',
-        length: file.size
+        length: size
       }
     end
   end
