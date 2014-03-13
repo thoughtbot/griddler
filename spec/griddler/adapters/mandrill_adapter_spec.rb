@@ -74,6 +74,22 @@ describe Griddler::Adapters::MandrillAdapter, '.normalize_params' do
     end
   end
 
+  describe 'when the email has no CC recipients' do
+    before do
+      @params = params_hash
+      @params.first[:msg][:cc] = nil
+    end
+
+    it 'should return an empty cc array' do
+      params = default_params(@params)
+      normalized_params =
+        Griddler::Adapters::MandrillAdapter.normalize_params(params)
+      normalized_params.each do |p|
+        p[:cc].should eq []
+      end
+    end
+  end
+
   def default_params(params = params_hash)
     mandrill_events (params * 2).to_json
   end
