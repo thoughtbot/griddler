@@ -15,31 +15,39 @@ describe Griddler::Email, 'body formatting' do
       <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
     EOF
 
-    body_from_email(:html, body).should eq 'Hello.'
+    body_from_email(html: body).should eq 'Hello.'
+  end
+
+  it 'uses the html field and sanitizes it when text param is empty' do
+    body = <<-EOF
+      <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
+    EOF
+
+    body_from_email(html: body, text: '').should eq 'Hello.'
   end
 
   it 'handles invalid utf-8 bytes in html' do
-    body_from_email(:html, "Hell\xC0.").should eq 'HellÀ.'
+    body_from_email(html: "Hell\xC0.").should eq 'HellÀ.'
   end
 
   it 'handles invalid utf-8 bytes in text' do
-    body_from_email(:text, "Hell\xF6.").should eq 'Hellö.'
+    body_from_email(text: "Hell\xF6.").should eq 'Hellö.'
   end
 
   it 'handles valid utf-8 bytes in html' do
-    body_from_email(:html, "Hell\xF1.").should eq 'Hellñ.'
+    body_from_email(html: "Hell\xF1.").should eq 'Hellñ.'
   end
 
   it 'handles valid utf-8 bytes in text' do
-    body_from_email(:text, "Hell\xF2.").should eq 'Hellò.'
+    body_from_email(text: "Hell\xF2.").should eq 'Hellò.'
   end
 
   it 'handles valid utf-8 char in html' do
-    body_from_email(:html, "Hellö.").should eq 'Hellö.'
+    body_from_email(html: 'Hellö.').should eq 'Hellö.'
   end
 
   it 'handles valid utf-8 char in text' do
-    body_from_email(:text, "Hellö.").should eq 'Hellö.'
+    body_from_email(text: 'Hellö.').should eq 'Hellö.'
   end
 
   it 'does not remove invalid utf-8 bytes if charset is set' do
@@ -51,7 +59,7 @@ describe Griddler::Email, 'body formatting' do
       text: 'iso-8859-1'
     }
 
-    body_from_email(:text, "Helló.", charsets).should eq 'Helló.'
+    body_from_email({ text: 'Helló.' }, charsets).should eq 'Helló.'
   end
 
   it 'handles everything on one line' do
@@ -59,7 +67,7 @@ describe Griddler::Email, 'body formatting' do
       Hello. On 01/12/13, Tristan <email@example.com> wrote: Reply ABOVE THIS LINE or visit your website to respond.
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "On [date] [soandso] wrote:" format' do
@@ -74,7 +82,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "On [date] [soandso] <email@example.com> wrote:" format' do
@@ -89,7 +97,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "On [date] [soandso]\n<email@example.com> wrote:" format' do
@@ -104,7 +112,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "> On [date] [soandso] <email@example.com> wrote:" format' do
@@ -120,7 +128,7 @@ describe Griddler::Email, 'body formatting' do
       > 
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "From: email@email.com" format' do
@@ -134,7 +142,7 @@ describe Griddler::Email, 'body formatting' do
       Check out this report!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "-----Original Message-----" format' do
@@ -149,7 +157,7 @@ describe Griddler::Email, 'body formatting' do
       Check out this report!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "-----Original Message-----" format without a preceding body' do
@@ -162,7 +170,7 @@ describe Griddler::Email, 'body formatting' do
       Check out this report!
     EOF
 
-    body_from_email(:text, body).should eq ''
+    body_from_email(text: body).should eq ''
   end
 
   it 'handles "-----Original message-----" case insensitively' do
@@ -177,7 +185,7 @@ describe Griddler::Email, 'body formatting' do
       Check out this report!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'handles "-----Original message-----" case insensitively without a preceding body' do
@@ -190,7 +198,7 @@ describe Griddler::Email, 'body formatting' do
       Check out this report!
     EOF
 
-    body_from_email(:text, body).should eq ''
+    body_from_email(text: body).should eq ''
   end
 
   it 'handles "[date] [soandso] <email@example>" format' do
@@ -203,7 +211,7 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
-    body_from_email(:text, body).should eq ''
+    body_from_email(text: body).should eq ''
   end
 
   it 'handles "Reply ABOVE THIS LINE" format' do
@@ -215,7 +223,7 @@ describe Griddler::Email, 'body formatting' do
       Hey!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'removes > in "> Reply ABOVE THIS LINE" ' do
@@ -225,7 +233,7 @@ describe Griddler::Email, 'body formatting' do
       > Reply ABOVE THIS LINE
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'removes any non-content things above Reply ABOVE THIS LINE' do
@@ -239,7 +247,7 @@ describe Griddler::Email, 'body formatting' do
       Hey!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'removes any iphone things above Reply ABOVE THIS LINE' do
@@ -253,7 +261,7 @@ describe Griddler::Email, 'body formatting' do
       Hey!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'should remove any signature above Reply ABOVE THIS LINE' do
@@ -270,7 +278,7 @@ describe Griddler::Email, 'body formatting' do
       > Hey!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'should remove any signature without space above Reply ABOVE THIS LINE' do
@@ -287,7 +295,7 @@ describe Griddler::Email, 'body formatting' do
       > Hey!
     EOF
 
-    body_from_email(:text, body).should eq 'Hello.'
+    body_from_email(text: body).should eq 'Hello.'
   end
 
   it 'properly handles a json charsets' do
@@ -312,46 +320,45 @@ describe Griddler::Email, 'body formatting' do
       text: 'utf-8'
     }
 
-    body_from_email(:text, body, charsets).should eq 'Hello.'
+    body_from_email({ text: body }, charsets).should eq 'Hello.'
   end
 
   it 'should preserve empty lines' do
     body = "Hello.\n\nWhat's up?"
 
-    body_from_email(:text, body).should eq body
+    body_from_email(text: body).should eq body
   end
 
   it 'preserves blockquotes' do
     body = "> Hello.\n\n>another line"
 
-    body_from_email(:text, body).should eq body
+    body_from_email(text: body).should eq body
   end
 
   it 'handles empty body values' do
-    body_from_email(:text, "").should eq ""
+    body_from_email(text: '').should eq ''
   end
 
   it 'handles missing body keys' do
-    body_from_email(:text, nil).should eq ""
+    body_from_email(text: nil).should eq ''
   end
 
-  def body_from_email(format, text, charsets = {})
-    if charsets.present?
-      text = text.encode(charsets[format])
+  def body_from_email(raw_body, charsets = {})
+    raw_body.each do |format, text|
+      text.encode!(charsets[format]) if charsets[format]
     end
 
     params = {
       to: ['hi@example.com'],
-      from: 'bye@example.com'
+      from: 'bye@example.com',
+      charsets: charsets.to_json
     }
 
-    if text
-      params.merge!({ format => text.force_encoding('utf-8') })
+    raw_body.select! do |format, text|
+      text.force_encoding('utf-8') if text
     end
 
-    if charsets.present?
-      params[:charsets] = charsets.to_json
-    end
+    params.merge!(raw_body)
 
     email = Griddler::Email.new(params).process
     email.body
@@ -386,6 +393,14 @@ describe Griddler::Email, 'multipart emails' do
   it 'uses html as raw_body if text is not present' do
     email = email_with_params(
       html: '<b>hello there</b>'
+    )
+    email.raw_body.should eq '<b>hello there</b>'
+  end
+
+  it 'uses html as raw_body if text is empty' do
+    email = email_with_params(
+      html: '<b>hello there</b>',
+      text: ''
     )
     email.raw_body.should eq '<b>hello there</b>'
   end
