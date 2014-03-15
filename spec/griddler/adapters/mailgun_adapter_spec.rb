@@ -15,20 +15,20 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
   end
 
   it 'falls back to headers for cc' do
-    params = default_params.merge({
+    params = default_params.merge(
       Cc: '',
       'message-headers' => [['Cc', 'emily@example.mailgun.org']]
-    })
+    )
     normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params)
     expect(normalized_params[:cc]).to eq ['emily@example.mailgun.org']
   end
 
   it 'passes the received array of files' do
-    params = default_params.merge({
+    params = default_params.merge(
       'attachment-count' => 2,
       'attachment-1' => upload_1,
       'attachment-2' => upload_2
-    })
+    )
 
     normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params)
     normalized_params[:attachments].should eq [upload_1, upload_2]
@@ -39,6 +39,26 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
 
     normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params)
     normalized_params[:attachments].should be_empty
+  end
+
+  it 'gets full address from headers' do
+    params = default_params.merge(
+      To: '',
+      'message-headers' => [['To', 'Alice Cooper <alice@example.mailgun.org>']]
+    )
+    normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params)
+    expect(normalized_params[:to]).to eq ['Alice Cooper <alice@example.mailgun.org>']
+  end
+
+  it 'handles multiple To addresses' do
+    params = default_params.merge(
+      To: 'Alice Cooper <alice@example.mailgun.org>, John Doe <john@example.com>'
+    )
+    normalized_params = Griddler::Adapters::MailgunAdapter.normalize_params(params)
+    expect(normalized_params[:to]).to eq [
+      'Alice Cooper <alice@example.mailgun.org>',
+      'John Doe <john@example.com>'
+    ]
   end
 
   def default_params
@@ -55,19 +75,19 @@ describe Griddler::Adapters::MailgunAdapter, '.normalize_params' do
   end
 
   def upload_1
-    @upload_1 ||= ActionDispatch::Http::UploadedFile.new({
+    @upload_1 ||= ActionDispatch::Http::UploadedFile.new(
       filename: 'photo1.jpg',
       type: 'image/jpeg',
       tempfile: fixture_file('photo1.jpg')
-    })
+    )
   end
 
   def upload_2
-    @upload_2 ||= ActionDispatch::Http::UploadedFile.new({
+    @upload_2 ||= ActionDispatch::Http::UploadedFile.new(
       filename: 'photo2.jpg',
       type: 'image/jpeg',
       tempfile: fixture_file('photo2.jpg')
-    })
+    )
   end
 
   def text_body

@@ -12,7 +12,7 @@ module Griddler
 
       def normalize_params
         params.merge(
-          to: recipients,
+          to: tos,
           cc: ccs,
           text: params['body-plain'],
           html: params['body-html'],
@@ -25,24 +25,32 @@ module Griddler
 
       attr_reader :params
 
-      def recipients
-        params[:recipient].split(',')
+      def tos
+        to = param_or_header(:To)
+        to = params[:recipient] unless to
+        to.split(',').map(&:strip)
       end
 
       def ccs
-        cc = if params[:Cc].present?
-          params[:Cc]
-        else
-          extract_header_cc
-        end
+        cc = param_or_header(:Cc)
         cc.split(',').map(&:strip)
       end
 
-      def extract_header_cc
-        header = params['message-headers'].select{|h|
-          h.first == 'Cc'
-        }.first
-        header.to_a.last
+      def extract_header(key)
+        return nil unless params['message-headers'].present?
+
+        headers = params['message-headers'].select do |h|
+          h.first.to_s == key.to_s
+        end
+        headers.flatten.last
+      end
+
+      def param_or_header(key)
+        if params[key].present?
+          params[key]
+        else
+          extract_header(key)
+        end
       end
 
       def attachment_files
