@@ -125,7 +125,7 @@ describe Griddler::Email, 'body formatting' do
       > It's pretty cool.
       >
       > Thanks, Tristan
-      > 
+      >
     EOF
 
     body_from_email(text: body).should eq 'Hello.'
@@ -596,11 +596,10 @@ describe Griddler::Email, 'with custom configuration' do
   end
 
   describe 'parsing with gmail reply header with newlines' do
-    it "only keeps the message above the reply header" do
+    it 'only keeps the message above the reply header' do
       params[:text]= <<-EOS.strip_heredoc
 This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\nsomeone@example.com> wrote:\r\n\r\n>  -- REPLY ABOVE THIS LINE --\r\n>\r\n> The Old message!\r\n>\r\n> Another line! *\r\n>\n
       EOS
-
       email = Griddler::Email.new(params).process
       email.body.should eq 'This is the real text'
     end
