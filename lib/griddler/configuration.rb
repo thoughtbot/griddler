@@ -42,7 +42,18 @@ module Griddler
     end
 
     def processor_class
-      @processor_class ||= EmailProcessor
+      @processor_class ||=
+        begin
+          if Kernel.const_defined?(:EmailProcessor)
+            EmailProcessor
+          else
+            raise NameError.new(<<-ERROR.strip_heredoc, 'EmailProcessor')
+              To use Griddler, you must either define `EmailProcessor` or configure a
+              different processor. See https://github.com/thoughtbot/griddler#defaults for
+              more information.
+            ERROR
+          end
+        end
     end
 
     def processor_method
