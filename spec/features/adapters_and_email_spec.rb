@@ -1,33 +1,8 @@
 require 'spec_helper'
-
-describe 'Adapters act the same' do
-  [:sendgrid, :postmark, :cloudmailin, :mandrill, :mailgun].each do |adapter|
-    context adapter do
-      it "wraps recipients in an array and passes them to Email by #{adapter}" do
-        Griddler.configuration.email_service = adapter
-
-        normalized_params = Griddler.configuration.email_service.normalize_params(params_for[adapter])
-
-        Array.wrap(normalized_params).each do |params|
-          email = Griddler::Email.new(params)
-
-          email.to.should eq([{
-            token: 'hi',
-            host: 'example.com',
-            full: 'Hello World <hi@example.com>',
-            email: 'hi@example.com',
-            name: 'Hello World',
-          }])
-          email.cc.should eq ['emily@example.com']
-        end
-
-      end
-    end
-  end
-end
+require 'griddler/testing'
 
 def params_for
-  {
+  @params_for ||= {
     cloudmailin: {
       envelope: {
         to: 'Hello World <hi@example.com>',
@@ -75,4 +50,10 @@ def params_for
       'body-plain' => 'hi',
     }
   }
+end
+
+describe 'Adapters act the same' do
+  [:sendgrid, :postmark, :cloudmailin, :mandrill, :mailgun].each do |adapter|
+    it_should_behave_like 'Griddler adapter', adapter, params_for[adapter]
+  end
 end
