@@ -15,6 +15,8 @@ module Griddler
           to: recipients(:to),
           cc: recipients(:cc),
           attachments: attachment_files,
+          envelope: envelope,
+          spf: params[:SPF]
         )
       end
 
@@ -24,6 +26,12 @@ module Griddler
 
       def recipients(key)
         ( params[key] || '' ).split(',')
+      end
+
+      def envelope
+        JSON.parse(params[:envelope]).with_indifferent_access if params[:envelope].present?
+      rescue JSON::ParserError
+        nil
       end
 
       def attachment_files

@@ -56,6 +56,11 @@ def params_for
       to: 'Hello World <hi@example.com>',
       cc: 'emily@example.com',
       from: 'There <there@example.com>',
+      envelope: { to: ['hi@example.com'], from: 'there@example.com' }.to_json,
+      SPF: 'pass',
+      dkim: '{@gmail.com : pass}',
+      spam_score: '0.012',
+      spam_report: 'OMG This might be spam!'
     },
     mandrill: {
       mandrill_events: ActiveSupport::JSON.encode([{

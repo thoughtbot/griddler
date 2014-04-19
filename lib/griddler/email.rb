@@ -4,7 +4,7 @@ module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
     attr_reader :to, :from, :cc, :subject, :body, :raw_body, :raw_text, :raw_html,
-      :headers, :raw_headers, :attachments
+      :headers, :raw_headers, :attachments, :envelope, :dkim, :spf, :spam_score, :spam_report
 
     def initialize(params)
       @params = params
@@ -25,6 +25,13 @@ module Griddler
       @raw_headers = params[:headers]
 
       @attachments = params[:attachments]
+
+      @envelope    = format_envelope(params[:envelope])
+
+      @dkim        = params[:dkim]
+      @spf         = params[:spf]
+      @spam_score  = params[:spam_score]
+      @spam_report = params[:spam_report]
     end
 
     def process
@@ -43,6 +50,14 @@ module Griddler
 
     def recipients(type=:to)
       params[type].to_a.map { |recipient| extract_address(recipient, config.send(type)) }
+    end
+
+    def format_envelope(envelope)
+      return envelope if envelope.blank?
+      {}.tap do |formatted|
+        formatted[:from] = extract_address(envelope[:from], config.from)
+        formatted[:to] = envelope[:to].map { |address| extract_address(address, config.to) }
+      end
     end
 
     def extract_address(address, type)
