@@ -123,6 +123,14 @@ which can be passed off to attachment libraries like Carrierwave or Paperclip.
 `.headers` will contain a hash of header names and values as parsed by the Mail
 gem. Headers will only be parsed if the adapter supports a headers option.
 
+####Only Available with SendGrid####
+
+`.dkim`, `.spf`, `.spam_score`, and `.spam_report` will contain those fields 
+sent from SendGrid
+
+`.envelope` is a Hash containg `:to` and `:from` formatted according to the same
+config as `.to` and `.from`. It can come in useful if the recipient was a BCC.
+
 Configuration Options
 ---------------------
 
