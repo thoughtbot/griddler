@@ -131,6 +131,7 @@ are shown below with sample overrides following. In `config/initializers/griddle
 
 ```ruby
 Griddler.configure do |config|
+  config.controller_class = Griddler::EmailsController
   config.processor_class = EmailProcessor # MyEmailProcessor
   config.processor_method = :process # :custom_method
   config.to = :hash # :full, :email, :token
@@ -145,6 +146,7 @@ Griddler.configure do |config|
 end
 ```
 
+* `config.controller_class` is the controller Griddler will use as the incoming email endpoint.
 * `config.processor_class` is the class Griddler will use to handle your incoming emails.
 * `config.processor_method` is the method Griddler will call on the processor class when handling your incoming emails.
 * `config.reply_delimiter` is the string searched for that will split your body.
