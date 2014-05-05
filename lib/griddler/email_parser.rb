@@ -12,6 +12,7 @@ require 'mail'
 
 module Griddler::EmailParser
   def self.parse_address(full_address)
+    return {} if full_address.blank?
     email_address = extract_email_address(full_address)
     name = extract_name(full_address)
     token, host = split_address(email_address)

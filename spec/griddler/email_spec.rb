@@ -523,10 +523,11 @@ end
 describe Griddler::Email, 'extracting envelope' do
   before { Griddler.configuration.stub(from: :token, to: :token) }
 
+  let(:from) { 'there@example.com' }
   let!(:email) do
     Griddler::Email.new(
       from: 'there@example.com',
-      envelope: { to: ['hi@example.com'], from: 'there@example.com' }
+      envelope: { to: ['hi@example.com'], from: from }
     )
   end
 
@@ -536,6 +537,14 @@ describe Griddler::Email, 'extracting envelope' do
 
   it 'extracts address of From' do
     email.envelope[:from].should eq 'there'
+  end
+
+  context 'when the from is blank' do
+    let(:from) { '' }
+
+    it 'does not explode' do
+      email.envelope[:from].should be_nil
+    end
   end
 end
 

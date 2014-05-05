@@ -55,10 +55,10 @@ module Griddler
 
     def format_envelope(envelope)
       return envelope if envelope.blank?
-      {}.tap do |formatted|
-        formatted[:from] = extract_address(envelope[:from], config.from)
-        formatted[:to] = envelope[:to].map { |address| extract_address(address, config.to) }
-      end
+      {
+        from: extract_address(envelope[:from], config.from),
+        to:   envelope[:to].map { |address| extract_address(address, config.to) }
+      }
     end
 
     def extract_address(address, type)
