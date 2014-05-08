@@ -611,5 +611,14 @@ describe Griddler::Email, 'with custom configuration' do
 
       email.to.should eq recipients
     end
+    
+    it 'includes no recipients' do
+      params = {from: 'ralph@example.com', text: 'hi guys' }
+      Griddler.configuration.stub(to: :full)
+
+      email = Griddler::Email.new(params).process
+      email.to.should eq []
+    end
+    
   end
 end
