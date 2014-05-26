@@ -11,3 +11,6 @@ env:
 matrix:
   allow_failures:
     - env: "RAILS_VERSION=master"
+
+notifications:
+  email: false
