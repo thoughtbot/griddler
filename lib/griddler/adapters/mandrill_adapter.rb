@@ -61,7 +61,7 @@ module Griddler
 
       def create_tempfile(attachment)
         filename = attachment[:name]
-        tempfile = Tempfile.new(filename, Dir::tmpdir, encoding: 'ascii-8bit')
+        tempfile = Tempfile.new(filename, Dir.tmpdir, encoding: 'ascii-8bit')
         tempfile.write(Base64.decode64(attachment[:content]))
         tempfile.rewind
         tempfile

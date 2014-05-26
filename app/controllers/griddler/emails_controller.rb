@@ -1,14 +1,16 @@
-class Griddler::EmailsController < ActionController::Base
-  def create
-    normalized_params.each do |p|
-      Griddler::Email.new(p).process
+module Griddler
+  class EmailsController < ActionController::Base
+    def create
+      normalized_params.each do |p|
+        Griddler::Email.new(p).process
+      end
+      head :ok
     end
-    head :ok
-  end
 
-  private
+    private
 
-  def normalized_params
-    Array.wrap(Griddler.configuration.email_service.normalize_params(params))
+    def normalized_params
+      Array.wrap(Griddler.configuration.email_service.normalize_params(params))
+    end
   end
 end
