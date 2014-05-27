@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+{% include head.html %}
+<body>
+  <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+
+  {% include header.html %}
+  {% include content.html %}
+  {% include footer.html %}
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function(){
+
+      $('.js-menu-trigger').on('click touchstart', function(e){
+        $(this).toggleClass('close');
+        $('.js-menu').toggleClass('is-visible');
+        $('.js-menu-screen').toggleClass('is-visible');
+        e.preventDefault();
+      });
+
+      $('.js-menu-screen').on('click touchstart', function(e){
+        $('.js-menu').toggleClass('is-visible');
+        $('.js-menu-screen').toggleClass('is-visible');
+        $('.js-menu-trigger.close').removeClass('close');
+        e.preventDefault();
+      });
+    });
+  </script>
+
+</body>
+</html>
