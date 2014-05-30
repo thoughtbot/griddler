@@ -9,3 +9,4 @@ url: "http://thoughtbot.com"
 # Build settings
 markdown: kramdown
 permalink: pretty
+exclude: [CNAME]
