@@ -2,14 +2,10 @@ source "http://rubygems.org"
 
 gemspec
 
-version = ENV["RAILS_VERSION"] || "4.0"
-
-rails = case version
-when "master"
-  {:github => "rails/rails"}
+if ENV["RAILS_VERSION"]
+  gem "rails", github: "rails/rails", branch: ENV["RAILS_VERSION"]
 else
-  "~> #{version}.0"
+  gem "rails", "~> 4.0.0"
 end
 
-gem "rails", rails
 gem "griddler-sendgrid", github: "thoughtbot/griddler-sendgrid"
