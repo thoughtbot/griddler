@@ -771,13 +771,13 @@ dl {
     transition: 0; }
   .js-menu-trigger .title {
     color: rgba(255, 255, 255, 0.8);
+    display: none;
     font-family: "Gotham","Gotham SSm A","Gotham SSm B","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 1.125em;
     font-weight: bold;
     letter-spacing: 0.0625em;
     padding-right: 0.625em;
-    text-transform: uppercase;
-    display: none; }
+    text-transform: uppercase; }
     @media screen and (min-width: 40em) {
       .js-menu-trigger .title {
         display: inline-block; } }
@@ -947,7 +947,6 @@ nav {
       font-weight: 800;
       line-height: 2.8em;
       height: 3em;
-      margin: 1em 0 0;
       outline: none;
       padding: 0;
       text-align: center;
@@ -960,8 +959,7 @@ nav {
         background-color: white; }
       @media screen and (min-width: 40em) {
         .hero .hero-inner a {
-          margin: 0 .4em;
-          width: 12em; } }
+          width: 18em; } }
     .hero .hero-inner .hero-copy {
       text-align: center; }
       .hero .hero-inner .hero-copy h1 {
@@ -981,7 +979,7 @@ nav {
         @media screen and (min-width: 40em) {
           .hero .hero-inner .hero-copy p {
             font-size: 1.5em;
-            margin-bottom: 3.75em; } }
+            margin-bottom: 2em; } }
 
 main section {
   padding: 2em 0; }

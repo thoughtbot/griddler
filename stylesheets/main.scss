@@ -99,7 +99,6 @@ nav {
       font-weight: 800;
       line-height: 2.8em;
       height: 3em;
-      margin: 1em 0 0;
       outline: none;
       padding: 0;
       text-align: center;
@@ -115,8 +114,7 @@ nav {
       }
 
       @include media($medium-screen) {
-        margin: 0 .4em;
-        width: 12em;
+        width: 18em;
       }
     }
 
@@ -140,8 +138,8 @@ nav {
         font-weight: 700;
 
         @include media($medium-screen) {
-          font-size: em(24);
-          margin-bottom: em(60);
+          font-size: 1.5em;
+          margin-bottom: 2em;
         }
       }
     }

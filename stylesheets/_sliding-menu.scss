@@ -124,13 +124,13 @@ $button-size : 1.5rem;
 
   .title {
     color: rgba(white, 0.8);
+    display: none;
     font-family: "Gotham","Gotham SSm A","Gotham SSm B","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 1.125em;
     font-weight: bold;
     letter-spacing: em(1);
     padding-right: em(10);
     text-transform: uppercase;
-    display: none;
 
     @include media($medium-screen) {
       display: inline-block;
