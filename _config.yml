@@ -2,7 +2,7 @@
 title: "Griddler: Parse emails with ease"
 tagline: Simplify receiving emails in your Rails App
 email: hello@thoughtbot.com
-description: "Griddler is a Rails engine that provides an endpoint for the SendGrid parse api, Cloudmailin parse api, Postmark parse api or Mandrill parse api that hands off a built email object to a class implemented by you."
+description: "Griddler is a Rails engine that provides an endpoint for the SendGrid, Cloudmailin, Postmark, and Mandrill parse APIs that hands off a built email object to a class implemented by you."
 baseurl: ""
 url: "http://thoughtbot.com"
 
