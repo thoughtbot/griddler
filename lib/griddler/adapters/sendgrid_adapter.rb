@@ -30,13 +30,17 @@ module Griddler
       end
 
       def envelope
-        JSON.parse(params[:envelope]).with_indifferent_access if params[:envelope].present?
+        if params[:envelope].present?
+          JSON.parse(params[:envelope]).with_indifferent_access
+        end
       rescue JSON::ParserError
         nil
       end
 
       def charsets
-        JSON.parse(params[:charsets]).with_indifferent_access if params[:charsets].present?
+        if params[:charsets].present?
+          JSON.parse(params[:charsets]).with_indifferent_access
+        end
       rescue JSON::ParserError
         nil
       end
