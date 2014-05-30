@@ -65,27 +65,11 @@ module Griddler
     end
 
     def email_service
-      @email_service_adapter ||= adapter_class[:sendgrid]
+      @email_service_adapter ||= Griddler.adapter_registry[:sendgrid]
     end
 
     def email_service=(new_email_service)
-      if new_email_service == :default
-        new_email_service = :sendgrid
-      end
-
-      @email_service_adapter = adapter_class.fetch(new_email_service) { raise Griddler::Errors::EmailServiceAdapterNotFound }
-    end
-
-    private
-
-    def adapter_class
-      {
-        sendgrid: Griddler::Adapters::SendgridAdapter,
-        cloudmailin: Griddler::Adapters::CloudmailinAdapter,
-        postmark: Griddler::Adapters::PostmarkAdapter,
-        mandrill: Griddler::Adapters::MandrillAdapter,
-        mailgun: Griddler::Adapters::MailgunAdapter
-      }
+      @email_service_adapter = Griddler.adapter_registry.fetch(new_email_service) { raise Griddler::Errors::EmailServiceAdapterNotFound }
     end
   end
 end
