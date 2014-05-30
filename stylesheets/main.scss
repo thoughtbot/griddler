@@ -3,8 +3,6 @@
 @import "bitters/bitters";
 @import "neat/neat";
 
-@import "sliding-menu";
-
 body {
   background-color: $base-body-color;
 }
@@ -99,8 +97,8 @@ nav {
       font-weight: 800;
       line-height: 2.8em;
       height: 3em;
+      max-width: 18em;
       outline: none;
-      padding: 0;
       text-align: center;
       text-transform: uppercase;
       vertical-align: middle;
@@ -113,8 +111,8 @@ nav {
         background-color: white;
       }
 
-      @include media($medium-screen) {
-        width: 18em;
+      @include media(em(480)) {
+        width: 12em;
       }
     }
 

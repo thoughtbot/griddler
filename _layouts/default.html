@@ -10,26 +10,5 @@
   {% include content.html %}
   {% include footer.html %}
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-  <script>
-    $(document).ready(function(){
-
-      $('.js-menu-trigger').on('click touchstart', function(e){
-        $(this).toggleClass('close');
-        $('.js-menu').toggleClass('is-visible');
-        $('.js-menu-screen').toggleClass('is-visible');
-        e.preventDefault();
-      });
-
-      $('.js-menu-screen').on('click touchstart', function(e){
-        $('.js-menu').toggleClass('is-visible');
-        $('.js-menu-screen').toggleClass('is-visible');
-        $('.js-menu-trigger.close').removeClass('close');
-        e.preventDefault();
-      });
-    });
-  </script>
-
 </body>
 </html>
