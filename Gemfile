@@ -12,3 +12,4 @@ else
 end
 
 gem "rails", rails
+gem "griddler-sendgrid", github: "thoughtbot/griddler-sendgrid", branch: "gbw-make-it-work"

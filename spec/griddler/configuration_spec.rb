@@ -12,7 +12,7 @@ describe Griddler::Configuration do
       Griddler.configuration.cc.should eq(:email)
       Griddler.configuration.from.should eq(:email)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
-      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
+      Griddler.configuration.email_service.should eq(Griddler::Sendgrid::Adapter)
       Griddler.configuration.processor_method.should eq(:process)
     end
 
@@ -91,7 +91,7 @@ describe Griddler::Configuration do
         c.email_service = :default
       end
 
-      Griddler.configuration.email_service.should eq(Griddler::Adapters::SendgridAdapter)
+      Griddler.configuration.email_service.should eq(Griddler::Sendgrid::Adapter)
     end
 
     it 'raises an error when setting a non-existent email service adapter' do

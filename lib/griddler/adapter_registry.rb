@@ -21,4 +21,8 @@ module Griddler
       @registry.fetch(key, &block)
     end
   end
+
+  def self.adapter_registry
+    @adapter_registry ||= AdapterRegistry.new
+  end
 end
