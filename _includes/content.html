@@ -9,6 +9,7 @@
       parse APIs that hands off a built email object to a class implemented by you.
     </p>
   </section>
+
   <section class="code">
 <h2>Tutorials</h2>
 
@@ -16,19 +17,20 @@
 <li>SendGrid wrote a
 <a href="http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/">great tutorial</a>
 on integrating Griddler with your application.</li>
-<li>And of course, view our own blog post on the subject over at
+<li>We have our own blog post on the subject over at
 <a href="http://robots.thoughtbot.com/post/42286882447/handle-incoming-email-with-griddler">Giant Robots</a>.</li>
 </ul><h2>Installation</h2>
 
-<p>Add griddler to your application's Gemfile and run <code>bundle install</code>:</p>
+<p>Add griddler to your application's Gemfile and then run <code>bundle install</code>:</p>
 
 <div class="highlight"><pre><span class="n">gem</span> <span class="s1">'griddler'</span>
 </pre></div>
 
 <p>Griddler comes with a default endpoint that will be displayed at the bottom
 of the output of <code>rake routes</code>. If there is a previously defined route that
-matches <code>/email_processor</code> -- or you would like to rename the matched path -- you
-may add the route to the desired position in routes.rb with the following:</p>
+matches <code>/email_processor</code> &mdash; or you would like to rename the
+matched path &mdash; you may add the route to the desired position in routes.rb
+with the following:</p>
 
 <div class="highlight"><pre><span class="n">post</span> <span class="s1">'/email_processor'</span> <span class="o">=&gt;</span> <span class="s1">'griddler/emails#create'</span>
 </pre></div>
@@ -36,8 +38,9 @@ may add the route to the desired position in routes.rb with the following:</p>
 <h2>Defaults</h2>
 
 <p>By default Griddler will look for a class to be created in your application
-called EmailProcessor with a class method implemented, named process, taking
-in one argument (presumably <code>email</code>). For example, in <code>./lib/email_processor.rb</code>:</p>
+called <code>EmailProcessor</code> with a class method named
+<code>process</code>, taking in one argument, the <code>Griddler::email</code>
+to process.  For example, in <code>./lib/email_processor.rb</code>:</p>
 
 <div class="highlight"><pre><span class="k">class</span> <span class="nc">EmailProcessor</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">process</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
@@ -47,8 +50,8 @@ in one argument (presumably <code>email</code>). For example, in <code>./lib/ema
 <span class="k">end</span>
 </pre></div>
 
-<p>The contents of the <code>email</code> object passed into your process method is an object
-that responds to:</p>
+<p>The contents of the <code>email</code> object passed into your process method
+is a <code>Griddler::Email</code> object that responds to:</p>
 
 <ul>
 <li><code>.to</code></li>
