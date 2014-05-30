@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Your awesome title</title>
+    <title>Griddler: Parse emails with ease</title>
     <description>Griddler is a Rails engine that provides an endpoint for the SendGrid parse api, Cloudmailin parse api, Postmark parse api or Mandrill parse api that hands off a built email object to a class implemented by you.</description>
     <link>http://thoughtbot.com/</link>
     <atom:link href="http://thoughtbot.com/feed.xml" rel="self" type="application/rss+xml" />
