@@ -125,7 +125,7 @@ describe Griddler::Email, 'body formatting' do
       > It's pretty cool.
       >
       > Thanks, Tristan
-      > 
+      >
     EOF
 
     body_from_email(text: body).should eq 'Hello.'
@@ -509,7 +509,7 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
     @cc = 'Charles Conway <charles+123@example.com>'
   end
 
-  it 'uses the cc fromt he adapter' do
+  it 'uses the cc from the adapter' do
     email = Griddler::Email.new(to: [@address], from: @address, cc: [@cc], headers: @headers).process
     email.cc.should eq ['charles+123@example.com']
   end
@@ -517,6 +517,45 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
   it 'returns an empty array when no CC address is added' do
     email = Griddler::Email.new(to: [@address], from: @address).process
     email.cc.should be_empty
+  end
+end
+
+describe Griddler::Email, 'extracting envelope' do
+  before { Griddler.configuration.stub(from: :token, to: :token) }
+
+  let(:from) { 'there@example.com' }
+  let!(:email) do
+    Griddler::Email.new(
+      from: 'there@example.com',
+      envelope: { to: ['hi@example.com'], from: from }
+    )
+  end
+
+  it 'extracts address of To' do
+    email.envelope[:to].should eq ['hi']
+  end
+
+  it 'extracts address of From' do
+    email.envelope[:from].should eq 'there'
+  end
+
+  context 'when the from is blank' do
+    let(:from) { '' }
+
+    it 'does not explode' do
+      email.envelope[:from].should be_nil
+    end
+  end
+end
+
+%i[dkim spf spam_score spam_report].each do |param|
+  describe Griddler::Email, "extracting #{param}" do
+    it "copies #{param} into an attribute" do
+      Griddler::Email.any_instance.stub(:extract_address)
+
+      email = Griddler::Email.new(param => 'example')
+      email.send(param).should eq 'example'
+    end
   end
 end
 

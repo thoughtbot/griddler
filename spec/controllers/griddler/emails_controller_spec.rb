@@ -29,7 +29,12 @@ describe Griddler::EmailsController do
       text: 'this is an email message',
       html: '<p>this is an email message</p>',
       charsets: '{"to":"UTF-8","html":"ISO-8859-1","subject":"UTF-8","from":"UTF-8","text":"ISO-8859-1"}',
-      SPF: "pass"
+      envelope: { to: ['hi@example.com'], from: 'there@example.com' }.to_json,
+      SPF: "pass",
+      dkim: '{@gmail.com : pass}',
+      spam_score: '0.012',
+      spam_report: 'OMG This might be spam!',
+      charsets: { to: "UTF-8", cc: "UTF-8", subject: "UTF-8", from: "UTF-8", html: "UTF-8", text: "iso-8859-1" }.to_json
     }
   end
 end
