@@ -7,20 +7,20 @@ Griddler
 ### Receive emails in your Rails app
 
 Griddler is a Rails engine (full plugin) that provides an endpoint for the
-[SendGrid parse api](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html),
-[Cloudmailin parse api](http://cloudmailin.com),
-[Postmark parse api](http://developer.postmarkapp.com/developer-inbound-parse.html) or
-[Mandrill parse api](http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview)
-[Mailgun routes](http://documentation.mailgun.com/user_manual.html#receiving-messages-via-http-through-a-forward-action)
-that hands off a built email object to a class implemented by you.
+[SendGrid](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html),
+[Cloudmailin](http://cloudmailin.com),
+[Postmark](http://developer.postmarkapp.com/developer-inbound-parse.html),
+[Mandrill](http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview), or
+[Mailgun](http://documentation.mailgun.com/user_manual.html#receiving-messages-via-http-through-a-forward-action)
+parse APIs that hands off a built email object to a class implemented by you.
 
 Tutorials
 ---------
 
-* SendGrid has done a
+* SendGrid wrote a
   [great tutorial](http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/)
   on integrating Griddler with your application.
-* And of course, view our own blog post on the subject over at
+* We have our own blog post on the subject over at
   [Giant Robots](http://robots.thoughtbot.com/post/42286882447/handle-incoming-email-with-griddler).
 
 Installation
@@ -31,6 +31,7 @@ Add griddler to your application's Gemfile and run `bundle install`:
 ```ruby
 gem 'griddler'
 ```
+
 A route is needed for the endpoint which receives `POST` messages. Currently,
 the route is automatically appended to the route table like so:
 
@@ -51,16 +52,16 @@ mount_griddler
 # mount using a custom path
 mount_griddler('/email/incoming')
 
-# the "get off my lawn", DIY approach:
+# the DIY approach:
 post '/email_processor' => 'griddler/emails#create'
 ```
 
 Defaults
 --------
 
-By default Griddler will look for a class to be created in your application
-called EmailProcessor with a class method implemented, named process, taking
-in one argument (presumably `email`). For example, in `./lib/email_processor.rb`:
+By default Griddler will look for a class named `EmailProcessor` with a class
+method named `process`, taking in one argument, a `Griddler::Email` instance
+representing the incoming email.  For example, in `./lib/email_processor.rb`:
 
 ```ruby
 class EmailProcessor
@@ -71,8 +72,8 @@ class EmailProcessor
 end
 ```
 
-The contents of the `email` object passed into your process method is an object
-that responds to:
+The contents of the `email` object passed into your process method is a
+`Griddler::Email` instance that responds to:
 
 * `.to`
 * `.from`
@@ -157,9 +158,9 @@ end
 Testing In Your App
 -------------------
 
-You may want to create a factory for when testing the integration of Griddler into
-your application. If you're using factory\_girl this can be accomplished with the
-following sample factory.
+You may want to create a factory for when testing the integration of Griddler
+into your application. If you're using factory\_girl this can be accomplished
+with the following sample factory:
 
 ```ruby
 factory :email, class: OpenStruct do
@@ -175,7 +176,7 @@ factory :email, class: OpenStruct do
       ActionDispatch::Http::UploadedFile.new({
         filename: 'img.png',
         type: 'image/png',
-        tempfile: File.new("#{File.expand_path File.dirname(__FILE__)}/fixtures/img.png")
+        tempfile: File.new("#{File.expand_path(File.dirname(__FILE__))}/fixtures/img.png")
       })
     ]}
   end
@@ -186,15 +187,15 @@ Bear in mind, if you plan on using the `:with_attachment` trait, that this
 example assumes your factories are in `spec/factories.rb` and you have
 an image file in `spec/fixtures/`.
 
-To use it in your test(s) just build with `email = build(:email)`
+To use it in your test(s), build with `email = build(:email)`
 or `email = build(:email, :with_attachment)`.
 
 Adapters
 --------
 
 `Griddler::Email` expects certain parameters to be in place for proper parsing
-to occur. When writing an adapter, ensure that the `normalized_params` method
-of your adapter returns a hash with these keys:
+to occur. When writing an adapter, ensure that the `normalized_params` method of
+your adapter returns a hash with these keys:
 
 * `:to` The recipient field
 * `:from` The sender field
@@ -218,14 +219,14 @@ forward, this field will always be an array. Generally speaking, you will want
 to do something like this to handle the change:
 
 ```ruby
-# before
+# before (pre-0.5.0)
 def initialize(email)
   @to = email.to
   @from = email.from
   @body = email.body
 end
 
-# after
+# after (post-0.5.0)
 def initialize(email)
   @to = pick_meaningful_recipient(email.to)
   @from = email.from
@@ -251,7 +252,7 @@ to add the webhook as-is. To solve this, add a temporary route to your
 application that can handle the HEAD request:
 
 ```ruby
-# routes.rb
+# config/routes.rb
 get "/email_processor", to: proc { [200, {}, ["OK"]] }, as: "mandrill_head_test_request"
 ```
 
