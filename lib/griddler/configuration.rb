@@ -45,6 +45,10 @@ module Griddler
       @controller_class ||= EmailsController
     end
 
+    def controller_route
+      controller_class.name.underscore.sub('_controller', '')
+    end
+
     def processor_class
       @processor_class ||=
         begin
