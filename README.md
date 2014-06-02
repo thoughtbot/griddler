@@ -207,38 +207,6 @@ your adapter returns a hash with these keys:
 * `:charsets` (optional) A JSON string containing the character sets of the
   fields extracted from the message
 
-Upgrading to Griddler 0.5.0
----------------------------
-
-Because of an issue with the way Griddler handled recipients in the `To` header,
-a breaking change was introduced in Griddler 0.5.0 that requires a minor change
-to `EmailProcessor` or `processor_class`.
-
-Previously, a single address was returned from `Griddler::Email#to`. Moving
-forward, this field will always be an array. Generally speaking, you will want
-to do something like this to handle the change:
-
-```ruby
-# before (pre-0.5.0)
-def initialize(email)
-  @to = email.to
-  @from = email.from
-  @body = email.body
-end
-
-# after (post-0.5.0)
-def initialize(email)
-  @to = pick_meaningful_recipient(email.to)
-  @from = email.from
-  @body = email.body
-end
-
-private
-
-def pick_meaningful_recipient(recipients)
-  recipients.find { |address| address =~ /@mydomain.com$/ }
-end
-```
 
 Using Griddler with Mandrill
 ----------------------------
