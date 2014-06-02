@@ -11,7 +11,7 @@ Griddler is a Rails engine (full plugin) that provides an endpoint for the
 [Cloudmailin](http://cloudmailin.com),
 [Postmark](http://developer.postmarkapp.com/developer-inbound-parse.html),
 [Mandrill](http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview), or
-[Mailgun](http://documentation.mailgun.com/user_manual.html#receiving-messages-via-http-through-a-forward-action)
+[Mailgun](http://documentation.mailgun.com/user\_manual.html#receiving-messages-via-http-through-a-forward-action)
 parse APIs that hands off a built email object to a class implemented by you.
 
 Tutorials
@@ -32,20 +32,13 @@ Add griddler to your application's Gemfile and run `bundle install`:
 gem 'griddler'
 ```
 
-A route is needed for the endpoint which receives `POST` messages. Currently,
-the route is automatically appended to the route table like so:
+A route is needed for the endpoint which receives `POST` messages. To add the
+route, in `config/routes.rb` you may either use the provided routing method
+`mount_griddler` or set the route explicitly. Examples:
 
 ```ruby
-email_processor POST /email_processor(.:format)   griddler/emails#create
-```
+# somewhere in config/routes.rb
 
-**NOTE: This behavior is deprecated and will be removed by version 0.7.0 in favor
-of manually adding the route.**
-
-To manually add the route, in `config/routes.rb` you may either use the provided
-routing method `mount_griddler` or set the route explicitly. Examples:
-
-```ruby
 # mount using default path
 mount_griddler
 
@@ -238,7 +231,7 @@ More Information
 * [Mandrill](http://mandrill.com)
 * [Mandrill Docs](http://help.mandrill.com/forums/21092258-Inbound-Email-Processing)
 * [Mailgun](http://mailgun.com)
-* [Mailgun Docs](http://documentation.mailgun.com/user_manual.html#receiving-forwarding-and-storing-messages)
+* [Mailgun Docs](http://documentation.mailgun.com/user\_manual.html#receiving-forwarding-and-storing-messages)
 
 Credits
 -------
