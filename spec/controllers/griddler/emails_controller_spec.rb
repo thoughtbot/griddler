@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Griddler::EmailsController do
-  describe 'POST create' do
+  describe 'POST create', type: :controller do
     it 'is successful' do
       post :create, email_params
 

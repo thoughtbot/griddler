@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'helpers/fixtures_helper'
 
 RSpec.configure do |config|
@@ -9,13 +8,21 @@ RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
   config.order = "random"
 
+  config.expect_with :rspec do |c|
+    c.syntax = [:expect, :should]
+  end
+
+  config.mock_with :rspec do |c|
+    c.syntax = :should
+  end
+
   config.before :each do
     Griddler.configuration.email_service = :default
   end
 end
 
 RSpec::Matchers.define :be_normalized_to do |expected|
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     message = ""
     expected.each do |k, v|
       message << "expected :#{k} to be normalized to #{expected[k].inspect}, "\
