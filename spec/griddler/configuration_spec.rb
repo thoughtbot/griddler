@@ -7,6 +7,7 @@ describe Griddler::Configuration do
     end
 
     it 'provides defaults' do
+      Griddler.configuration.controller_class.should eq(Griddler::EmailsController)
       Griddler.configuration.processor_class.should eq(EmailProcessor)
       Griddler.configuration.to.should eq(:hash)
       Griddler.configuration.cc.should eq(:email)
@@ -58,6 +59,16 @@ describe Griddler::Configuration do
       end
 
       Griddler.configuration.from.should eq :hash
+    end
+
+    it 'stores a controller_class' do
+      dummy_controller = Class.new
+
+      Griddler.configure do |config|
+        config.controller_class = dummy_controller
+      end
+
+      Griddler.configuration.controller_class.should eq dummy_controller
     end
 
     it 'stores a processor_class' do

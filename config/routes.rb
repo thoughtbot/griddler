@@ -1,3 +1,4 @@
 Rails.application.routes.draw do
-  post '/email_processor' => 'griddler/emails#create', as: :email_processor
+  controller = Griddler.configuration.controller_route
+  post '/email_processor' => "#{controller}#create", as: :email_processor
 end

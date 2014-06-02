@@ -16,7 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :processor_method, :reply_delimiter, :cc, :from
+    attr_accessor :controller_class, :processor_class, :processor_method, :reply_delimiter, :cc, :from
 
     def to
       @to ||= :hash
@@ -39,6 +39,14 @@ module Griddler
 
     def from
       @from ||= :email
+    end
+
+    def controller_class
+      @controller_class ||= EmailsController
+    end
+
+    def controller_route
+      controller_class.name.underscore.sub('_controller', '')
     end
 
     def processor_class
