@@ -165,8 +165,10 @@ adapter gem in addition to `griddler`.
 | Service     | Adapter
 | -------     | -------
 | sendgrid    | [griddler-sendgrid]
+| mandrill    | [griddler-mandrill]
 
 [griddler-sendgrid]: https://github.com/thoughtbot/griddler-sendgrid
+[griddler-mandrill]: https://github.com/wingrunr21/griddler-mandrill
 
 Writing an Adapter
 ------------------
