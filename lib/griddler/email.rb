@@ -42,7 +42,7 @@ module Griddler
     end
 
     def recipients(type=:to)
-      params[type].to_a.map { |recipient| extract_address(recipient, config.send(type)) }
+      Array.wrap(params[type]).compact.map { |recipient| extract_address(recipient, config.send(type)) }
     end
 
     def extract_address(address, type)
