@@ -44,8 +44,8 @@ def params_for
       }])
     },
     mailgun: {
-      recipient: 'Hello World <hi@example.com>',
-      from: 'There <there@example.com>',
+      To: 'Hello World <hi@example.com>',
+      From: 'There <there@example.com>',
       Cc: 'emily@example.com',
       'body-plain' => 'hi',
     }
