@@ -24,8 +24,8 @@ describe Griddler::EmailsController do
     end
 
     it 'calls process on the custom processor class' do
-      my_handler = double
-      my_handler.should_receive(:process)
+      my_handler = double(process: nil)
+      my_handler.should_receive(:new).and_return(my_handler)
       Griddler.configuration.stub(processor_class: my_handler)
 
       post :create, email_params
@@ -33,12 +33,12 @@ describe Griddler::EmailsController do
 
     it 'calls the custom processor method on the processor class' do
       Griddler.configuration.stub(processor_method: :perform)
-      griddler_email = double
-      Griddler::Email.should_receive(:new).and_return(griddler_email)
+      fake_processor = double(perform: nil)
 
-      EmailProcessor.should_receive(:perform).with(griddler_email)
+      EmailProcessor.should_receive(:new).and_return(fake_processor)
+      fake_processor.should_receive(:perform)
 
-      post :create, to: 'tb@example.com'
+      post :create, email_params
     end
   end
 

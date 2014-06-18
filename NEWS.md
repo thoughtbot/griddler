@@ -1,5 +1,9 @@
 ## 1.0.0
 
+* Use instances of email processor classes rather than calling class methods.
+  https://github.com/thoughtbot/griddler/pull/153
+
+  *Caleb Thompson*
 * Remove configuration of email addresses for to, from, and cc.
   https://github.com/thoughtbot/griddler/pull/150
 
