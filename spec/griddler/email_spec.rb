@@ -354,7 +354,7 @@ describe Griddler::Email, 'body formatting' do
 
     params.merge!(raw_body)
 
-    email = Griddler::Email.new(params).process
+    email = Griddler::Email.new(params)
     email.body
   end
 end
@@ -405,7 +405,7 @@ describe Griddler::Email, 'multipart emails' do
       from: 'bye@example.com'
     }.merge(params)
 
-    Griddler::Email.new(params).process
+    Griddler::Email.new(params)
   end
 end
 
@@ -437,7 +437,7 @@ describe Griddler::Email, 'extracting email headers' do
       text: ''
     }
 
-    email = Griddler::Email.new(params).process
+    email = Griddler::Email.new(params)
     email.headers
   end
 end
@@ -458,7 +458,7 @@ describe Griddler::Email, 'extracting email addresses' do
     email = Griddler::Email.new(
       to: [@full_address],
       from: @full_address,
-    ).process
+    )
     email.to.should eq [@address_components.merge(name: 'Bob')]
   end
 
@@ -467,7 +467,7 @@ describe Griddler::Email, 'extracting email addresses' do
       text: 'hi',
       to: [@address_components[:email]],
       from: @full_address,
-    ).process
+    )
     expected = @address_components.merge(
       full: @address_components[:email],
       name: nil,
@@ -478,7 +478,7 @@ describe Griddler::Email, 'extracting email addresses' do
 
   it 'handles new lines' do
     email = Griddler::Email.new(text: 'hi', to: ["#{@full_address}\n"],
-      from: "#{@full_address}\n").process
+      from: "#{@full_address}\n")
     expected = @address_components.merge(full: "#{@full_address}\n")
     email.to.should eq [expected]
     email.from.should eq expected
@@ -489,7 +489,7 @@ describe Griddler::Email, 'extracting email addresses' do
       text: 'hi',
       to: ["<#{@address_components[:email]}>"],
       from: "<#{@address_components[:email]}>"
-    ).process
+    )
     expected = @address_components.merge(
       full: "<#{@address_components[:email]}>",
       name: nil)
@@ -509,11 +509,12 @@ describe Griddler::Email, 'extracting email addresses' do
       text: 'hi',
       to: ["fake@example.com <#{@address_components[:email]}>"],
       from: "fake@example.com <#{@address_components[:email]}>"
-    ).process
+    )
     expected = @address_components.merge(
       full: "fake@example.com <#{@address_components[:email]}>",
       name: 'fake@example.com'
     )
+
     email.to.should eq [expected]
     email.from.should eq expected
   end
@@ -526,7 +527,7 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
   end
 
   it 'uses the cc from the adapter' do
-    email = Griddler::Email.new(to: [@address], from: @address, cc: [@cc], headers: @headers).process
+    email = Griddler::Email.new(to: [@address], from: @address, cc: [@cc], headers: @headers)
     email.cc.should eq [{
       token: 'charles+123',
       host: 'example.com',
@@ -537,7 +538,7 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
   end
 
   it 'returns an empty array when no CC address is added' do
-    email = Griddler::Email.new(to: [@address], from: @address).process
+    email = Griddler::Email.new(to: [@address], from: @address)
     email.cc.should be_empty
   end
 end
@@ -565,7 +566,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'accepts and works with a string reply delimiter' do
     it 'does not split on Reply ABOVE THIS LINE' do
       Griddler.configuration.stub(reply_delimiter: 'Stuff and things')
-      email = Griddler::Email.new(params).process
+      email = Griddler::Email.new(params)
 
       email.body.should eq params[:text]
     end
@@ -580,7 +581,7 @@ describe Griddler::Email, 'with custom configuration' do
       EOS
 
       Griddler.configuration.stub(reply_delimiter: '-- reply above --')
-      email = Griddler::Email.new(params).process
+      email = Griddler::Email.new(params)
       email.body.should eq 'trolololo'
     end
   end
@@ -599,7 +600,7 @@ describe Griddler::Email, 'with custom configuration' do
         wut
       EOS
 
-      email = Griddler::Email.new(params).process
+      email = Griddler::Email.new(params)
       email.body.should eq 'Hey, split me with the old one!'
     end
 
@@ -612,7 +613,7 @@ describe Griddler::Email, 'with custom configuration' do
         wut
       EOS
 
-      email = Griddler::Email.new(params).process
+      email = Griddler::Email.new(params)
       email.body.should eq 'Hey, split me with the new one!'
     end
   end
@@ -653,7 +654,7 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
       recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
       params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
 
-      email = Griddler::Email.new(params).process
+      email = Griddler::Email.new(params)
 
       email.to.map { |to| to[:full] }.should eq recipients
     end
