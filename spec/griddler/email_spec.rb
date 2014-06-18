@@ -1,12 +1,6 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'support/examples/configurable_email_address'
-
-describe Griddler::Email, '#to and #from' do
-  it_should_behave_like 'configurable email address', :to
-  it_should_behave_like 'configurable email address', :from
-end
 
 describe Griddler::Email, 'body formatting' do
 
@@ -450,56 +444,78 @@ end
 
 describe Griddler::Email, 'extracting email addresses' do
   before do
-    @hash = {
+    @address_components = {
       full: 'Bob <bob@example.com>',
       email: 'bob@example.com',
       token: 'bob',
       host: 'example.com',
       name: 'Bob',
     }
-    @address = @hash[:full]
+    @full_address= @address_components[:full]
   end
 
   it 'extracts the name' do
-    email = Griddler::Email.new(to: [@address], from: @address).process
-    email.to.should eq [@hash.merge(name: 'Bob')]
+    email = Griddler::Email.new(
+      to: [@full_address],
+      from: @full_address,
+    ).process
+    email.to.should eq [@address_components.merge(name: 'Bob')]
   end
 
   it 'handles normal e-mail address' do
-    email = Griddler::Email.new(text: 'hi', to: [@hash[:email]], from: @address).process
-    email.to.should eq [@hash.merge(full: @hash[:email], name: nil)]
-    email.from.should eq @hash[:email]
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [@address_components[:email]],
+      from: @full_address,
+    ).process
+    expected = @address_components.merge(
+      full: @address_components[:email],
+      name: nil,
+    )
+    email.to.should eq [expected]
+    email.from.should eq @address_components
   end
 
   it 'handles new lines' do
-    email = Griddler::Email.new(text: 'hi', to: ["#{@address}\n"],
-      from: "#{@address}\n").process
-    email.to.should eq [@hash.merge(full: "#{@address}\n")]
-    email.from.should eq @hash[:email]
+    email = Griddler::Email.new(text: 'hi', to: ["#{@full_address}\n"],
+      from: "#{@full_address}\n").process
+    expected = @address_components.merge(full: "#{@full_address}\n")
+    email.to.should eq [expected]
+    email.from.should eq expected
   end
 
   it 'handles angle brackets around address' do
-    email = Griddler::Email.new(text: 'hi', to: ["<#{@hash[:email]}>"],
-      from: "<#{@hash[:email]}>").process
-    email.to.should eq [@hash.merge(full: "<#{@hash[:email]}>", name: nil)]
-    email.from.should eq @hash[:email]
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: ["<#{@address_components[:email]}>"],
+      from: "<#{@address_components[:email]}>"
+    ).process
+    expected = @address_components.merge(
+      full: "<#{@address_components[:email]}>",
+      name: nil)
+    email.to.should eq [expected]
+    email.from.should eq expected
   end
 
   it 'handles name and angle brackets around address' do
-    email = Griddler::Email.new(text: 'hi', to: [@address],
-      from: @address).process
-    email.to.should eq [@hash]
-    email.from.should eq @hash[:email]
+    email = Griddler::Email.new(text: 'hi', to: [@full_address],
+      from: @full_address).process
+    email.to.should eq [@address_components]
+    email.from.should eq @address_components
   end
 
   it 'handles multiple e-mails, with priority to the bracketed' do
     email = Griddler::Email.new(
       text: 'hi',
-      to: ["fake@example.com <#{@hash[:email]}>"],
-      from: "fake@example.com <#{@hash[:email]}>"
+      to: ["fake@example.com <#{@address_components[:email]}>"],
+      from: "fake@example.com <#{@address_components[:email]}>"
     ).process
-    email.to.should eq [@hash.merge(full: "fake@example.com <#{@hash[:email]}>", name: 'fake@example.com')]
-    email.from.should eq @hash[:email]
+    expected = @address_components.merge(
+      full: "fake@example.com <#{@address_components[:email]}>",
+      name: 'fake@example.com'
+    )
+    email.to.should eq [expected]
+    email.from.should eq expected
   end
 end
 
@@ -509,9 +525,15 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
     @cc = 'Charles Conway <charles+123@example.com>'
   end
 
-  it 'uses the cc fromt he adapter' do
+  it 'uses the cc from the adapter' do
     email = Griddler::Email.new(to: [@address], from: @address, cc: [@cc], headers: @headers).process
-    email.cc.should eq ['charles+123@example.com']
+    email.cc.should eq [{
+      token: 'charles+123',
+      host: 'example.com',
+      email: 'charles+123@example.com',
+      full: 'Charles Conway <charles+123@example.com>',
+      name: 'Charles Conway',
+    }]
   end
 
   it 'returns an empty array when no CC address is added' do
@@ -630,11 +652,10 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
     it 'includes all of the emails' do
       recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
       params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
-      Griddler.configuration.stub(to: :full)
 
       email = Griddler::Email.new(params).process
 
-      email.to.should eq recipients
+      email.to.map { |to| to[:full] }.should eq recipients
     end
   end
 end

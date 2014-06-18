@@ -1,5 +1,10 @@
 ## 1.0.0
 
+* Remove configuration of email addresses for to, from, and cc.
+  https://github.com/thoughtbot/griddler/pull/150
+
+  *Caleb Thompson*
+
 * Update body parser regex to allow for new lines. d40bbf1
 
   *gust*

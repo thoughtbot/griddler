@@ -51,7 +51,13 @@ shared_examples_for 'Griddler adapter' do |adapter, service_params|
         email: 'hi@example.com',
         name: 'Hello World',
       }])
-      email.cc.should eq ['emily@example.com']
+      email.cc.should eq [{
+        token: 'emily',
+        host: 'example.com',
+        email: 'emily@example.com',
+        full: 'emily@example.com',
+        name: nil
+      }]
     end
   end
 end

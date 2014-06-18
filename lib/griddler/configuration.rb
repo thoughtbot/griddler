@@ -16,30 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :processor_method, :reply_delimiter, :cc, :from
-
-    def to
-      @to ||= :hash
-    end
-
-    def to=(type)
-      if type == :token
-        Kernel.warn <<-WARN.strip_heredoc
-          [Deprecation] the :token option is deprecated and will be removed in v0.6.
-          For tokens use :hash and retrieve the token from email.to[:token] or choose any of [:email, :full, :hash]
-        WARN
-      end
-
-      @to = type
-    end
-
-    def cc
-      @cc ||= :email
-    end
-
-    def from
-      @from ||= :email
-    end
+    attr_accessor :processor_class, :processor_method, :reply_delimiter
 
     def processor_class
       @processor_class ||=

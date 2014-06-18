@@ -10,7 +10,7 @@ module Griddler
       @params = params
 
       @to = recipients(:to)
-      @from = extract_address(params[:from], config.from)
+      @from = extract_address(params[:from])
       @subject = params[:subject]
 
       @body = extract_body
@@ -41,18 +41,12 @@ module Griddler
       @config ||= Griddler.configuration
     end
 
-    def recipients(type=:to)
-      params[type].to_a.map { |recipient| extract_address(recipient, config.send(type)) }
+    def recipients(type)
+      params[type].to_a.map { |recipient| extract_address(recipient) }
     end
 
-    def extract_address(address, type)
-      parsed = EmailParser.parse_address(address)
-
-      if type == :hash
-        parsed
-      else
-        parsed[type]
-      end
+    def extract_address(address)
+      EmailParser.parse_address(address)
     end
 
     def extract_body

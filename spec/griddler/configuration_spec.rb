@@ -8,9 +8,6 @@ describe Griddler::Configuration do
 
     it 'provides defaults' do
       Griddler.configuration.processor_class.should eq(EmailProcessor)
-      Griddler.configuration.to.should eq(:hash)
-      Griddler.configuration.cc.should eq(:email)
-      Griddler.configuration.from.should eq(:email)
       Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
       Griddler.configuration.email_service.should eq(:test_adapter)
       Griddler.configuration.processor_method.should eq(:process)
@@ -26,38 +23,6 @@ describe Griddler::Configuration do
   describe 'with config block' do
     after do
       Griddler.configure
-    end
-
-    it 'stores config' do
-      Griddler.configure do |config|
-        config.to = :full
-      end
-
-      Griddler.configuration.to.should eq :full
-    end
-
-    it 'warns when setting token' do
-      Kernel.should_receive(:warn)
-
-      Griddler.configure do |config|
-        config.to = :token
-      end
-    end
-
-    it 'stores a cc' do
-      Griddler.configure do |config|
-        config.cc = :full
-      end
-
-      Griddler.configuration.cc.should eq :full
-    end
-
-    it 'stores a from' do
-      Griddler.configure do |config|
-        config.from = :hash
-      end
-
-      Griddler.configuration.from.should eq :hash
     end
 
     it 'stores a processor_class' do
