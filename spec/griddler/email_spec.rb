@@ -498,8 +498,11 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 
   it 'handles name and angle brackets around address' do
-    email = Griddler::Email.new(text: 'hi', to: [@full_address],
-      from: @full_address).process
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [@full_address],
+      from: @full_address
+    )
     email.to.should eq [@address_components]
     email.from.should eq @address_components
   end
@@ -625,27 +628,6 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
       EOS
       email = Griddler::Email.new(params)
       email.body.should eq 'This is the real text'
-    end
-  end
-
-  describe 'processor_class' do
-    it 'calls process on the custom processor class' do
-      my_handler = double
-      my_handler.should_receive(:process)
-      Griddler.configuration.stub(processor_class: my_handler)
-
-      Griddler::Email.new(params).process
-    end
-  end
-
-  describe 'processor_method' do
-    it 'calls the custom processor method on the processor class' do
-      Griddler.configuration.stub(processor_method: :perform)
-      griddler_email = Griddler::Email.new(params)
-
-      EmailProcessor.should_receive(:perform).with(griddler_email)
-
-      griddler_email.process
     end
   end
 

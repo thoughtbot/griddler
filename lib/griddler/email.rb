@@ -27,12 +27,6 @@ module Griddler
       @attachments = params[:attachments]
     end
 
-    def process
-      processor_class  = config.processor_class
-      processor_method = config.processor_method
-      processor_class.public_send(processor_method, self)
-    end
-
     private
 
     attr_reader :params
