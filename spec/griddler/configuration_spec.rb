@@ -78,13 +78,14 @@ describe Griddler::Configuration do
       Griddler.configuration.processor_method.should eq(:perform)
     end
 
-     it 'sets and stores an email_service' do
-        Griddler.configure do |config|
-          config.email_service = :cloudmailin
-        end
+    it 'sets and stores an email_service' do
+      Griddler.should_receive(:adapter_registry).and_return(double(fetch: :configured_adapter))
+      Griddler.configure do |config|
+        config.email_service = :another_adapter
+      end
 
-        Griddler.configuration.email_service.should eq(Griddler::Adapters::CloudmailinAdapter)
-     end
+      Griddler.configuration.email_service.should eq(:configured_adapter)
+    end
 
     it 'accepts a :default symbol and uses sendgrid' do
       Griddler.configure do |c|
