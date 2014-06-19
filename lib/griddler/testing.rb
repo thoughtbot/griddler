@@ -55,3 +55,29 @@ shared_examples_for 'Griddler adapter' do |adapter, service_params|
     end
   end
 end
+
+RSpec::Matchers.define :be_normalized_to do |expected|
+  failure_message do |actual|
+    message = ""
+    expected.each do |k, v|
+      if actual[k] != expected[k]
+        message << "expected :#{k} to be normalized to #{expected[k].inspect}, "\
+          "but received #{actual[k].inspect}\n"
+      end
+    end
+    message
+  end
+
+  description do
+    "be normalized to #{expected}"
+  end
+
+  match do |actual|
+    expected.each do |k, v|
+      case v
+      when Regexp then actual[k].should =~ v
+      else actual[k].should === v
+      end
+    end
+  end
+end
