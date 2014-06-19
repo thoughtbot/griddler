@@ -65,7 +65,7 @@ module Griddler
     end
 
     def email_service
-      @email_service_adapter ||= Griddler.adapter_registry[:sendgrid]
+      @email_service_adapter ||= Griddler.adapter_registry[:default]
     end
 
     def email_service=(new_email_service)

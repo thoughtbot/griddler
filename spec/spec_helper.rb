@@ -17,6 +17,7 @@ RSpec.configure do |config|
   end
 
   config.before :each do
+    Griddler.adapter_registry.register(:default, :test_adapter)
     Griddler.configuration.email_service = :default
   end
 end
