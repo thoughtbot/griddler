@@ -6,13 +6,9 @@ Griddler
 
 ### Receive emails in your Rails app
 
-Griddler is a Rails engine that provides an endpoint for the
-[SendGrid](http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html),
-[Cloudmailin](http://cloudmailin.com),
-[Postmark](http://developer.postmarkapp.com/developer-inbound-parse.html),
-[Mandrill](http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview), or
-[Mailgun](http://documentation.mailgun.com/user\_manual.html#receiving-messages-via-http-through-a-forward-action)
-parse APIs that hands off a built email object to a class implemented by you.
+Griddler is a Rails engine that provides an endpoint for services that convert
+incoming emails to HTTP POST requests. It parses these POSTs and hands off a
+built email object to a class implemented by you.
 
 Tutorials
 ---------
@@ -58,13 +54,6 @@ Defaults are shown below with sample overrides following. In
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # CommentViaEmail
   config.processor_method = :process # :create_comment (A method on CommentViaEmail)
-  config.to = :hash # :full, :email, :token
-  config.cc = :email # :full, :hash, :token
-  config.from = :email # :full, :token, :hash
-  # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
-  # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
-  # :token  => 's13.6b2d13dc6a1d33db7644'
-  # :hash   => { raw: [...], email: [...], token: [...], host: [...], name: [...] }
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
   config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill, :mailgun
 end
@@ -76,15 +65,18 @@ end
 | `processor_method` | The method Griddler will call on the processor class when handling your incoming emails.
 | `reply_delimiter`  | The string searched for that will split your body.
 | `email_service`    | Tells Griddler which email service you are using. The supported email service options are `:sendgrid` (the default), `:cloudmailin` (expects multipart format), `:postmark` and `:mandrill`. You will also need to have an appropriate [adapter] gem included in your Gemfile.
-| `to`, `config.cc` and `config.from` | The format of the returned value for that address in the email object. `:hash` will return all options within a -- (surprise!) -- hash.
 
-By default Griddler will look for a class named `EmailProcessor` with a class
-method named `process`, taking in one argument, a `Griddler::Email` instance
+By default Griddler will look for a class named `EmailProcessor` with a method
+named `process`, taking in one argument, a `Griddler::Email` instance
 representing the incoming email.  For example, in `./lib/email_processor.rb`:
 
 ```ruby
 class EmailProcessor
-  def self.process(email)
+  def initialize(email)
+    @email = email
+  end
+
+  def process
     # all of your application-specific code here - creating models,
     # processing reports, etc
   end
@@ -199,27 +191,10 @@ Adapters should be provided as gems. If you write an adapter, let us know and we
 will add it to this README. See [griddler-sendgrid] for an example
 implementation.
 
-More Information
-----------------
-
-* [SendGrid](http://www.sendgrid.com)
-* [SendGrid Parse API](http://www.sendgrid.com/docs/API Reference/Webhooks/parse.html)
-* [Cloudmailin](http://cloudmailin.com)
-* [Cloudmailin Docs](http://docs.cloudmailin.com/)
-* [Postmark](http://postmarkapp.com)
-* [Postmark Docs](http://developer.postmarkapp.com/)
-* [Mandrill](http://mandrill.com)
-* [Mandrill Docs](http://help.mandrill.com/forums/21092258-Inbound-Email-Processing)
-* [Mailgun](http://mailgun.com)
-* [Mailgun Docs](http://documentation.mailgun.com/user\_manual.html#receiving-forwarding-and-storing-messages)
-
 Credits
 -------
 
 Griddler was written by Caleb Thompson and Joel Oliveira.
-
-Large portions of the codebase were extracted from thoughtbot's
-[Trajectory](http://www.apptrajectory.com).
 
 Thanks to our [contributors](https://github.com/thoughtbot/griddler/contributors)!
 
