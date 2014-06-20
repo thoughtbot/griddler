@@ -159,10 +159,12 @@ adapter gem in addition to `griddler`.
 | sendgrid    | [griddler-sendgrid]
 | mandrill    | [griddler-mandrill]
 | mailgun     | [griddler-mailgun]
+| postmark    | [griddler-postmark]
 
 [griddler-sendgrid]: https://github.com/thoughtbot/griddler-sendgrid
 [griddler-mandrill]: https://github.com/wingrunr21/griddler-mandrill
 [griddler-mailgun]: https://github.com/bradpauly/griddler-mailgun
+[griddler-postmark]: https://github.com/r38y/griddler-postmark
 
 Writing an Adapter
 ------------------
