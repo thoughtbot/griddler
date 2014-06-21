@@ -9,11 +9,11 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.expect_with :rspec do |c|
-    c.syntax = [:expect, :should]
+    c.syntax = :expect
   end
 
   config.mock_with :rspec do |c|
-    c.syntax = :should
+    c.syntax = :expect
   end
 
   config.before :each do
