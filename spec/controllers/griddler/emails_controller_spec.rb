@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Griddler::EmailsController do
+describe Griddler::EmailsController, :type => :controller do
   before(:each) do
     fake_adapter = double(normalize_params: normalized_params)
     Griddler.adapter_registry.register(:one_that_works, fake_adapter)
@@ -11,12 +11,12 @@ describe Griddler::EmailsController do
     it 'is successful' do
       post :create, email_params
 
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'creates a new Griddler::Email with the given params' do
       email = double
-      Griddler::Email.should_receive(:new).
+      expect(Griddler::Email).to receive(:new).
         with(hash_including(to: ['tb@example.com'])).
         and_return(email)
 
@@ -25,18 +25,18 @@ describe Griddler::EmailsController do
 
     it 'calls process on the custom processor class' do
       my_handler = double(process: nil)
-      my_handler.should_receive(:new).and_return(my_handler)
-      Griddler.configuration.stub(processor_class: my_handler)
+      expect(my_handler).to receive(:new).and_return(my_handler)
+      allow(Griddler.configuration).to receive_messages(processor_class: my_handler)
 
       post :create, email_params
     end
 
     it 'calls the custom processor method on the processor class' do
-      Griddler.configuration.stub(processor_method: :perform)
+      allow(Griddler.configuration).to receive_messages(processor_method: :perform)
       fake_processor = double(perform: nil)
 
-      EmailProcessor.should_receive(:new).and_return(fake_processor)
-      fake_processor.should_receive(:perform)
+      expect(EmailProcessor).to receive(:new).and_return(fake_processor)
+      expect(fake_processor).to receive(:perform)
 
       post :create, email_params
     end

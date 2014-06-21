@@ -7,14 +7,14 @@ describe Griddler::Configuration do
     end
 
     it 'provides defaults' do
-      Griddler.configuration.processor_class.should eq(EmailProcessor)
-      Griddler.configuration.reply_delimiter.should eq('Reply ABOVE THIS LINE')
-      Griddler.configuration.email_service.should eq(:test_adapter)
-      Griddler.configuration.processor_method.should eq(:process)
+      expect(Griddler.configuration.processor_class).to eq(EmailProcessor)
+      expect(Griddler.configuration.reply_delimiter).to eq('Reply ABOVE THIS LINE')
+      expect(Griddler.configuration.email_service).to eq(:test_adapter)
+      expect(Griddler.configuration.processor_method).to eq(:process)
     end
 
     it 'raises a helpful error if EmailProcessor is undefined' do
-      Kernel.stub(const_defined?: false)
+      allow(Kernel).to receive_messages(const_defined?: false)
 
       expect { Griddler.configuration.processor_class }.to raise_error(NameError, %r{https://github\.com/thoughtbot/griddler#defaults})
     end
@@ -32,7 +32,7 @@ describe Griddler::Configuration do
         config.processor_class = dummy_processor
       end
 
-      Griddler.configuration.processor_class.should eq dummy_processor
+      expect(Griddler.configuration.processor_class).to eq dummy_processor
     end
 
     it 'stores a processor_method' do
@@ -40,16 +40,16 @@ describe Griddler::Configuration do
         config.processor_method = :perform
       end
 
-      Griddler.configuration.processor_method.should eq(:perform)
+      expect(Griddler.configuration.processor_method).to eq(:perform)
     end
 
     it 'sets and stores an email_service' do
-      Griddler.should_receive(:adapter_registry).and_return(double(fetch: :configured_adapter))
+      expect(Griddler).to receive(:adapter_registry).and_return(double(fetch: :configured_adapter))
       Griddler.configure do |config|
         config.email_service = :another_adapter
       end
 
-      Griddler.configuration.email_service.should eq(:configured_adapter)
+      expect(Griddler.configuration.email_service).to eq(:configured_adapter)
     end
 
     it 'accepts a :default symbol and uses sendgrid' do
@@ -57,7 +57,7 @@ describe Griddler::Configuration do
         c.email_service = :default
       end
 
-      Griddler.configuration.email_service.should eq(:test_adapter)
+      expect(Griddler.configuration.email_service).to eq(:test_adapter)
     end
 
     it 'raises an error when setting a non-existent email service adapter' do
@@ -67,7 +67,7 @@ describe Griddler::Configuration do
         end
       end
 
-      config.should raise_error(Griddler::Errors::EmailServiceAdapterNotFound)
+      expect(config).to raise_error(Griddler::Errors::EmailServiceAdapterNotFound)
     end
   end
 end

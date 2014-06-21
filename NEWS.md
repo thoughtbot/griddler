@@ -1,5 +1,10 @@
 ## 1.0.0
 
+* Convert test suite, including Griddler::Testing, to expect syntax for RSpec
+  3.0 compliance. https://github.com/thoughtbot/griddler/pull/160
+
+  *Peter Goldstein*
+
 * Use instances of email processor classes rather than calling class methods.
   https://github.com/thoughtbot/griddler/pull/153
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Griddler::AdapterRegistry do
   it 'it is exposed by Griddler' do
-    Griddler.adapter_registry.should be_a Griddler::AdapterRegistry
+    expect(Griddler.adapter_registry).to be_a Griddler::AdapterRegistry
   end
 
   it 'can register adapters' do
@@ -10,7 +10,7 @@ describe Griddler::AdapterRegistry do
 
     adapter_registry.register(:foo, adapter)
 
-    adapter_registry[:foo].should eq(adapter)
+    expect(adapter_registry[:foo]).to eq(adapter)
   end
 
   it 'can fetch like a hash' do
@@ -18,7 +18,7 @@ describe Griddler::AdapterRegistry do
 
     result = adapter_registry.fetch(:non_existent) { 'exists' }
 
-    result.should eq 'exists'
+    expect(result).to eq 'exists'
   end
 
   it 'maps :default to :sendgrid' do
@@ -26,7 +26,7 @@ describe Griddler::AdapterRegistry do
 
     adapter_registry.register(:sendgrid, adapter)
 
-    adapter_registry[:default].should eq(adapter)
+    expect(adapter_registry[:default]).to eq(adapter)
   end
 
   def adapter

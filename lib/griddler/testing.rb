@@ -44,14 +44,14 @@ shared_examples_for 'Griddler adapter' do |adapter, service_params|
     Array.wrap(normalized_params).each do |params|
       email = Griddler::Email.new(params)
 
-      email.to.should eq([{
+      expect(email.to).to eq([{
         token: 'hi',
         host: 'example.com',
         full: 'Hello World <hi@example.com>',
         email: 'hi@example.com',
         name: 'Hello World',
       }])
-      email.cc.should eq [{
+      expect(email.cc).to eq [{
         token: 'emily',
         host: 'example.com',
         email: 'emily@example.com',
@@ -81,8 +81,8 @@ RSpec::Matchers.define :be_normalized_to do |expected|
   match do |actual|
     expected.each do |k, v|
       case v
-      when Regexp then actual[k].should =~ v
-      else actual[k].should === v
+      when Regexp then expect(actual[k]).to =~ v
+      else expect(actual[k]).to === v
       end
     end
   end
