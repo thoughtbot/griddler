@@ -79,6 +79,19 @@ class EmailProcessor
   def process
     # all of your application-specific code here - creating models,
     # processing reports, etc
+    
+    # here's an example of model creation
+    post = Post.create!({
+      subject: @email.subject,
+      body: @email.body, 
+      host: @email.from[:host],
+      email: @email.from[:email],
+      full: @email.from[:full],
+      name: @email.from[:name],
+      raw_text: @email.raw_text,
+      raw_html: @email.raw_html,
+      raw_body: @email.raw_body
+    })
   end
 end
 ```
