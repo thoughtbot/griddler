@@ -81,17 +81,11 @@ class EmailProcessor
     # processing reports, etc
     
     # here's an example of model creation
-    post = Post.create!({
+    user = User.find_by_email(@email.from[:email])
+    user.posts.create!(
       subject: @email.subject,
-      body: @email.body, 
-      host: @email.from[:host],
-      email: @email.from[:email],
-      full: @email.from[:full],
-      name: @email.from[:name],
-      raw_text: @email.raw_text,
-      raw_html: @email.raw_html,
-      raw_body: @email.raw_body
-    })
+      body: @email.body  
+    )
   end
 end
 ```
