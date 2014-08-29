@@ -1,4 +1,4 @@
-require 'rails/engine'
+require 'rails/engine' if defined?(::Rails::Engine)
 require 'action_view'
 require 'griddler/errors'
 require 'griddler/engine'

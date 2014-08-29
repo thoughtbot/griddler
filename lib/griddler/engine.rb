@@ -5,5 +5,5 @@ module Griddler
 
       ActionDispatch::Routing::Mapper.send :include, Griddler::RouteExtensions
     end
-  end
+  end if defined?(::Rails::Engine)
 end
