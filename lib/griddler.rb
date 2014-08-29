@@ -1,7 +1,9 @@
-require 'rails/engine' if defined?(::Rails::Engine)
+if defined?(::Rails::Engine)
+  require 'rails/engine'
+  require 'griddler/engine'
+end
 require 'action_view'
 require 'griddler/errors'
-require 'griddler/engine'
 require 'griddler/email'
 require 'griddler/email_parser'
 require 'griddler/configuration'
