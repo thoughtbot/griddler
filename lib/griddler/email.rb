@@ -48,7 +48,7 @@ module Griddler
     end
 
     def extract_headers
-      EmailParser.extract_headers(params[:headers])
+      EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
     end
 
     def extract_cc_from_headers(headers)
