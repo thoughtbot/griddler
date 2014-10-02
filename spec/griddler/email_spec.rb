@@ -292,6 +292,19 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'allows paragraphs to begin with "On"' do
+    body = <<-EOF
+      On the counter.
+
+      On Tue, Sep 30, 2014 at 9:13 PM Tristan <email@example.com> wrote:
+      > Where's that report?
+      >
+      > Thanks, Tristen
+    EOF
+
+    expect(body_from_email(text: body)).to eq 'On the counter.'
+  end
+
   it 'properly handles a json charsets' do
     body = <<-EOF
       Hello.
