@@ -1,19 +1,16 @@
 language: ruby
 rvm:
-  - 1.9.2
-  - 1.9.3
-  - 2.0.0
+  - 2.0
+  - 2.1
 
 env:
-  - "RAILS_VERSION=3.2"
-  - "RAILS_VERSION=4.0"
-  - "RAILS_VERSION=master"
+  - "RAILS_BRANCH=4-0-stable"
+  - "RAILS_BRANCH=4-1-stable"
+  - "RAILS_BRANCH=master"
 
 matrix:
   allow_failures:
-    - env: "RAILS_VERSION=master"
-  exclude:
-    - rvm: 1.9.2
-      env: "RAILS_VERSION=4.0"
-    - rvm: 1.9.2
-      env: "RAILS_VERSION=master"
+    - env: "RAILS_BRANCH=master"
+
+notifications:
+  email: false

@@ -1,6 +1,7 @@
 class EmailProcessor
-  cattr_accessor :email
-  def self.process(email)
-    @@email = email
+  def initialize(email)
+    @email = email
   end
+
+  def process; end
 end

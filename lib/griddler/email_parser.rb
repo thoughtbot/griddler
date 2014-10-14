@@ -76,9 +76,10 @@ module Griddler::EmailParser
       reply_delimeter_regex,
       /^\s*[-]+\s*Original Message\s*[-]+\s*$/i,
       /^\s*--\s*$/,
+      /^\s*\>?\s*On.*\r?\n?.*wrote:\r?\n?$/,
       /On.*wrote:/,
-      /^\s*On.*\r?\n?\s*.*\s*wrote:$/,
-      /From:.*$/i
+      /From:.*$/i,
+      /^\s*\d{4}\/\d{1,2}\/\d{1,2}\s.*\s<.*>?$/i
     ]
   end
 

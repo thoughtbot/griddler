@@ -3,32 +3,28 @@ require 'htmlentities'
 module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
-    attr_reader :to, :from, :subject, :body, :raw_body, :raw_text, :raw_html,
-      :headers, :raw_headers, :attachments, :recipient
+    attr_reader :to, :from, :cc, :subject, :body, :raw_body, :raw_text, :raw_html,
+      :headers, :raw_headers, :attachments
 
     def initialize(params)
       @params = params
 
-      @to = tos
-      @recipient = params[:recipient]
-      @from = extract_address(params[:from], config.from)
+      @to = recipients(:to)
+      @from = extract_address(params[:from])
       @subject = params[:subject]
 
       @body = extract_body
       @raw_text = params[:text]
       @raw_html = params[:html]
-      @raw_body = @raw_text || @raw_html
+      @raw_body = @raw_text.presence || @raw_html
 
       @headers = extract_headers
+
+      @cc = recipients(:cc)
+
       @raw_headers = params[:headers]
 
       @attachments = params[:attachments]
-    end
-
-    def process
-      processor_class  = config.processor_class
-      processor_method = config.processor_method
-      processor_class.public_send(processor_method, self)
     end
 
     private
@@ -39,18 +35,12 @@ module Griddler
       @config ||= Griddler.configuration
     end
 
-    def tos
-      params[:to].map { |recipient| extract_address(recipient, config.to) }
+    def recipients(type)
+      params[type].to_a.map { |recipient| extract_address(recipient) }
     end
 
-    def extract_address(address, type)
-      parsed = EmailParser.parse_address(address)
-
-      if type == :hash
-        parsed
-      else
-        parsed[type]
-      end
+    def extract_address(address)
+      EmailParser.parse_address(address)
     end
 
     def extract_body
@@ -61,12 +51,13 @@ module Griddler
       EmailParser.extract_headers(params[:headers])
     end
 
+    def extract_cc_from_headers(headers)
+      EmailParser.extract_cc(headers)
+    end
+
     def text_or_sanitized_html
-      if params.key? :text
-        clean_text(params[:text])
-      elsif params.key? :html
-        clean_html(params[:html])
-      end
+      text = clean_text(params.fetch(:text, ''))
+      text.presence || clean_html(params.fetch(:html, '')).presence
     end
 
     def clean_text(text)

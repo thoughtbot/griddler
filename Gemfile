@@ -2,13 +2,8 @@ source "http://rubygems.org"
 
 gemspec
 
-version = ENV["RAILS_VERSION"] || "3.2"
-
-rails = case version
-when "master"
-  {:github => "rails/rails"}
+if ENV["RAILS_BRANCH"]
+  gem "rails", github: "rails/rails", branch: ENV["RAILS_BRANCH"]
 else
-  "~> #{version}.0"
+  gem "rails", "~> 4.0.0"
 end
-
-gem "rails", rails
