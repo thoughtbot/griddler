@@ -465,6 +465,14 @@ describe Griddler::Email, 'extracting email addresses' do
       name: 'Bob',
     }
     @full_address= @address_components[:full]
+    @bcc_address_components = {
+      full: 'Johny <johny@example.com>',
+      email: 'johny@example.com',
+      token: 'johny',
+      host: 'example.com',
+      name: 'Johny',
+    }
+    @full_bcc_address= @bcc_address_components[:full]
   end
 
   it 'extracts the name' do
@@ -479,7 +487,7 @@ describe Griddler::Email, 'extracting email addresses' do
     email = Griddler::Email.new(
       text: 'hi',
       to: [@address_components[:email]],
-      from: @full_address,
+      from: @full_address
     )
     expected = @address_components.merge(
       full: @address_components[:email],
@@ -487,6 +495,17 @@ describe Griddler::Email, 'extracting email addresses' do
     )
     expect(email.to).to eq [expected]
     expect(email.from).to eq @address_components
+
+  end
+
+  it 'returns the BCC email' do
+    email = Griddler::Email.new(
+        text: 'hi',
+        to: [@address_components[:email]],
+        from: @full_address,
+        bcc: [@full_bcc_address],
+    )
+    expect(email.bcc).to eq [@bcc_address_components]
   end
 
   it 'handles new lines' do
