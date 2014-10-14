@@ -70,6 +70,7 @@ module Griddler
     end
 
     def clean_text(text)
+      text ||= ''
       clean_invalid_utf8_bytes(text)
     end
 
