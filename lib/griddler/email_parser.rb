@@ -80,6 +80,7 @@ module Griddler::EmailParser
       /On.*wrote:/,
       /From:.*$/i,
       /^\s*\d{4}\/\d{1,2}\/\d{1,2}\s.*\s<.*>?$/i,
+      /^\s*[-]+\s*Ursprüngliche Nachricht\s*[-]+\s*$/i,
       /^\s*\>?\s*Am.*\r?\n?.*schrieb.*:\r?\n?$/,
       /Am.*schrieb.*:/,
       /Von:.*$/i
