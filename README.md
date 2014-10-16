@@ -189,7 +189,7 @@ your adapter returns a hash with these keys:
 | `:from`        | The sender field
 | `:subject`     | Email subject
 | `:text`        | The text body of the email
-| `:html`        | The html body of the email, nil or empty string if not present
+| `:html`        | The html body of the email, or an empty string
 | `:attachments` | Array of attachments to the email. Can be an empty array.
 | `:headers`     | The raw headers of the email. **Optional**.
 | `:charsets`    | A JSON string containing the character sets of the fields extracted from the message. **Optional**.
