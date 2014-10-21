@@ -3,7 +3,7 @@ require 'htmlentities'
 module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
-    attr_reader :to, :from, :cc, :subject, :body, :raw_body, :raw_text, :raw_html,
+    attr_reader :to, :from, :cc, :bcc, :subject, :body, :raw_body, :raw_text, :raw_html,
       :headers, :raw_headers, :attachments
 
     def initialize(params)
@@ -21,6 +21,7 @@ module Griddler
       @headers = extract_headers
 
       @cc = recipients(:cc)
+      @bcc = recipients(:bcc)
 
       @raw_headers = params[:headers]
 
