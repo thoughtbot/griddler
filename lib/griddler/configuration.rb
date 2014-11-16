@@ -22,7 +22,7 @@ module Griddler
       @processor_class ||=
         begin
           if Kernel.const_defined?(:EmailProcessor)
-            EmailProcessor
+            "EmailProcessor"
           else
             raise NameError.new(<<-ERROR.strip_heredoc, 'EmailProcessor')
               To use Griddler, you must either define `EmailProcessor` or configure a
@@ -31,6 +31,12 @@ module Griddler
             ERROR
           end
         end
+        
+      @processor_class.constantize
+    end
+    
+    def processor_class=(klass)
+      @processor_class = klass.to_s
     end
 
     def processor_method
