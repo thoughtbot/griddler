@@ -26,13 +26,14 @@ describe Griddler::Configuration do
     end
 
     it 'stores a processor_class' do
-      dummy_processor = Class.new
-
-      Griddler.configure do |config|
-        config.processor_class = dummy_processor
+      class DummyProcessor 
       end
 
-      expect(Griddler.configuration.processor_class).to eq dummy_processor
+      Griddler.configure do |config|
+        config.processor_class = DummyProcessor
+      end
+
+      expect(Griddler.configuration.processor_class).to eq DummyProcessor
     end
 
     it 'stores a processor_method' do
