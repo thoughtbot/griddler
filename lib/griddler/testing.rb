@@ -81,8 +81,8 @@ RSpec::Matchers.define :be_normalized_to do |expected|
   match do |actual|
     expected.each do |k, v|
       case v
-      when Regexp then expect(actual[k]).to =~ v
-      else expect(actual[k]).to === v
+      when Regexp then expect(actual[k]).to match(v)
+      else expect(actual[k]).to eq(v)
       end
     end
   end
