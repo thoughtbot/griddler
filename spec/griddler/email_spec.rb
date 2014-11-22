@@ -442,6 +442,24 @@ describe Griddler::Email, 'extracting email headers' do
     expect(headers).to eq({})
   end
 
+  it 'handles invalid utf-8 bytes in headers' do
+    header_name = 'Arbitrary-Header'
+    header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
+    header = "#{header_name}: #{header_value}"
+
+    headers = header_from_email(header)
+    expect(headers[header_name]).to eq "invalid utf-8 bytes are ÀÁõúþÿ."
+  end
+
+  it 'handles valid utf-8 bytes in headers' do
+    header_name = 'Arbitrary-Header'
+    header_value = "valid utf-8 bytes are ÀÁõÿ."
+    header = "#{header_name}: #{header_value}"
+
+    headers = header_from_email(header)
+    expect(headers[header_name]).to eq "valid utf-8 bytes are ÀÁõÿ."
+  end
+
   def header_from_email(header)
     params = {
       headers: header,
