@@ -104,7 +104,7 @@ Griddler::Email attributes
 | `#raw_html`    | The raw html part of the body.
 | `#raw_body`    | The raw body information provided by the email service.
 | `#attachments` | An array of `File` objects containing any attachments.
-| `#headers`     | A hash of headers parsed by `Mail::Header`.
+| `#headers`     | A hash of headers parsed by `Mail::Header`, unless they are already formatted as a hash when received from the adapter in which case the original hash is returned.
 | `#raw_headers` | The raw headers included in the message.
 
 ### Email Addresses
