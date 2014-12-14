@@ -23,8 +23,9 @@ on integrating Griddler with your application.</li>
 
 <p>Add griddler to your application's Gemfile and then run <code>bundle install</code>:</p>
 
-<div class="highlight"><pre><span class="n">gem</span> <span class="s1">'griddler'</span>
-</pre></div>
+{% highlight ruby %}
+gem 'griddler'
+{% endhighlight %}
 
 <p>Griddler comes with a default endpoint that will be displayed at the bottom
 of the output of <code>rake routes</code>. If there is a previously defined route that
@@ -32,8 +33,9 @@ matches <code>/email_processor</code> &mdash; or you would like to rename the
 matched path &mdash; you may add the route to the desired position in routes.rb
 with the following:</p>
 
-<div class="highlight"><pre><span class="n">post</span> <span class="s1">'/email_processor'</span> <span class="o">=&gt;</span> <span class="s1">'griddler/emails#create'</span>
-</pre></div>
+{% highlight ruby %}
+post '/email_processor' => 'griddler/emails#create'
+{% endhighlight %}
 
 <h2>Defaults</h2>
 
@@ -42,13 +44,14 @@ called <code>EmailProcessor</code> with a class method named
 <code>process</code>, taking in one argument, the <code>Griddler::email</code>
 to process.  For example, in <code>./lib/email_processor.rb</code>:</p>
 
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">EmailProcessor</span>
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">process</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
-    <span class="c1"># all of your application-specific code here - creating models,</span>
-    <span class="c1"># processing reports, etc</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</pre></div>
+{% highlight ruby %}
+class EmailProcessor
+  def self.process(email)
+    # all of your application-specific code here - creating models,
+    # processing reports, etc
+  end
+end
+{% endhighlight %}
 
 <p>The contents of the <code>email</code> object passed into your process method
 is a <code>Griddler::Email</code> object that responds to:</p>
@@ -88,27 +91,27 @@ gem. Headers will only be parsed if the adapter supports a headers option.</p>
 <p>An initializer can be created to control some of the options in Griddler. Defaults
 are shown below with sample overrides following. In <code>config/initializer/griddler.rb</code>:</p>
 
-<div class="highlight"><pre><span class="no">Griddler</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">processor_class</span> <span class="o">=</span> <span class="no">EmailProcessor</span> <span class="c1"># MyEmailProcessor</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">to</span> <span class="o">=</span> <span class="ss">:token</span> <span class="c1"># :full, :email, :hash</span>
-  <span class="c1"># :raw    =&gt; 'AppName &lt;s13.6b2d13dc6a1d33db7644@mail.myapp.com&gt;'</span>
-  <span class="c1"># :email  =&gt; 's13.6b2d13dc6a1d33db7644@mail.myapp.com'</span>
-  <span class="c1"># :token  =&gt; 's13.6b2d13dc6a1d33db7644'</span>
-  <span class="c1"># :hash   =&gt; { raw: '', email: '', token: '', host: '' }</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">reply_delimiter</span> <span class="o">=</span> <span class="s1">'-- REPLY ABOVE THIS LINE --'</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">email_service</span> <span class="o">=</span> <span class="ss">:sendgrid</span>
-<span class="k">end</span>
-</pre></div>
+{% highlight ruby %}
+Griddler.configure do |config|
+  config.processor_class = EmailProcessor # MyEmailProcessor
+  config.to = :token # :full, :email, :hash
+  # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
+  # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
+  # :token  => 's13.6b2d13dc6a1d33db7644'
+  # :hash   => { raw: '', email: '', token: '', host: '' }
+  config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
+  config.email_service = :sendgrid
+end
+{% endhighlight %}
 
 <ul>
 <li>
 <code>config.processor_class</code> is the class Griddler will use to handle your incoming emails.</li>
 <li>
+<li>
+<code>config.processor_method</code> is the method Griddler will call on the processor class when handling your incoming emails.</li>
+<li>
 <code>config.reply_delimiter</code> is the string searched for that will split your body.</li>
-<li>
-<code>config.to</code> is the format of the returned value for the <code>:to</code> key in
-the email object. <code>:hash</code> will return all options within a -- (surprise!) -- hash.</li>
-<li>
 <code>config.email_service</code> tells Griddler which email service you are using. The supported
 email service options are <code>:sendgrid</code> (the default), <code>:cloudmailin</code> (expects
 multipart format), <code>:postmark</code> and <code>:mandrill</code>.</li>
@@ -118,25 +121,26 @@ multipart format), <code>:postmark</code> and <code>:mandrill</code>.</li>
 your application. If you're using factory_girl this can be accomplished with the
 following sample factory.</p>
 
-<div class="highlight"><pre><span class="n">factory</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="no">OpenStruct</span> <span class="k">do</span>
-  <span class="c1"># Assumes Griddler.configure.to is :hash (default)</span>
-  <span class="n">to</span> <span class="o">[</span><span class="p">{</span> <span class="ss">raw</span><span class="p">:</span> <span class="s1">'to_user@email.com'</span><span class="p">,</span> <span class="ss">email</span><span class="p">:</span> <span class="s1">'to_user@email.com'</span><span class="p">,</span> <span class="ss">token</span><span class="p">:</span> <span class="s1">'to_user'</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="s1">'email.com'</span> <span class="p">}</span><span class="o">]</span>
-  <span class="n">from</span> <span class="s1">'user@email.com'</span>
-  <span class="n">subject</span> <span class="s1">'email subject'</span>
-  <span class="n">body</span> <span class="s1">'Hello!'</span>
-  <span class="n">attachments</span> <span class="p">{</span><span class="o">[]</span><span class="p">}</span>
+{% highlight ruby %}
+factory :email, class: OpenStruct do
+  # Assumes Griddler.configure.to is :hash (default)
+  to [{ raw: 'to_user@email.com', email: 'to_user@email.com', token: 'to_user', host: 'email.com' }]
+  from 'user@email.com'
+  subject 'email subject'
+  body 'Hello!'
+  attachments {[]}
 
-  <span class="n">trait</span> <span class="ss">:with_attachment</span> <span class="k">do</span>
-    <span class="n">attachments</span> <span class="p">{</span><span class="o">[</span>
-      <span class="ss">ActionDispatch</span><span class="p">:</span><span class="ss">:Http</span><span class="o">::</span><span class="no">UploadedFile</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
-        <span class="ss">filename</span><span class="p">:</span> <span class="s1">'img.png'</span><span class="p">,</span>
-        <span class="ss">type</span><span class="p">:</span> <span class="s1">'image/png'</span><span class="p">,</span>
-        <span class="ss">tempfile</span><span class="p">:</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="no">File</span><span class="o">.</span><span class="n">expand_path</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span><span class="si">}</span><span class="s2">/fixtures/img.png"</span><span class="p">)</span>
-      <span class="p">})</span>
-    <span class="o">]</span><span class="p">}</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</pre></div>
+  trait :with_attachment do
+    attachments {[
+      ActionDispatch::Http::UploadedFile.new({
+        filename: 'img.png',
+        type: 'image/png',
+        tempfile: File.new("#{File.expand_path File.dirname(__FILE__)}/fixtures/img.png")
+      })
+    ]}
+  end
+end
+{% endhighlight %}
 
 <p>Bear in mind, if you plan on using the <code>:with_attachment</code> trait, that this
 example assumes your factories are in <code>spec/factories.rb</code> and you have
@@ -179,26 +183,27 @@ to <code>EmailProcessor</code> or <code>processor_class</code>.</p>
 forward, this field will always be an array. Generally speaking, you will want
 to do something like this to handle the change:</p>
 
-<div class="highlight"><pre><span class="c1"># before</span>
-<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
-  <span class="vi">@to</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">to</span>
-  <span class="vi">@from</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">from</span>
-  <span class="vi">@body</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">body</span>
-<span class="k">end</span>
+{% highlight ruby %}
+# before
+def initialize(email)
+  @to = email.to
+  @from = email.from
+  @body = email.body
+end
 
-<span class="c1"># after</span>
-<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
-  <span class="vi">@to</span> <span class="o">=</span> <span class="n">pick_meaningful_recipient</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">to</span><span class="p">)</span>
-  <span class="vi">@from</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">from</span>
-  <span class="vi">@body</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">body</span>
-<span class="k">end</span>
+# after
+def initialize(email)
+  @to = pick_meaningful_recipient(email.to)
+  @from = email.from
+  @body = email.body
+end
 
-<span class="kp">private</span>
+private
 
-<span class="k">def</span> <span class="nf">pick_meaningful_recipient</span><span class="p">(</span><span class="n">recipients</span><span class="p">)</span>
-  <span class="n">recipients</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span> <span class="o">|</span><span class="n">address</span><span class="o">|</span> <span class="n">address</span> <span class="o">=~</span> <span class="sr">/@mydomain.com$/</span> <span class="p">}</span>
-<span class="k">end</span>
-</pre></div>
+def pick_meaningful_recipient(recipients)
+  recipients.find { |address| address =~ /@mydomain.com$/ }
+end
+{% endhighlight %}
 
 <h2>Using Griddler with Mandrill</h2>
 
@@ -210,9 +215,10 @@ Since Griddler is only configured to handle POST requests, you will not be able
 to add the webhook as-is. To solve this, add a temporary route to your
 application that can handle the HEAD request:</p>
 
-<div class="highlight"><pre><span class="c1"># routes.rb</span>
-<span class="n">get</span> <span class="s1">'/email_processor'</span><span class="p">,</span> <span class="ss">:to</span> <span class="o">=&gt;</span> <span class="nb">proc</span> <span class="p">{</span> <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{},</span> <span class="o">[</span><span class="s2">"OK"</span><span class="o">]]</span> <span class="p">}</span>
-</pre></div>
+{% highlight ruby %}
+# routes.rb
+get '/email_processor', :to => proc { [200, {}, ["OK"]] }
+{% endhighlight %}
 
 <p>Once you have correctly configured Mandrill, you can go ahead and delete this code.</p>
 
