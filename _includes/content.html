@@ -1,12 +1,12 @@
 <main><div class="container">
   <section>
     <p class="large">
-      Griddler is a Rails engine (full plugin) that provides an endpoint for the
+      Griddler is a Rails engine that provides an endpoint for
       <a href="http://sendgrid.com/docs/API%20Reference/Webhooks/parse.html">SendGrid</a>,
       <a href="http://cloudmailin.com">Cloudmailin</a>,
       <a href="http://developer.postmarkapp.com/developer-inbound-parse.html">Postmark</a> or
       <a href="http://help.mandrill.com/entries/21699367-Inbound-Email-Processing-Overview">Mandrill</a>
-      parse APIs that hands off a built email object to a class implemented by you.
+      and hands off the email to your application.
     </p>
   </section>
 
@@ -235,7 +235,8 @@ get '/email_processor', :to => proc { [200, {}, ["OK"]] }
 <li><a href="http://help.mandrill.com/forums/21092258-Inbound-Email-Processing">Mandrill Docs</a></li>
 </ul><h2>Credits</h2>
 
-<p>Griddler was written by Caleb Thompson and Joel Oliveira.</p>
+<p>Griddler was written by Caleb Thompson and Joel Oliveira. It is maintained by
+Gabe Berke-Williams.</p>
 
 <p>Large portions of the codebase were extracted from thoughtbot's
 <a href="http://www.apptrajectory.com">Trajectory</a>.</p>
@@ -244,10 +245,5 @@ get '/email_processor', :to => proc { [200, {}, ["OK"]] }
 
 <p>The names and logos for thoughtbot are trademarks of thoughtbot, inc.</p>
 
-<h2>License</h2>
-
-<p>Griddler is Copyright © 2013 Caleb Thompson, Joel Oliveira and thoughtbot. It is
-free software, and may be redistributed under the terms specified in the LICENSE
-file.</p>
-  </section>
+</section>
 </div></main>
