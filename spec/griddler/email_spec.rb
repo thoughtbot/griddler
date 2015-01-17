@@ -434,8 +434,8 @@ describe Griddler::Email, 'extracting email headers' do
 
   it 'handles a hash being submitted' do
     header = {
-              "X-Mailer" => "Airmail (271)",
-              "Mime-Version" => "1.0"
+                "X-Mailer" => "Airmail (271)",
+                "Mime-Version" => "1.0"
               }
     headers = header_from_email(header)
     expect(headers["X-Mailer"]).to eq("Airmail (271)")
