@@ -7,8 +7,8 @@ env:
   - "RAILS_BRANCH=4-1-stable"
   - "RAILS_BRANCH=master"
 branches:
-  except:
-    - gh-pages
+  only:
+    - master
 matrix:
   allow_failures:
     - env: "RAILS_BRANCH=master"
