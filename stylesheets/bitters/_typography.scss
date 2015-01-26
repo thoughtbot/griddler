@@ -109,10 +109,4 @@ code {
   border-radius: 3px;
   margin: 0;
   padding: 1px;
-
-  &:before,
-  &:after {
-    content: "\00a0";
-    letter-spacing: -0.2em;
-  }
 }
