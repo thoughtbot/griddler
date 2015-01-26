@@ -10,3 +10,5 @@ url: "http://thoughtbot.com"
 markdown: kramdown
 permalink: pretty
 exclude: [CNAME, README.md]
+sass:
+  sass_dir: stylesheets

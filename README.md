@@ -6,10 +6,6 @@ It's a Jekyll app running on GitHub pages.
 
 ## Local development
 
-Watch sass:
-
-    sass --watch stylesheets/main.scss:stylesheets/main.css
-
 Run Jekyll, watching for changes:
 
     jekyll serve -w
