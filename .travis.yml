@@ -2,15 +2,16 @@ language: ruby
 rvm:
   - 2.0
   - 2.1
-
 env:
   - "RAILS_BRANCH=4-0-stable"
   - "RAILS_BRANCH=4-1-stable"
   - "RAILS_BRANCH=master"
-
+branches:
+  except:
+    - gh-pages
 matrix:
   allow_failures:
     - env: "RAILS_BRANCH=master"
-
 notifications:
   email: false
+sudo: false
