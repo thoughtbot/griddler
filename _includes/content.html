@@ -39,10 +39,12 @@ post '/email_processor' => 'griddler/emails#create'
 
 <h2>Defaults</h2>
 
-<p>By default Griddler will look for a class to be created in your application
-called <code>EmailProcessor</code> with an instance method named
-<code>initialize</code>, taking in one argument, the <code>Griddler::email</code>
-to process.  It will then run the <code>process</code> instance method, which will handle the logic for processing the incoming email. For example, in <code>./lib/email_processor.rb</code>:</p>
+<p>By default Griddler will look for a class named <code>EmailProcessor</code>
+which you create. It will initialize that class with a
+<code>Griddler::Email</code> instance representing the incoming email, then call
+the <code>process</code> instance method on that class. The <code>process</code>
+should handle processing the incoming email. For example, in
+<code>./lib/email_processor.rb</code>:</p>
 
 {% highlight ruby %}
 class EmailProcessor
@@ -54,7 +56,7 @@ class EmailProcessor
     # all of your application-specific code here - creating models,
     # processing reports, etc
 
-    # here's an example of model creation
+    # Here's an example of model creation
     user = User.find_by_email(@email.from[:email])
     user.posts.create!(
       subject: @email.subject,
@@ -64,8 +66,8 @@ class EmailProcessor
 end
 {% endhighlight %}
 
-<p>The contents of the <code>email</code> object passed into your initialize method
-is a <code>Griddler::Email</code> object that responds to:</p>
+<p>The <code>email</code> object passed into your initialize method is a
+<code>Griddler::Email</code> instance that responds to:</p>
 
 <ul>
 <li><code>.to</code></li>
@@ -105,7 +107,7 @@ are shown below with sample overrides following. In <code>config/initializer/gri
 {% highlight ruby %}
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # MyEmailProcessor
-  config.processor_method = :process
+  config.processor_method = :process # The `process` part of MyEmailProcessor.new(email).process
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
   config.email_service = :sendgrid
 end
