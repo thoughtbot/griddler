@@ -40,20 +40,31 @@ post '/email_processor' => 'griddler/emails#create'
 <h2>Defaults</h2>
 
 <p>By default Griddler will look for a class to be created in your application
-called <code>EmailProcessor</code> with a class method named
-<code>process</code>, taking in one argument, the <code>Griddler::email</code>
-to process.  For example, in <code>./lib/email_processor.rb</code>:</p>
+called <code>EmailProcessor</code> with an instance method named
+<code>initialize</code>, taking in one argument, the <code>Griddler::email</code>
+to process.  It will then run the <code>process</code> instance method, which will handle the logic for processing the incoming email. For example, in <code>./lib/email_processor.rb</code>:</p>
 
 {% highlight ruby %}
 class EmailProcessor
-  def self.process(email)
+  def initialize(email)
+    @email = email
+  end
+
+  def process
     # all of your application-specific code here - creating models,
     # processing reports, etc
+
+    # here's an example of model creation
+    user = User.find_by_email(@email.from[:email])
+    user.posts.create!(
+      subject: @email.subject,
+      body: @email.body
+    )
   end
 end
 {% endhighlight %}
 
-<p>The contents of the <code>email</code> object passed into your process method
+<p>The contents of the <code>email</code> object passed into your initialize method
 is a <code>Griddler::Email</code> object that responds to:</p>
 
 <ul>
@@ -94,28 +105,22 @@ are shown below with sample overrides following. In <code>config/initializer/gri
 {% highlight ruby %}
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # MyEmailProcessor
-  config.to = :token # :full, :email, :hash
-  # :raw    => 'AppName <s13.6b2d13dc6a1d33db7644@mail.myapp.com>'
-  # :email  => 's13.6b2d13dc6a1d33db7644@mail.myapp.com'
-  # :token  => 's13.6b2d13dc6a1d33db7644'
-  # :hash   => { raw: '', email: '', token: '', host: '' }
+  config.processor_method = :process
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
   config.email_service = :sendgrid
 end
 {% endhighlight %}
 
 <ul>
-<li>
-<code>config.processor_class</code> is the class Griddler will use to handle your incoming emails.</li>
-<li>
-<li>
-<code>config.processor_method</code> is the method Griddler will call on the processor class when handling your incoming emails.</li>
-<li>
-<code>config.reply_delimiter</code> is the string searched for that will split your body.</li>
-<code>config.email_service</code> tells Griddler which email service you are using. The supported
+<li><code>config.processor_class</code> is the class Griddler will use to handle your incoming emails.</li>
+<li><code>config.processor_method</code> is the method Griddler will call on the processor class when handling your incoming emails.</li>
+<li><code>config.reply_delimiter</code> is the string searched for that will split your body.</li>
+<li><code>config.email_service</code> tells Griddler which email service you are using. The supported
 email service options are <code>:sendgrid</code> (the default), <code>:cloudmailin</code> (expects
 multipart format), <code>:postmark</code> and <code>:mandrill</code>.</li>
-</ul><h2>Testing In Your App</h2>
+</ul>
+
+<h2>Testing In Your App</h2>
 
 <p>You may want to create a factory for when testing the integration of Griddler into
 your application. If you're using factory_girl this can be accomplished with the
