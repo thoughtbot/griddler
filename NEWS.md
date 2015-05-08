@@ -1,3 +1,12 @@
+## 1.1.1
+
+* Clean non-UTF-8 chars from email headers (#84)
+
+## 1.1.0
+
+* Allow email body paragraphs to begin with 'On' (#74)
+* Minor documentation fixes
+
 ## 1.0.0
 
 * Convert test suite, including Griddler::Testing, to expect syntax for RSpec
