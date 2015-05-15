@@ -31,8 +31,8 @@ module Griddler::EmailParser
       remove_reply_portion(body)
         .split(/[\r]*\n/)
         .reject do |line|
-          line =~ /^\s+>/ ||
-            line =~ /^\s*Sent from my /
+          line =~ /^[[:space:]]+>/ ||
+            line =~ /^[[:space:]]*Sent from my /
         end.
         join("\n").
         strip
@@ -74,12 +74,12 @@ module Griddler::EmailParser
   def self.regex_split_points
     [
       reply_delimeter_regex,
-      /^\s*[-]+\s*Original Message\s*[-]+\s*$/i,
-      /^\s*--\s*$/,
-      /^\s*\>?\s*On.*\r?\n?.*wrote:\r?\n?$/,
+      /^[[:space:]]*[-]+[[:space:]]*Original Message[[:space:]]*[-]+[[:space:]]*$/i,
+      /^[[:space:]]*--[[:space:]]*$/,
+      /^[[:space:]]*\>?[[:space:]]*On.*\r?\n?.*wrote:\r?\n?$/,
       /On.*wrote:/,
       /\*?From:.*$/i,
-      /^\s*\d{4}\/\d{1,2}\/\d{1,2}\s.*\s<.*>?$/i
+      /^[[:space:]]*\d{4}\/\d{1,2}\/\d{1,2}[[:space:]].*[[:space:]]<.*>?$/i
     ]
   end
 
