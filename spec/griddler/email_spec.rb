@@ -289,6 +289,19 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'should trim signature with non-breaking space after hyphens' do
+    body = <<-EOF
+      Hello.
+
+      --\xC2\xA0
+      Mr. Smith
+      CEO, company
+      t: 6174821300
+    EOF
+
+    expect(body_from_email(text: body)).to eq 'Hello.'
+  end
+
   it 'should remove any signature without space above Reply ABOVE THIS LINE' do
     body = <<-EOF
       Hello.
