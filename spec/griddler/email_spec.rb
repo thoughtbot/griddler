@@ -460,11 +460,20 @@ describe Griddler::Email, 'extracting email headers' do
 
   it 'handles a hash being submitted' do
     header = {
-                "X-Mailer" => "Airmail (271)",
-                "Mime-Version" => "1.0"
-              }
+      "X-Mailer" => "Airmail (271)",
+      "Mime-Version" => "1.0"
+    }
     headers = header_from_email(header)
     expect(headers["X-Mailer"]).to eq("Airmail (271)")
+  end
+
+  it 'cleans invalid UTF-8 bytes from a hash when it is submitted' do
+    header_name = 'Arbitrary-Header'
+    header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
+    header = { header_name => header_value }
+    headers = header_from_email(header)
+
+    expect(headers[header_name]).to eq "invalid utf-8 bytes are ÀÁõúþÿ."
   end
 
   it 'handles no matched headers' do
