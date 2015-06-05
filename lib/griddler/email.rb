@@ -49,7 +49,14 @@ module Griddler
     end
 
     def extract_headers
-      EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
+      if params[:headers].is_a?(Hash)
+        params[:headers].inject({}) do |header_hash, (header_name, header_value)|
+          header_hash[header_name] = clean_invalid_utf8_bytes(header_value)
+          header_hash
+        end
+      else
+        EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
+      end
     end
 
     def extract_cc_from_headers(headers)
