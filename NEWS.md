@@ -1,3 +1,11 @@
+## master
+
+* Use Ruby unicode compatible regexes for UTF8 strings (#208)
+* Allow hashes to be submitted as headers (#185). Griddler will still clean the
+  hash values of invalid UTF-8 bytes if you pass in hashes.
+* Stop testing against Rails 4.0.x (#209)
+* Test against Rails 4.2.x (#209)
+
 ## 1.1.1
 
 * Clean non-UTF-8 chars from email headers (#84)
