@@ -4,7 +4,6 @@ rvm:
   - 2.1
   - 2.2
 env:
-  - "RAILS_BRANCH=4-0-stable"
   - "RAILS_BRANCH=4-1-stable"
   - "RAILS_BRANCH=4-2-stable"
   - "RAILS_BRANCH=master"
