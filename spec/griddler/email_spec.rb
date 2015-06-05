@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe Griddler::Email, 'body formatting' do
-
   it 'uses the html field and sanitizes it when text param missing' do
     body = <<-EOF
       <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
@@ -624,6 +623,10 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
 end
 
 describe Griddler::Email, 'with custom configuration' do
+  before do
+    Griddler.configure
+  end
+
   let(:params) do
     {
       to: ['Some Identifier <some-identifier@example.com>'],
@@ -637,10 +640,6 @@ describe Griddler::Email, 'with custom configuration' do
         hey sup
       EOS
     }
-  end
-
-  before do
-    Griddler.configure
   end
 
   describe 'accepts and works with a string reply delimiter' do
