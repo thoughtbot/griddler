@@ -40,6 +40,9 @@ module Griddler::EmailParser
   end
 
   def self.extract_headers(raw_headers)
+    if raw_headers.is_a?(Hash)
+      return raw_headers
+    end
     header_fields = Mail::Header.new(raw_headers).fields
 
     header_fields.inject({}) do |header_hash, header_field|
