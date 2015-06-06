@@ -1,4 +1,4 @@
-## master
+## 1.2.0
 
 * Use Ruby unicode compatible regexes for UTF8 strings (#208)
 * Allow hashes to be submitted as headers (#185). Griddler will still clean the
