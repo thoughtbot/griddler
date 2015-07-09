@@ -41,7 +41,7 @@ module Griddler
     end
 
     def extract_address(address)
-      EmailParser.parse_address(address)
+      EmailParser.parse_address(clean_text(address))
     end
 
     def extract_body
