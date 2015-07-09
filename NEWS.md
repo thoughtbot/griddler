@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Sanitize UTF-8 in addresses (#214, #215)
+* Deep clean invalid UTF-8 bytes from header hash (#212)
 
 ## 1.2.0
 
