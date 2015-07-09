@@ -618,11 +618,11 @@ describe Griddler::Email, 'extracting email addresses' do
 
   it 'handles invalid UTF-8 characters' do
     email = Griddler::Email.new(
-      text: 'hi', 
+      text: 'hi',
       to: ["\xc0\xc1\xf5\xfa\xfe\xff #{@full_address}"],
       from: "\xc0\xc1\xf5\xfa\xfe\xff #{@full_address}")
     expected = @address_components.merge(
-      full: "ÀÁõúþÿ Bob <bob@example.com>", 
+      full: "ÀÁõúþÿ Bob <bob@example.com>",
       name: "ÀÁõúþÿ Bob"
     )
     expect(email.to).to eq [expected]
