@@ -50,10 +50,7 @@ module Griddler
 
     def extract_headers
       if params[:headers].is_a?(Hash)
-        params[:headers].inject({}) do |header_hash, (header_name, header_value)|
-          header_hash[header_name] = clean_invalid_utf8_bytes(header_value)
-          header_hash
-        end
+        deep_clean_invalid_utf8_bytes(params[:headers])
       else
         EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
       end
@@ -77,6 +74,19 @@ module Griddler
       cleaned_html = strip_tags(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
       cleaned_html
+    end
+
+    def deep_clean_invalid_utf8_bytes(o)
+      case o
+      when Hash
+        o.inject({}) { |h, (k, v)| h[k] = deep_clean_invalid_utf8_bytes(v); h }
+      when Array
+        o.map { |v| deep_clean_invalid_utf8_bytes(v) }
+      when String
+        clean_invalid_utf8_bytes(o)
+      else
+        o
+      end
     end
 
     def clean_invalid_utf8_bytes(text)
