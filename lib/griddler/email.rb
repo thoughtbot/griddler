@@ -76,16 +76,19 @@ module Griddler
       cleaned_html
     end
 
-    def deep_clean_invalid_utf8_bytes(o)
-      case o
+    def deep_clean_invalid_utf8_bytes(object)
+      case object
       when Hash
-        o.inject({}) { |h, (k, v)| h[k] = deep_clean_invalid_utf8_bytes(v); h }
+        object.inject({}) do |clean_hash, (key, dirty_value)|
+          clean_hash[key] = deep_clean_invalid_utf8_bytes(dirty_value)
+          clean_hash
+        end
       when Array
-        o.map { |v| deep_clean_invalid_utf8_bytes(v) }
+        object.map { |element| deep_clean_invalid_utf8_bytes(element) }
       when String
-        clean_invalid_utf8_bytes(o)
+        clean_invalid_utf8_bytes(object)
       else
-        o
+        object
       end
     end
 
