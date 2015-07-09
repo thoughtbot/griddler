@@ -1,3 +1,7 @@
+## Unreleased
+
+* Sanitize UTF-8 in addresses (#214, #215)
+
 ## 1.2.0
 
 * Use Ruby unicode compatible regexes for UTF8 strings (#208)
