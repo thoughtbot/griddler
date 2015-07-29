@@ -51,6 +51,8 @@ module Griddler
     def extract_headers
       if params[:headers].is_a?(Hash)
         deep_clean_invalid_utf8_bytes(params[:headers])
+      elsif params[:headers].is_a?(Array)
+        deep_clean_invalid_utf8_bytes(params[:headers])
       else
         EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
       end
