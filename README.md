@@ -54,7 +54,7 @@ Defaults are shown below with sample overrides following. In
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # CommentViaEmail
   config.processor_method = :process # :create_comment (A method on CommentViaEmail)
-  config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
+  config.reply_delimiter = '-- -- REPLY ABOVE THIS LINE -- --'
   config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill, :mailgun
 end
 ```
@@ -100,7 +100,7 @@ Griddler::Email attributes
 | `#from`        | A hash containing the sender address information.
 | `#cc`          | An array of hashes containing cc email address information.
 | `#subject`     | The subject of the email message.
-| `#body`        | The full contents of the email body **unless** there is a line in the email containing the string `-- Reply ABOVE THIS LINE --`. In that case `.body` will contain everything before that line.
+| `#body`        | The full contents of the email body **unless** there is a line in the email containing the string `-- REPLY ABOVE THIS LINE --`. In that case `.body` will contain everything before that line.
 | `#raw_text`    | The raw text part of the body.
 | `#raw_html`    | The raw html part of the body.
 | `#raw_body`    | The raw body information provided by the email service.

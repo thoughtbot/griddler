@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Griddler::Email, 'body formatting' do
   it 'uses the html field and sanitizes it when text param missing' do
     body = <<-EOF
-      <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
+      <p>Hello.</p><span>-- REPLY ABOVE THIS LINE --</span><p>original message</p>
     EOF
 
     expect(body_from_email(html: body)).to eq 'Hello.'
@@ -13,7 +13,7 @@ describe Griddler::Email, 'body formatting' do
 
   it 'uses the html field and sanitizes it when text param is empty' do
     body = <<-EOF
-      <p>Hello.</p><span>Reply ABOVE THIS LINE</span><p>original message</p>
+      <p>Hello.</p><span>-- REPLY ABOVE THIS LINE --</span><p>original message</p>
     EOF
 
     expect(body_from_email(html: body, text: '')).to eq 'Hello.'
@@ -57,7 +57,7 @@ describe Griddler::Email, 'body formatting' do
 
   it 'handles everything on one line' do
     body = <<-EOF
-      Hello. On 01/12/13, Tristan <email@example.com> wrote: Reply ABOVE THIS LINE or visit your website to respond.
+      Hello. On 01/12/13, Tristan <email@example.com> wrote: -- REPLY ABOVE THIS LINE -- or visit your website to respond.
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
@@ -221,11 +221,11 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq ''
   end
 
-  it 'handles "Reply ABOVE THIS LINE" format' do
+  it 'handles "-- REPLY ABOVE THIS LINE --" format' do
     body = <<-EOF
       Hello.
 
-      Reply ABOVE THIS LINE
+      -- REPLY ABOVE THIS LINE --
 
       Hey!
     EOF
@@ -233,23 +233,23 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
-  it 'removes > in "> Reply ABOVE THIS LINE" ' do
+  it 'removes > in "> -- REPLY ABOVE THIS LINE --" ' do
     body = <<-EOF
       Hello.
 
-      > Reply ABOVE THIS LINE
+      > -- REPLY ABOVE THIS LINE --
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
-  it 'removes any non-content things above Reply ABOVE THIS LINE' do
+  it 'removes any non-content things above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
       Hello.
 
       On 2010-01-01 12:00:00 Tristan wrote:
 
-      > Reply ABOVE THIS LINE
+      > -- REPLY ABOVE THIS LINE --
 
       Hey!
     EOF
@@ -257,13 +257,13 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
-  it 'removes any iphone things above Reply ABOVE THIS LINE' do
+  it 'removes any iphone things above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
       Hello.
 
       Sent from my iPhone
 
-      > Reply ABOVE THIS LINE
+      > -- REPLY ABOVE THIS LINE --
 
       Hey!
     EOF
@@ -271,7 +271,7 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
-  it 'should remove any signature above Reply ABOVE THIS LINE' do
+  it 'should remove any signature above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
       Hello.
 
@@ -280,7 +280,7 @@ describe Griddler::Email, 'body formatting' do
       CEO, company
       t: 6174821300
 
-      > Reply ABOVE THIS LINE
+      > -- REPLY ABOVE THIS LINE --
 
       > Hey!
     EOF
@@ -301,7 +301,7 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
-  it 'should remove any signature without space above Reply ABOVE THIS LINE' do
+  it 'should remove any signature without space above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
       Hello.
 
@@ -310,7 +310,7 @@ describe Griddler::Email, 'body formatting' do
       CEO, company
       t: 6174821300
 
-      > Reply ABOVE THIS LINE
+      > -- REPLY ABOVE THIS LINE --
 
       > Hey!
     EOF
@@ -340,7 +340,7 @@ describe Griddler::Email, 'body formatting' do
       CEO, company
       t: 6174821300
 
-      > Reply ABOVE THIS LINE
+      > -- REPLY ABOVE THIS LINE --
 
       > Hey!
     EOF
@@ -675,7 +675,7 @@ describe Griddler::Email, 'with custom configuration' do
       text: <<-EOS.strip_heredoc.strip
         lololololo hi
 
-        Reply ABOVE THIS LINE
+        -- REPLY ABOVE THIS LINE --
 
         hey sup
       EOS
@@ -683,7 +683,7 @@ describe Griddler::Email, 'with custom configuration' do
   end
 
   describe 'accepts and works with a string reply delimiter' do
-    it 'does not split on Reply ABOVE THIS LINE' do
+    it 'does not split on -- REPLY ABOVE THIS LINE --' do
       allow(Griddler.configuration).to receive_messages(reply_delimiter: 'Stuff and things')
       email = Griddler::Email.new(params)
 
@@ -740,7 +740,7 @@ describe Griddler::Email, 'with custom configuration' do
   describe 'parsing with gmail reply header with newlines' do
     it 'only keeps the message above the reply header' do
       params[:text]= <<-EOS.strip_heredoc
-This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\nsomeone@example.com> wrote:\r\n\r\n>  -- REPLY ABOVE THIS LINE --\r\n>\r\n> The Old message!\r\n>\r\n> Another line! *\r\n>\n
+This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\nsomeone@example.com> wrote:\r\n\r\n>  -- -- REPLY ABOVE THIS LINE -- --\r\n>\r\n> The Old message!\r\n>\r\n> Another line! *\r\n>\n
       EOS
       email = Griddler::Email.new(params)
       expect(email.body).to eq 'This is the real text'

@@ -44,7 +44,7 @@ module Griddler
     end
 
     def reply_delimiter
-      @reply_delimiter ||= 'Reply ABOVE THIS LINE'
+      @reply_delimiter ||= '-- REPLY ABOVE THIS LINE --'
     end
 
     def email_service

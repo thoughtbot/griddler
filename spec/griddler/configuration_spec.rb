@@ -8,7 +8,7 @@ describe Griddler::Configuration do
 
     it 'provides defaults' do
       expect(Griddler.configuration.processor_class).to eq(EmailProcessor)
-      expect(Griddler.configuration.reply_delimiter).to eq('Reply ABOVE THIS LINE')
+      expect(Griddler.configuration.reply_delimiter).to eq('-- REPLY ABOVE THIS LINE --')
       expect(Griddler.configuration.email_service).to eq(:test_adapter)
       expect(Griddler.configuration.processor_method).to eq(:process)
     end
