@@ -1,3 +1,9 @@
+## HEAD (unreleased)
+
+* The README claimed that the delimiter for replies was `-- REPLY ABOVE THIS
+  LINE --`, but it was actually `-- Reply ABOVE THIS LINE --`. Now the
+  delimiter is actually `-- REPLY ABOVE THIS LINE --`.
+
 ## 1.2.1
 
 * Sanitize UTF-8 in addresses (#214, #215)
