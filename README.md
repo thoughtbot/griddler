@@ -18,6 +18,8 @@ Tutorials
   on integrating Griddler with your application.
 * We have our own blog post on the subject over at
   [Giant Robots](https://robots.thoughtbot.com/griddler-is-better-than-ever).
+* A [tutorial](http://rubydaily.net/blog/2015/08/08/how-to-receive-email-from-rails-application/)
+  running Griddler inside your application on development environment.
 
 Installation
 ------------
