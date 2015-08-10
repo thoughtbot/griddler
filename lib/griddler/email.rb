@@ -39,11 +39,12 @@ module Griddler
     def recipients(type)
       params[type].to_a.reject(&:empty?).map do |recipient|
         extract_address(recipient)
-      end
+      end.compact
     end
 
     def extract_address(address)
-      EmailParser.parse_address(clean_text(address))
+      clean_address = clean_text(address)
+      EmailParser.parse_address(clean_address) if clean_address =~ /@/
     end
 
     def extract_subject
