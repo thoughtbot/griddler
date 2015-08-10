@@ -41,7 +41,7 @@ module Griddler
     end
 
     def extract_address(address)
-      clean_address = clean_text(address)    
+      clean_address = clean_text(address)
       EmailParser.parse_address(clean_address) if clean_address =~ /@/
     end
 
