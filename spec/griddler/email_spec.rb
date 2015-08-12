@@ -677,11 +677,6 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
     email = Griddler::Email.new(to: [@address], from: @address, cc: ['', @cc])
     expect(email.cc.size).to eq(1)
   end
-
-  it 'returns an empty array when only invalid email addresses are present' do
-    email = Griddler::Email.new(to: [@address], from: @address, cc: [''])
-    expect(email.cc).to be_empty
-  end
 end
 
 describe Griddler::Email, 'with custom configuration' do
