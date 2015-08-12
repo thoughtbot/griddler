@@ -37,7 +37,7 @@ module Griddler
     end
 
     def recipients(type)
-      params[type].to_a.map { |recipient| extract_address(recipient) }.compact
+      params[type].to_a.map { |recipient| extract_address(recipient) }.compact || []
     end
 
     def extract_address(address)
