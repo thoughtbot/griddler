@@ -13,10 +13,11 @@ describe Griddler::Configuration do
       expect(Griddler.configuration.processor_method).to eq(:process)
     end
 
-    it 'raises a helpful error if EmailProcessor is undefined' #do
-    #   allow(Kernel).to receive_messages(const_defined?: false)
+    it 'raises a helpful error if EmailProcessor is undefined' # do
+    # allow(Kernel).to receive_messages(const_defined?: false)
 
-    #   expect { Griddler.configuration.processor_class }.to raise_error(NameError, %r{https://github\.com/thoughtbot/griddler#defaults})
+    # expect { Griddler.configuration.processor_class }.to raise_error(
+    #   NameError, %r{https://github\.com/thoughtbot/griddler#defaults})
     # end
   end
 

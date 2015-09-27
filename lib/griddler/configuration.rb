@@ -31,7 +31,7 @@ module Griddler
         end
       @processor_class.constantize
     end
-    
+
     def processor_class=(klass)
       @processor_class = klass.to_s
     end
@@ -45,8 +45,9 @@ module Griddler
     end
 
     def email_service
-      return @email_service_adapter ||=
-        Griddler.adapter_registry[:default] || raise(Griddler::Errors::EmailServiceAdapterNotFound)
+      @email_service_adapter ||=
+        Griddler.adapter_registry[:default] ||
+        raise(Griddler::Errors::EmailServiceAdapterNotFound)
     end
 
     def email_service=(new_email_service)
