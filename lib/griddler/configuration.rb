@@ -16,7 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :processor_method, :reply_delimiter
+    attr_accessor :processor_method
 
     def processor_class
       @processor_class ||=
@@ -48,7 +48,8 @@ module Griddler
     end
 
     def email_service
-      @email_service_adapter ||= Griddler.adapter_registry[:default]
+      return @email_service_adapter ||=
+        Griddler.adapter_registry[:default] || raise(Griddler::Errors::EmailServiceAdapterNotFound)
     end
 
     def email_service=(new_email_service)
