@@ -47,7 +47,7 @@ module Griddler
     def email_service
       @email_service_adapter ||=
         Griddler.adapter_registry[:default] ||
-        raise(Griddler::Errors::EmailServiceAdapterNotFound)
+          raise(Griddler::Errors::EmailServiceAdapterNotFound)
     end
 
     def email_service=(new_email_service)
