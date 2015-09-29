@@ -7,7 +7,7 @@ module Griddler
       :headers, :raw_headers, :attachments
 
     def initialize(params)
-      @params = params
+      @params = deep_clean_invalid_utf8_bytes(params)
 
       @to = recipients(:to)
       @from = extract_address(params[:from])
@@ -41,7 +41,7 @@ module Griddler
     end
 
     def extract_address(address)
-      EmailParser.parse_address(clean_text(address))
+      EmailParser.parse_address(address)
     end
 
     def extract_body
@@ -50,9 +50,9 @@ module Griddler
 
     def extract_headers
       if params[:headers].is_a?(Hash)
-        deep_clean_invalid_utf8_bytes(params[:headers])
+        params[:headers]
       else
-        EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
+        EmailParser.extract_headers(params[:headers])
       end
     end
 
@@ -61,17 +61,12 @@ module Griddler
     end
 
     def text_or_sanitized_html
-      text = clean_text(params.fetch(:text, ''))
+      text = params.fetch(:text, '')
       text.presence || clean_html(params.fetch(:html, '')).presence
     end
 
-    def clean_text(text)
-      clean_invalid_utf8_bytes(text)
-    end
-
     def clean_html(html)
-      cleaned_html = clean_invalid_utf8_bytes(html)
-      cleaned_html = strip_tags(cleaned_html)
+      cleaned_html = strip_tags(html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
       cleaned_html
     end
