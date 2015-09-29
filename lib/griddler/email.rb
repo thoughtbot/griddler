@@ -11,7 +11,7 @@ module Griddler
 
       @to = recipients(:to)
       @from = extract_address(params[:from])
-      @subject = params[:subject]
+      @subject = extract_subject
 
       @body = extract_body
       @raw_text = params[:text]
@@ -42,6 +42,10 @@ module Griddler
 
     def extract_address(address)
       EmailParser.parse_address(clean_text(address))
+    end
+
+    def extract_subject
+      clean_text(params[:subject])
     end
 
     def extract_body

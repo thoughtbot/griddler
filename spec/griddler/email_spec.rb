@@ -639,6 +639,32 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 end
 
+describe Griddler::Email, 'extracting email subject' do
+  before do
+    @address = 'bob@example.com'
+    @subject = 'A very interesting email'
+  end
+
+  it 'handles normal characters' do
+    email = Griddler::Email.new(
+      to: [@address],
+      from: @address,
+      subject: @subject,
+    )
+    expect(email.subject).to eq @subject
+  end
+
+  it 'handles invalid UTF-8 characters' do
+    email = Griddler::Email.new(
+      to: [@address],
+      from: @address,
+      subject: "\xc0\xc1\xf5\xfa\xfe\xff #{@subject}",
+    )
+    expected = "ÀÁõúþÿ #{@subject}"
+    expect(email.subject).to eq expected
+  end
+end
+
 describe Griddler::Email, 'extracting email addresses from CC field' do
   before do
     @address = 'bob@example.com'
