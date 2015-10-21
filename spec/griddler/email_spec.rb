@@ -787,8 +787,8 @@ end
 
 describe Griddler::Email, 'extras param from adapter' do
   it 'uses passes along adapter what the adapter sets' do
-    email = email_with_extras({ 'testing' => '123' })
-    expect(email.extras).to eq({ 'testing' => '123' })
+    email = email_with_extras('testing' => '123')
+    expect(email.extras).to eq('testing' => '123')
   end
 
   it 'defaults to empty hash' do
@@ -797,10 +797,10 @@ describe Griddler::Email, 'extras param from adapter' do
   end
 
   def email_with_extras(extras)
-    Griddler::Email.new({
+    Griddler::Email.new(
       to: ['hi@example.com'],
       from: 'bye@example.com',
-      extras: extras
-    })
+      extras: extras,
+    )
   end
 end
