@@ -784,3 +784,23 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
     end
   end
 end
+
+describe Griddler::Email, 'extras param from adapter' do
+  it 'uses passes along adapter what the adapter sets' do
+    email = email_with_extras({ 'testing' => '123' })
+    expect(email.extras).to eq({ 'testing' => '123' })
+  end
+
+  it 'defaults to empty hash' do
+    email = email_with_extras(nil)
+    expect(email.extras).to eq({})
+  end
+
+  def email_with_extras(extras)
+    Griddler::Email.new({
+      to: ['hi@example.com'],
+      from: 'bye@example.com',
+      extras: extras
+    })
+  end
+end
