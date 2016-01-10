@@ -11,6 +11,7 @@ describe Griddler::Configuration do
       expect(Griddler.configuration.reply_delimiter).to eq('-- REPLY ABOVE THIS LINE --')
       expect(Griddler.configuration.email_service).to eq(:test_adapter)
       expect(Griddler.configuration.processor_method).to eq(:process)
+      expect(Griddler.configuration.extra_configuration).to eq({})
     end
 
     it 'raises a helpful error if EmailProcessor is undefined' do
@@ -25,8 +26,21 @@ describe Griddler::Configuration do
       Griddler.configure
     end
 
+    it 'stores extra configuration' do
+      extra_config = {
+        option1: 'foo',
+        option2: 'bar'
+      }
+
+      Griddler.configure do |config|
+        config.extra_configuration = extra_config
+      end
+
+      expect(Griddler.configuration.extra_configuration).to eq(extra_config)
+    end
+
     it 'stores a processor_class' do
-      class DummyProcessor 
+      class DummyProcessor
       end
 
       Griddler.configure do |config|

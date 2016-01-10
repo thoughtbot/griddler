@@ -16,7 +16,16 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :processor_method, :reply_delimiter
+    attr_accessor :processor_class, :processor_method, :reply_delimiter,
+                  :extra_configuration
+
+    def extra_configuration=(config)
+      @extra_configuration = config
+    end
+
+    def extra_configuration
+      @extra_configuration ||= {}
+    end
 
     def processor_class
       @processor_class ||=
@@ -31,10 +40,10 @@ module Griddler
             ERROR
           end
         end
-        
+
       @processor_class.constantize
     end
-    
+
     def processor_class=(klass)
       @processor_class = klass.to_s
     end
