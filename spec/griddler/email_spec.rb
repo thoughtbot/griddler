@@ -783,4 +783,19 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
       expect(email.to.map { |to| to[:full] }).to eq recipients
     end
   end
+
+  context 'with an empty recipient in to field' do
+    it 'includes all of the emails' do
+      recipients =
+        ['caleb@example.com',
+         '',
+         '<joel@example.com>',
+         'Swift <swift@example.com>']
+      params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
+
+      email = Griddler::Email.new(params)
+
+      expect(email.to.map { |to| to[:full] }).to eq recipients.reject(&:empty?)
+    end
+  end
 end
