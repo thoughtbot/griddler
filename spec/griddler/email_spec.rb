@@ -491,7 +491,7 @@ describe Griddler::Email, 'extracting email headers' do
     header = [{ header_name => { "a" => [header_value] } }]
     headers = header_from_email(header)
 
-    expect(headers[header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
+    expect(headers[0][header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
   end
 
   it 'handles no matched headers' do
