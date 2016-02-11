@@ -637,6 +637,18 @@ describe Griddler::Email, 'extracting email addresses' do
     expect(email.to).to eq [expected]
     expect(email.from).to eq expected
   end
+
+  it 'ignores blank email addresses' do
+    expected = @address_components
+    email = Griddler::Email.new(to: ['', @full_address])
+    expect(email.to).to eq [expected]
+  end
+
+  it 'ignores emails without @' do
+    expected = @address_components
+    email = Griddler::Email.new(to: ['johndoe', @full_address])
+    expect(email.to).to eq [expected]
+  end
 end
 
 describe Griddler::Email, 'extracting email subject' do
@@ -685,6 +697,11 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
   it 'returns an empty array when no CC address is added' do
     email = Griddler::Email.new(to: [@address], from: @address)
     expect(email.cc).to be_empty
+  end
+
+  it 'removes empty cc addresses' do
+    email = Griddler::Email.new(to: [@address], from: @address, cc: ['', @cc])
+    expect(email.cc.size).to eq(1)
   end
 end
 
