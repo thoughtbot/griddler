@@ -11,6 +11,8 @@ class Griddler::EmailsController < ActionController::Base
 
   delegate :processor_class, :processor_method, :email_service, to: :griddler_configuration
 
+  private :processor_class, :processor_method, :email_service
+
   def normalized_params
     Array.wrap(email_service.normalize_params(params))
   end
