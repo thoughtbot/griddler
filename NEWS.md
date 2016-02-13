@@ -1,9 +1,11 @@
 ## HEAD (unreleased)
 
+* Make the code resilient against an empty recipient (#242)
+* Make email_service, processor_method, processor_class private methods (#238)
+* Clean invalid UTF-8 chars from the email subject (#230)
 * The README claimed that the delimiter for replies was `-- REPLY ABOVE THIS
   LINE --`, but it was actually `-- Reply ABOVE THIS LINE --`. Now the
   delimiter is actually `-- REPLY ABOVE THIS LINE --`.
-* Clean invalid UTF-8 chars from the email subject (#230)
 
 ## 1.2.1
 
