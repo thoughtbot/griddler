@@ -1,5 +1,7 @@
 ## HEAD (unreleased)
 
+## 1.3.0
+
 * Make the code resilient against an empty recipient (#242)
 * Make email_service, processor_method, processor_class private methods (#238)
 * Clean invalid UTF-8 chars from the email subject (#230)
