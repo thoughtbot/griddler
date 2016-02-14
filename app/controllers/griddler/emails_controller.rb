@@ -14,7 +14,7 @@ class Griddler::EmailsController < ActionController::Base
   private :processor_class, :processor_method, :email_service
 
   def normalized_params
-    Array.wrap(email_service.normalize_params(params))
+    Array.wrap(email_service.normalize_params(params, extra_configuration))
   end
 
   def process_email(email)
@@ -23,5 +23,9 @@ class Griddler::EmailsController < ActionController::Base
 
   def griddler_configuration
     Griddler.configuration
+  end
+
+  def extra_configuration
+    griddler_configuration.extra_configuration
   end
 end
