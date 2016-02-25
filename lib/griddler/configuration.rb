@@ -16,25 +16,22 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_class, :processor_method, :reply_delimiter
+    attr_accessor :processor_method
 
     def processor_class
       @processor_class ||=
         begin
-          if Kernel.const_defined?(:EmailProcessor)
-            "EmailProcessor"
-          else
-            raise NameError.new(<<-ERROR.strip_heredoc, 'EmailProcessor')
-              To use Griddler, you must either define `EmailProcessor` or configure a
-              different processor. See https://github.com/thoughtbot/griddler#defaults for
-              more information.
-            ERROR
-          end
+          EmailProcessor.to_s
+        rescue NameError
+          raise NameError.new(<<-ERROR.strip_heredoc, 'EmailProcessor')
+            To use Griddler, you must either define `EmailProcessor` or configure a
+            different processor. See https://github.com/thoughtbot/griddler#defaults for
+            more information.
+          ERROR
         end
-        
       @processor_class.constantize
     end
-    
+
     def processor_class=(klass)
       @processor_class = klass.to_s
     end
@@ -48,7 +45,9 @@ module Griddler
     end
 
     def email_service
-      @email_service_adapter ||= Griddler.adapter_registry[:default]
+      @email_service_adapter ||=
+        Griddler.adapter_registry[:default] ||
+          raise(Griddler::Errors::EmailServiceAdapterNotFound)
     end
 
     def email_service=(new_email_service)
