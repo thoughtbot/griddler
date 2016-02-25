@@ -108,6 +108,24 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'handles "On [date] [soandso]<\nverylongemailaddress@longdomain.com>\nwrote:" format' do
+    body = <<-EOF.strip_heredoc
+      Hello.
+
+      On Jan 1, 2020 at 12:00 PM, Peter <
+      peterhasasuperlongemailthatforcesanewline@longdomain.com>
+      wrote:
+      > My name is Peter
+      >
+      > Sorry, but my email address is very long
+      >
+      > and adds extra newlines to the delimiter
+    EOF
+
+    expect(body_from_email(text: body)).to eq 'Hello.'
+  end
+
+
   it 'handles "> On [date] [soandso] <email@example.com> wrote:" format' do
     body = <<-EOF.strip_heredoc
       Hello.
