@@ -34,7 +34,7 @@ describe Griddler::Configuration do
     end
 
     it 'stores a processor_class' do
-      class DummyProcessor 
+      class DummyProcessor
       end
 
       Griddler.configure do |config|
@@ -50,6 +50,15 @@ describe Griddler::Configuration do
       end
 
       expect(Griddler.configuration.processor_method).to eq(:perform)
+    end
+
+    it 'stores a reply_delimiter' do
+      Griddler.configure do |config|
+        config.reply_delimiter = '-----Original Message-----'
+      end
+
+      expect(Griddler.configuration.reply_delimiter).to eq(
+        '-----Original Message-----')
     end
 
     it 'sets and stores an email_service' do
