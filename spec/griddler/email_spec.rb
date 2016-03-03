@@ -108,6 +108,21 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'handles "[date] [soandso] <email@example.com>:" format' do
+    body = <<-EOF
+      Hello.
+
+      2016-03-03 11:35 GMT+01:00 Bob <email@example.com>:
+      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+    EOF
+
+    expect(body_from_email(text: body)).to eq 'Hello.'
+  end
+
   it 'handles "On [date] [soandso]<\nverylongemailaddress@longdomain.com>\nwrote:" format' do
     body = <<-EOF.strip_heredoc
       Hello.
