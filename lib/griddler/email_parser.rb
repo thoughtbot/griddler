@@ -84,7 +84,9 @@ module Griddler::EmailParser
       /^On.*<\n?.*>.*\n?wrote:$/,
       /On.*wrote:/,
       /\*?From:.*$/i,
-      /^[[:space:]]*\d{4}[-\/]\d{1,2}[-\/]\d{1,2}[[:space:]].*[[:space:]]<.*>?$/i
+      /^[[:space:]]*\d{4}[-\/]\d{1,2}[-\/]\d{1,2}[[:space:]].*[[:space:]]<.*>?$/i,
+      /^[[:space:]]*\>?[[:space:]]*Le.*<\n?.*>.*\n?a[[:space:]]?\n?écrit :$/, # French
+      /^[[:space:]]*\>?[[:space:]]*El.*<\n?.*>.*\n?escribió:$/ # Spanish
     ]
   end
 
