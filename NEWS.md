@@ -1,5 +1,7 @@
 ## HEAD (unreleased)
 
+## 1.3.1
+
 * Allow access to email headers via an array ([#220](https://github.com/thoughtbot/griddler/issues/220))
 * Fixes email address parsing when the email address may be blank ([#223](https://github.com/thoughtbot/griddler/issues/223))
 * Add README link for SparkPost adapter ([#252](https://github.com/thoughtbot/griddler/issues/252))
