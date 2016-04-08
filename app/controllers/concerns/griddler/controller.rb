@@ -3,7 +3,10 @@ module Griddler
     extend ActiveSupport::Concern
 
     included do
-      delegate :processor_class, :processor_method, :email_service, to: :griddler_configuration
+      delegate :processor_class,
+               :processor_method,
+               :email_service,
+               to: :griddler_configuration
 
       private :processor_class, :processor_method, :email_service
     end
