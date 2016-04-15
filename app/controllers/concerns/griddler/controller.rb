@@ -11,13 +11,15 @@ module Griddler
       private :processor_class, :processor_method, :email_service
     end
 
-    private
+    protected
 
     def process_griddler
       normalized_params.each do |p|
         process_email Griddler::Email.new(p)
       end
     end
+
+    private
 
     def normalized_params
       Array.wrap(email_service.normalize_params(params))
