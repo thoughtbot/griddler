@@ -14,7 +14,7 @@ Tutorials
 ---------
 
 * SendGrid wrote a
-  [great tutorial](http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/)
+  [great tutorial](https://sendgrid.com/blog/receiving-email-in-your-rails-app-with-griddler/)
   on integrating Griddler with your application.
 * We have our own blog post on the subject over at
   [Giant Robots](https://robots.thoughtbot.com/griddler-is-better-than-ever).
