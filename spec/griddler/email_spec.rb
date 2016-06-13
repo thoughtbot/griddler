@@ -252,6 +252,20 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'handles "De : Firstname <email@email.com>" format (french Outlook)' do
+    body = <<-EOF
+      Hello.
+
+      De : Bob <bob@example.com>
+      Envoyé : mardi 31 mai 2016 14:27:49
+      Objet : Awesome report.
+
+      Check out this report!
+    EOF
+
+    expect(body_from_email(text: body)).to eq 'Hello.'
+  end
+
   it 'handles "-----Original Message-----" format' do
     body = <<-EOF
       Hello.
