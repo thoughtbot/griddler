@@ -256,8 +256,10 @@ describe Griddler::Email, 'body formatting' do
     body = <<-EOF
       Hello.
 
+      ________________________________
       De : Bob <bob@example.com>
-      Envoyé : mardi 31 mai 2016 14:27:49
+      Envoyé : mercredi 15 juin 2016 07:24
+      À : robert@example.com
       Objet : Awesome report.
 
       Check out this report!
