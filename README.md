@@ -14,7 +14,7 @@ Tutorials
 ---------
 
 * SendGrid wrote a
-  [great tutorial](http://blog.sendgrid.com/receiving-email-in-your-rails-app-with-griddler/)
+  [great tutorial](https://sendgrid.com/blog/receiving-email-in-your-rails-app-with-griddler/)
   on integrating Griddler with your application.
 * We have our own blog post on the subject over at
   [Giant Robots](https://robots.thoughtbot.com/griddler-is-better-than-ever).
@@ -168,11 +168,15 @@ adapter gem in addition to `griddler`.
 | mandrill    | [griddler-mandrill]
 | mailgun     | [griddler-mailgun]
 | postmark    | [griddler-postmark]
+| sparkpost   | [griddler-sparkpost]
+| ses (amazon)| [griddler-ses]
 
 [griddler-sendgrid]: https://github.com/thoughtbot/griddler-sendgrid
 [griddler-mandrill]: https://github.com/wingrunr21/griddler-mandrill
 [griddler-mailgun]: https://github.com/bradpauly/griddler-mailgun
 [griddler-postmark]: https://github.com/r38y/griddler-postmark
+[griddler-sparkpost]: https://github.com/PrestoDoctor/griddler-sparkpost
+[griddler-ses]: https://github.com/85x14/griddler-ses
 
 Writing an Adapter
 ------------------

@@ -601,6 +601,15 @@ describe Griddler::Email, 'extracting email headers' do
     expect(headers[header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
   end
 
+  it 'deeply cleans invalid UTF-8 bytes from an array when it is submitted' do
+    header_name = 'Arbitrary-Header'
+    header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
+    header = [{ header_name => { "a" => [header_value] } }]
+    headers = header_from_email(header)
+
+    expect(headers[0][header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
+  end
+
   it 'handles no matched headers' do
     headers = header_from_email('')
     expect(headers).to eq({})
@@ -753,6 +762,18 @@ describe Griddler::Email, 'extracting email addresses' do
     expect(email.to).to eq [expected]
     expect(email.from).to eq expected
   end
+
+  it 'ignores blank email addresses' do
+    expected = @address_components
+    email = Griddler::Email.new(to: ['', @full_address])
+    expect(email.to).to eq [expected]
+  end
+
+  it 'ignores emails without @' do
+    expected = @address_components
+    email = Griddler::Email.new(to: ['johndoe', @full_address])
+    expect(email.to).to eq [expected]
+  end
 end
 
 describe Griddler::Email, 'extracting email subject' do
@@ -801,6 +822,11 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
   it 'returns an empty array when no CC address is added' do
     email = Griddler::Email.new(to: [@address], from: @address)
     expect(email.cc).to be_empty
+  end
+
+  it 'removes empty cc addresses' do
+    email = Griddler::Email.new(to: [@address], from: @address, cc: ['', @cc])
+    expect(email.cc.size).to eq(1)
   end
 end
 
