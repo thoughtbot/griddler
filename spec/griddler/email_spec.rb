@@ -832,6 +832,16 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
     end
   end
 
+  describe 'parsing with gmail reply header with newlines and long email' do
+    it 'only keeps the message above the reply header' do
+      params[:text] = <<-EOS.strip_heredoc
+This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nverylongemailaddress@longdomain.com>\r\nwrote:\r\n\r\n> -- REPLY ABOVE THIS LINE --\r\n>\r\n> The Old message!\r\n>\r\n> Another line! *\r\n>\n
+      EOS
+      email = Griddler::Email.new(params)
+      expect(email.body).to eq 'This is the real text'
+    end
+  end
+
   context 'with multiple recipients in to field' do
     it 'includes all of the emails' do
       recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
