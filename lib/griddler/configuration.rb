@@ -36,6 +36,14 @@ module Griddler
       @processor_class = klass.to_s
     end
 
+    def email_class
+      @email_class ||= Griddler::Email
+    end
+
+    def email_class=(klass)
+      @email_class = klass
+    end
+
     def processor_method
       @processor_method ||= :process
     end
