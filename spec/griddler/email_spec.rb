@@ -691,6 +691,16 @@ describe Griddler::Email, 'extracting email addresses' do
     email = Griddler::Email.new(to: ['johndoe', @full_address])
     expect(email.to).to eq [expected]
   end
+
+  it 'returns the original recipient' do
+    email = Griddler::Email.new(original_recipient: "john@example.com")
+    expect(email.original_recipient).to eq "john@example.com"
+  end
+
+  it 'returns the reply to' do
+    email = Griddler::Email.new(reply_to: "dick@example.com")
+    expect(email.reply_to).to eq "dick@example.com"
+  end
 end
 
 describe Griddler::Email, 'extracting email subject' do
