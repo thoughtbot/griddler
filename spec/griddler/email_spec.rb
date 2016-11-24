@@ -693,13 +693,13 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 
   it 'returns the original recipient' do
-    email = Griddler::Email.new(original_recipient: "john@example.com")
-    expect(email.original_recipient).to eq "john@example.com"
+    email = Griddler::Email.new(original_recipient: 'john@example.com')
+    expect(email.original_recipient).to eq 'john@example.com'
   end
 
   it 'returns the reply to' do
-    email = Griddler::Email.new(reply_to: "dick@example.com")
-    expect(email.reply_to).to eq "dick@example.com"
+    email = Griddler::Email.new(reply_to: 'dick@example.com')
+    expect(email.reply_to).to eq 'dick@example.com'
   end
 end
 
