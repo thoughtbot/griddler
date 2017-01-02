@@ -22,8 +22,7 @@ describe Griddler::EmailParser do
     allow(subject).to receive(:email_client).and_return(:gmail)
     h   = subject.extract_reply_html(gmail, :gmail)
     doc = Nokogiri::HTML.parse(h)
-    expect(doc.css('.gmail_extra').size).to eq 1
-    expect(doc.css('.gmail_signature').size).to eq 1
+    expect(doc.css('.gmail_extra').size).to eq 0
     expect(doc.at_css('img')['src']).to eq 'cid:ii_1595dc15e116b681'
   end
 

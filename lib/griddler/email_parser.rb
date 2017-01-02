@@ -40,7 +40,7 @@ module Griddler::EmailParser
       when :outlook_web
         doc.at_css('body > #divtagdefaultwrapper').to_s
       when :gmail
-        doc.at_css('body > .gmail_extra > .gmail_quote')&.remove
+        doc.at_css('body > .gmail_extra')&.remove
         doc.at_css('body').inner_html
       when :icloud
         # Apple Mail
