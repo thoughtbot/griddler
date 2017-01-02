@@ -4,26 +4,30 @@ module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
     attr_reader :to, :from, :cc, :bcc, :subject, :body, :raw_body, :raw_text, :raw_html,
-      :headers, :raw_headers, :attachments
+                :headers, :raw_headers, :attachments
 
     def initialize(params)
       @params = params
 
-      @to = recipients(:to)
-      @from = extract_address(params[:from])
+      @to      = recipients(:to)
+      @from    = extract_address(params[:from])
       @subject = extract_subject
 
       @headers = extract_headers
 
-      @cc = recipients(:cc)
+      @cc  = recipients(:cc)
       @bcc = recipients(:bcc)
 
       @raw_headers = params[:headers]
 
-      @body = extract_body
-      @raw_text = params[:text]
-      @raw_html = params[:html]
-      @raw_body = @raw_text.presence || @raw_html
+      @raw_text = clean_invalid_utf8_bytes(params[:text])
+      @raw_html = clean_invalid_utf8_bytes(params[:html])
+      @raw_body = if config.prefer_html
+                    @raw_html.presence || @raw_text
+                  else
+                    @raw_text.presence || @raw_html
+                  end
+      @body     = extract_body
 
       @attachments = params[:attachments]
     end
@@ -51,8 +55,13 @@ module Griddler
       clean_text(params[:subject])
     end
 
+    # 自定义有限处理 html 的内容, 否则处理 text 的内容
     def extract_body
-      EmailParser.extract_reply_body(text_or_sanitized_html)
+      if config.prefer_html && @raw_html.present?
+        EmailParser.extract_reply_html(@raw_html, @headers)
+      else
+        EmailParser.extract_reply_body(text_or_sanitized_html)
+      end
     end
 
     def extract_headers
@@ -70,8 +79,8 @@ module Griddler
     end
 
     def text_or_sanitized_html
-      text = clean_text(params.fetch(:text, ''))
-      text.presence || clean_html(params.fetch(:html, '')).presence
+      text = clean_text(@raw_text.presence || '')
+      text.presence || clean_html(@raw_html).presence
     end
 
     def clean_text(text)

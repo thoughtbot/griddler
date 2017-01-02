@@ -65,6 +65,7 @@ end
 | `processor_method` | The method Griddler will call on the processor class when handling your incoming emails.
 | `reply_delimiter`  | The string searched for that will split your body.
 | `email_service`    | Tells Griddler which email service you are using. The supported email service options are `:sendgrid` (the default), `:cloudmailin` (expects multipart format), `:postmark`, `:mandrill` and `:mailgun`. You will also need to have an appropriate [adapter] gem included in your Gemfile.
+| `prefer_html`      | Is prefer parse html part or turn html into text part [@body, @raw_body].
 
 By default Griddler will look for a class named `EmailProcessor`. The class is
 initialized with a `Griddler::Email` instance representing the incoming

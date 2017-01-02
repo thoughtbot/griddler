@@ -89,7 +89,7 @@ module Griddler::EmailParser
   def self.email_client(headers)
     message_id = headers['Message-Id']
     CLIENT_PATTERNS.each do |client, pattern|
-      return client if message_id.match?(pattern)
+      return client if pattern.match?(message_id)
     end
   end
 

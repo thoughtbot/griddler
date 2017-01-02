@@ -16,7 +16,7 @@ module Griddler
   end
 
   class Configuration
-    attr_accessor :processor_method, :reply_delimiter
+    attr_accessor :processor_method, :reply_delimiter, :prefer_html
 
     def processor_class
       @processor_class ||=
