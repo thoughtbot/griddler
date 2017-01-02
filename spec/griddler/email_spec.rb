@@ -453,7 +453,9 @@ describe Griddler::Email, 'body formatting' do
 
   context 'prefer_html: true' do
     before(:each) {
-      allow(Griddler.configuration).to receive_messages(prefer_html: true)
+      Griddler.configure do |config|
+        config.prefer_html = true
+      end
       allow(Griddler::EmailParser).to receive_messages(email_client: :outlook_web)
     }
 
