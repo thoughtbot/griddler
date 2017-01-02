@@ -11,48 +11,87 @@
 require 'mail'
 
 module Griddler::EmailParser
-  def self.parse_address(full_address)
-    email_address = extract_email_address(full_address)
-    name = extract_name(full_address)
-    token, host = split_address(email_address)
-    {
-      token: token,
-      host: host,
-      email: email_address,
-      full: full_address,
-      name: name,
-    }
-  end
+  CLIENT_PATTERNS = {
+    # outlook web
+    outlook_web: /prod\.outlook\.com/,
+    gmail:       /mail\.gmail\.com/,
+    icloud:      /icloud\.com/
+  }
 
-  def self.extract_reply_body(body)
-    if body.blank?
-      ""
-    else
-      remove_reply_portion(body)
-        .split(/[\r]*\n/)
-        .reject do |line|
+  class << self
+    def parse_address(full_address)
+      email_address = extract_email_address(full_address)
+      name          = extract_name(full_address)
+      token, host   = split_address(email_address)
+      {
+        token: token,
+        host:  host,
+        email: email_address,
+        full:  full_address,
+        name:  name,
+      }
+    end
+
+    # html: html 的内容
+    # client: 是哪一个 email client
+    def extract_reply_html(html, headers = {})
+      doc = Nokogiri::HTML.parse(html)
+      case email_client(headers)
+      when :outlook_web
+        doc.at_css('body > #divtagdefaultwrapper').to_s
+      when :gmail
+        doc.at_css('body > .gmail_extra > .gmail_quote')&.remove
+        doc.at_css('body').inner_html
+      when :icloud
+        # Apple Mail
+        doc.at_css('body > div > blockquote[type=cite]')&.remove
+        # iPhone
+        doc.at_css('body > blockquote[type=cite]')&.remove
+        doc.at_css('body').inner_html
+      else
+        html
+      end
+    end
+
+    def extract_reply_body(body)
+      if body.blank?
+        ""
+      else
+        remove_reply_portion(body)
+          .split(/[\r]*\n/)
+          .reject do |line|
           line =~ /^[[:space:]]+>/ ||
             line =~ /^[[:space:]]*Sent from my /
         end.
-        join("\n").
-        strip
+          join("\n").
+          strip
+      end
     end
-  end
 
-  def self.extract_headers(raw_headers)
-    if raw_headers.is_a?(Hash)
-      raw_headers
-    else
-      header_fields = Mail::Header.new(raw_headers).fields
+    def extract_headers(raw_headers)
+      if raw_headers.is_a?(Hash)
+        raw_headers
+      else
+        header_fields = Mail::Header.new(raw_headers).fields
 
-      header_fields.inject({}) do |header_hash, header_field|
-        header_hash[header_field.name.to_s] = header_field.value.to_s
-        header_hash
+        header_fields.inject({}) do |header_hash, header_field|
+          header_hash[header_field.name.to_s] = header_field.value.to_s
+          header_hash
+        end
       end
     end
   end
 
+
   private
+
+  # 判断 email client 是哪一个
+  def self.email_client(headers)
+    message_id = headers['Message-Id']
+    CLIENT_PATTERNS.each do |client, pattern|
+      return client if message_id.match?(pattern)
+    end
+  end
 
   def self.reply_delimeter_regex
     delimiter = Array(Griddler.configuration.reply_delimiter).join('|')
@@ -65,7 +104,7 @@ module Griddler::EmailParser
 
   def self.extract_name(full_address)
     full_address = full_address.strip
-    name = full_address.split('<').first.strip
+    name         = full_address.split('<').first.strip
     if name.present? && name != full_address
       name
     end

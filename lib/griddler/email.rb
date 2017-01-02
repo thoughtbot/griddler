@@ -13,17 +13,17 @@ module Griddler
       @from = extract_address(params[:from])
       @subject = extract_subject
 
-      @body = extract_body
-      @raw_text = params[:text]
-      @raw_html = params[:html]
-      @raw_body = @raw_text.presence || @raw_html
-
       @headers = extract_headers
 
       @cc = recipients(:cc)
       @bcc = recipients(:bcc)
 
       @raw_headers = params[:headers]
+
+      @body = extract_body
+      @raw_text = params[:text]
+      @raw_html = params[:html]
+      @raw_body = @raw_text.presence || @raw_html
 
       @attachments = params[:attachments]
     end
