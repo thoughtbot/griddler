@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Griddler::EmailParser do
   let(:outlook) { File.open('spec/fixtures/outlook.html').read }
+  let(:outlook_mac) { File.open('spec/fixtures/outlook_mac.html').read }
   let(:gmail) { File.open('spec/fixtures/gmail.html').read }
   let(:apple_mail) { File.open('spec/fixtures/apple_mail.html').read }
   let(:iphone) { File.open('spec/fixtures/iphone.html').read }
@@ -16,6 +17,15 @@ describe Griddler::EmailParser do
     # Signature 区域
     expect(doc.css('#Signature #divtagdefaultwrapper').size).to eq 1
     expect(doc.at_css('img')['src']).to eq 'cid:aedd9c1c-3d21-4c14-97c5-52921c77bbb5'
+  end
+
+  it 'outlook_mac reply part' do
+    allow(subject).to receive(:email_client).and_return(:outlook_mac)
+
+    h   = subject.extract_reply_html(outlook_mac, :outlook_web)
+    doc = Nokogiri::HTML.parse(h)
+    expect(doc.css('.MsoListParagraph').size).to eq 2
+    expect(doc.css('body > .MsoNormal').size).to eq 11
   end
 
   it 'gmail reply part' do
@@ -63,4 +73,25 @@ describe Griddler::EmailParser do
   #[ ] 6 Outlook 6% -0.47
   #[x] 7 Outlook.com 5% -0.23
 
+  context '#email_client' do
+    it 'outlook_web' do
+      headers = { 'Message-Id' => '259F7F7C-7374-4D7C-913A-E15B411D033A@prod.outlook.com' }
+      expect(Griddler::EmailParser.email_client(headers)).to eq :outlook_web
+    end
+
+    it 'outlook_mac' do
+      headers = { 'Message-Id' => '259F7F7C-7374-4D7C-913A-E15B411D033A@gmail.com', 'User-Agent' => 'Microsoft-MacOutlook/f.18.0.160709' }
+      expect(Griddler::EmailParser.email_client(headers)).to eq :outlook_mac
+    end
+
+    it 'gmail' do
+      headers = { 'Message-Id' => '259F7F7C-7374-4D7C-913A-E15B411D033A@mail.gmail.com' }
+      expect(Griddler::EmailParser.email_client(headers)).to eq :gmail
+    end
+
+    it 'icloud' do
+      headers = { 'Message-Id' => '259F7F7C-7374-4D7C-913A-E15B411D033A@icloud.com' }
+      expect(Griddler::EmailParser.email_client(headers)).to eq :icloud
+    end
+  end
 end

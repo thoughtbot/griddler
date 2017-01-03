@@ -11,11 +11,12 @@
 require 'mail'
 
 module Griddler::EmailParser
+  # patterns 有先后的顺序
   CLIENT_PATTERNS = {
-    # outlook web
+    outlook_mac: /Microsoft-MacOutlook/i,
     outlook_web: /prod\.outlook\.com/,
-    gmail:       /mail\.gmail\.com/,
-    icloud:      /icloud\.com/
+    icloud:      /icloud\.com/, # 现在 Apple 的 iPhone, Mac, iPad 都可以统一处理, 未来再看是否需要额外处理.
+    gmail:       /mail\.gmail\.com/
   }
 
   class << self
@@ -39,6 +40,8 @@ module Griddler::EmailParser
       case email_client(headers)
       when :outlook_web
         doc.at_css('body > #divtagdefaultwrapper').to_s
+      when :outlook_mac
+        doc.css('body > div > .MsoNormal,.MsoListParagraph').to_s
       when :gmail
         doc.at_css('body > .gmail_extra')&.remove
         doc.at_css('body').inner_html
@@ -89,10 +92,11 @@ module Griddler::EmailParser
 
   # 判断 email client 是哪一个
   def self.email_client(headers)
-    message_id = headers['Message-Id']
+    trait = [headers['User-Agent'], headers['Message-Id']].join(' ')
     CLIENT_PATTERNS.each do |client, pattern|
-      return client if pattern.match?(message_id)
+      return client if pattern.match?(trait)
     end
+    nil
   end
 
   def self.reply_delimeter_regex
