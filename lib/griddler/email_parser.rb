@@ -49,7 +49,9 @@ module Griddler::EmailParser
         doc.at_css('body > blockquote[type=cite]')&.remove
         doc.at_css('body').inner_html
       else
-        html
+        # 默认尝试清楚 <blockquote class='griddler_quote'> 的元素
+        doc.at_css('body > blockquote.griddler_quote')&.remove
+        doc.to_s
       end
     end
 

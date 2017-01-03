@@ -42,6 +42,19 @@ describe Griddler::EmailParser do
     expect(doc.at_css('img')['src']).to eq 'cid:07654E88-C035-45AC-B0CC-A146E641DB4A'
   end
 
+  it 'default .griddler_quote reply part' do
+    allow(subject).to receive(:email_client).and_return(nil)
+    origin = Nokogiri::HTML.parse(iphone)
+    quote  = origin.css('blockquote[type=cite]')
+    quote.attr('type').remove
+    quote.attr('class', 'griddler_quote')
+    expect(quote.css('blockquote.griddler_quote').size).to eq 1
+    h   = subject.extract_reply_html(origin.to_s, nil)
+    doc = Nokogiri::HTML.parse(h)
+    expect(doc.css('blockquote.griddler_quote').size).to eq 0
+    expect(doc.at_css('img')['src']).to eq 'cid:07654E88-C035-45AC-B0CC-A146E641DB4A'
+  end
+
   #[x] 1 Apple iPhone 33% -0.76
   #[x] 2 Gmail 19% +1.6
   #[ ] 3 Apple iPad 12% +0.17
