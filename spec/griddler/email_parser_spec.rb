@@ -57,11 +57,11 @@ describe Griddler::EmailParser do
     origin = Nokogiri::HTML.parse(iphone)
     quote  = origin.css('blockquote[type=cite]')
     quote.attr('type').remove
-    quote.attr('class', 'griddler_quote')
-    expect(quote.css('blockquote.griddler_quote').size).to eq 1
+    quote.attr('class', 'm_-1246824862396747064m_6843455178785846608griddler_quote')
+    expect(quote.css('blockquote[class*=griddler_quote]').size).to eq 1
     h   = subject.extract_reply_html(origin.to_s, nil)
     doc = Nokogiri::HTML.parse(h)
-    expect(doc.css('blockquote.griddler_quote').size).to eq 0
+    expect(doc.css('blockquote[class*=griddler_quote]').size).to eq 0
     expect(doc.at_css('img')['src']).to eq 'cid:07654E88-C035-45AC-B0CC-A146E641DB4A'
   end
 

@@ -44,6 +44,7 @@ module Griddler::EmailParser
         doc.css('body > div > .MsoNormal,.MsoListParagraph').to_s
       when :gmail
         doc.at_css('body > .gmail_extra')&.remove
+        doc.at_css('body > div > .gmail_extra')&.remove
         doc.at_css('body').inner_html
       when :icloud
         # Apple Mail
@@ -52,8 +53,8 @@ module Griddler::EmailParser
         doc.at_css('body > blockquote[type=cite]')&.remove
         doc.at_css('body').inner_html
       else
-        # 默认尝试清楚 <blockquote class='griddler_quote'> 的元素
-        doc.at_css('body > blockquote.griddler_quote')&.remove
+        # 默认尝试清楚 <blockquote class='m_-1246_6843455griddler_quote'> 的元素
+        doc.at_css('body > blockquote[class*=griddler_quote]')&.remove
         doc.to_s
       end
     end
