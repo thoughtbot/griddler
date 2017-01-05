@@ -37,26 +37,7 @@ module Griddler::EmailParser
     # client: 是哪一个 email client
     def extract_reply_html(html, headers = {})
       doc = Nokogiri::HTML.parse(html)
-      case email_client(headers)
-      when :outlook_web
-        doc.at_css('body > #divtagdefaultwrapper').to_s
-      when :outlook_mac
-        doc.css('body > div > .MsoNormal,.MsoListParagraph').to_s
-      when :gmail
-        doc.at_css('body > .gmail_extra')&.remove
-        doc.at_css('body > div > .gmail_extra')&.remove
-        doc.at_css('body').inner_html
-      when :icloud
-        # Apple Mail
-        doc.at_css('body > div > blockquote[type=cite]')&.remove
-        # iPhone
-        doc.at_css('body > blockquote[type=cite]')&.remove
-        doc.at_css('body').inner_html
-      else
-        # 默认尝试清楚 <blockquote class='m_-1246_6843455griddler_quote'> 的元素
-        doc.at_css('body > blockquote[class*=griddler_quote]')&.remove
-        doc.to_s
-      end
+      Griddler::EmailClientsSpliter.send(email_client(headers), doc)
     end
 
     def extract_reply_body(body)
@@ -97,7 +78,7 @@ module Griddler::EmailParser
     CLIENT_PATTERNS.each do |client, pattern|
       return client if pattern.match?(trait)
     end
-    nil
+    :default
   end
 
   def self.reply_delimeter_regex

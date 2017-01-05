@@ -53,7 +53,7 @@ describe Griddler::EmailParser do
   end
 
   it 'default .griddler_quote reply part' do
-    allow(subject).to receive(:email_client).and_return(nil)
+    allow(subject).to receive(:email_client).and_return(:default)
     origin = Nokogiri::HTML.parse(iphone)
     quote  = origin.css('blockquote[type=cite]')
     quote.attr('type').remove
