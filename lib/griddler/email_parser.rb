@@ -11,14 +11,6 @@
 require 'mail'
 
 module Griddler::EmailParser
-  # patterns 有先后的顺序
-  CLIENT_PATTERNS = {
-    outlook_mac: /Microsoft-MacOutlook/i,
-    outlook_web: /prod\.outlook\.com/,
-    icloud:      /icloud\.com/, # 现在 Apple 的 iPhone, Mac, iPad 都可以统一处理, 未来再看是否需要额外处理.
-    gmail:       /mail\.gmail\.com/
-  }
-
   class << self
     def parse_address(full_address)
       email_address = extract_email_address(full_address)
@@ -75,15 +67,25 @@ module Griddler::EmailParser
   # 判断 email client 是哪一个
   def self.email_client(headers)
     trait = email_client_trait(headers)
-    CLIENT_PATTERNS.each do |client, pattern|
+    client_patterns.each do |client, pattern|
       return client if pattern.match?(trait)
     end
     :default
   end
 
-  # 通过 User-Agnet, 与 Message-Id 来进行判断. 获取能够产生 trait 标记的方法
+  # patterns 有先后的顺序
+  def self.client_patterns
+    {
+      outlook_mac: /Microsoft-MacOutlook/i,
+      outlook_web: /prod\.outlook\.com/,
+      icloud:      /icloud\.com/, # 现在 Apple 的 iPhone, Mac, iPad 都可以统一处理, 未来再看是否需要额外处理.
+      gmail:       /mail\.gmail\.com/
+    }
+  end
+
+  # 通过 User-Agnet, From, 与 Message-Id 来进行判断. 获取能够产生 trait 标记的方法
   def self.email_client_trait(headers)
-    [headers['User-Agent'], headers['Message-Id']].join(' ')
+    [headers['User-Agent'], headers['Message-Id'], headers['From']].join(' ')
   end
 
   def self.reply_delimeter_regex
