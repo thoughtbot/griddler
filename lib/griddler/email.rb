@@ -57,11 +57,10 @@ module Griddler
 
     # 自定义有限处理 html 的内容, 否则处理 text 的内容
     def extract_body
-      if config.prefer_html && @raw_html.present?
-        EmailParser.extract_reply_html(@raw_html, @headers)
-      else
-        EmailParser.extract_reply_body(text_or_sanitized_html)
-      end
+      body = if config.prefer_html && @raw_html.present?
+               EmailParser.extract_reply_html(@raw_html, @headers)
+             end
+      body.blank? ? EmailParser.extract_reply_body(text_or_sanitized_html) : body
     end
 
     def extract_headers
