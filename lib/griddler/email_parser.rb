@@ -74,11 +74,16 @@ module Griddler::EmailParser
 
   # 判断 email client 是哪一个
   def self.email_client(headers)
-    trait = [headers['User-Agent'], headers['Message-Id']].join(' ')
+    trait = email_client_trait(headers)
     CLIENT_PATTERNS.each do |client, pattern|
       return client if pattern.match?(trait)
     end
     :default
+  end
+
+  # 通过 User-Agnet, 与 Message-Id 来进行判断. 获取能够产生 trait 标记的方法
+  def self.email_client_trait(headers)
+    [headers['User-Agent'], headers['Message-Id']].join(' ')
   end
 
   def self.reply_delimeter_regex
