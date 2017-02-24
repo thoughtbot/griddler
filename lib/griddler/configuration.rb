@@ -17,6 +17,7 @@ module Griddler
 
   class Configuration
     attr_accessor :processor_method, :reply_delimiter
+    attr_writer :email_class
 
     def processor_class
       @processor_class ||=
@@ -38,10 +39,6 @@ module Griddler
 
     def email_class
       @email_class ||= Griddler::Email
-    end
-
-    def email_class=(klass)
-      @email_class = klass
     end
 
     def processor_method
