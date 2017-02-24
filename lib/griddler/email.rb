@@ -28,6 +28,23 @@ module Griddler
       @attachments = params[:attachments]
     end
 
+    def to_h
+      @to_h ||= {
+        to: to,
+        from: from,
+        cc: cc,
+        bcc: bcc,
+        subject: subject,
+        body: body,
+        raw_body: raw_body,
+        raw_text: raw_text,
+        raw_html: raw_html,
+        headers: headers,
+        raw_headers: raw_headers,
+        attachments: attachments,
+      }
+    end
+
     private
 
     attr_reader :params

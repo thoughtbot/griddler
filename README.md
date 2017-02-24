@@ -107,6 +107,7 @@ Griddler::Email attributes
 | `#attachments` | An array of `File` objects containing any attachments.
 | `#headers`     | A hash of headers parsed by `Mail::Header`, unless they are already formatted as a hash when received from the adapter in which case the original hash is returned.
 | `#raw_headers` | The raw headers included in the message.
+| `#to_h`        | A hash of the above attributes.
 
 ### Email Addresses
 
