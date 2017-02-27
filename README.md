@@ -53,6 +53,7 @@ Defaults are shown below with sample overrides following. In
 ```ruby
 Griddler.configure do |config|
   config.processor_class = EmailProcessor # CommentViaEmail
+  config.email_class = Griddler::Email # MyEmail
   config.processor_method = :process # :create_comment (A method on CommentViaEmail)
   config.reply_delimiter = '-- REPLY ABOVE THIS LINE --'
   config.email_service = :sendgrid # :cloudmailin, :postmark, :mandrill, :mailgun
@@ -62,6 +63,7 @@ end
 | Option             | Meaning
 | ------             | -------
 | `processor_class`  | The class Griddler will use to handle your incoming emails.
+| `email_class`      | The class Griddler will use to represent an incoming e-mail. It must support an initializer that receives a hash as the only argument. We recommend inheriting it from Griddler::Email or checking this class to see all the methods it responds to.
 | `processor_method` | The method Griddler will call on the processor class when handling your incoming emails.
 | `reply_delimiter`  | The string searched for that will split your body.
 | `email_service`    | Tells Griddler which email service you are using. The supported email service options are `:sendgrid` (the default), `:cloudmailin` (expects multipart format), `:postmark`, `:mandrill` and `:mailgun`. You will also need to have an appropriate [adapter] gem included in your Gemfile.
