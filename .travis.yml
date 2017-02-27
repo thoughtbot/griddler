@@ -1,8 +1,9 @@
 language: ruby
 rvm:
-  - 2.0
   - 2.1
   - 2.2
+  - 2.3
+  - 2.4
 env:
   - "RAILS_BRANCH=4-1-stable"
   - "RAILS_BRANCH=4-2-stable"
