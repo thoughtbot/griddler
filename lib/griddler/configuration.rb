@@ -16,7 +16,12 @@ module Griddler
   end
 
   class Configuration
+<<<<<<< HEAD
     attr_accessor :processor_method, :reply_delimiter, :prefer_html
+=======
+    attr_accessor :processor_method, :reply_delimiter
+    attr_writer :email_class
+>>>>>>> thoughtbot/master
 
     def processor_class
       @processor_class ||=
@@ -34,6 +39,10 @@ module Griddler
 
     def processor_class=(klass)
       @processor_class = klass.to_s
+    end
+
+    def email_class
+      @email_class ||= Griddler::Email
     end
 
     def processor_method

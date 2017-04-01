@@ -1,5 +1,12 @@
 ## HEAD (unreleased)
 
+## 1.4.0
+* Add `to_h` support to `Griddler::Email` ([#276](https://github.com/thoughtbot/griddler/pull/276))
+* Allow user defined Email class ([#270](https://github.com/thoughtbot/griddler/pull/270))
+* Handle gmail carriage returns ([#260](https://github.com/thoughtbot/griddler/pull/260))
+* Fix link to SendGrid tutorial ([#259](https://github.com/thoughtbot/griddler/pull/259))
+* Add reference to `griddler-ses` adapter to README.md ([#257](https://github.com/thoughtbot/griddler/pull/257))
+
 ## 1.3.1
 
 * Allow access to email headers via an array ([#220](https://github.com/thoughtbot/griddler/issues/220))

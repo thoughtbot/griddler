@@ -8,6 +8,7 @@ describe Griddler::Configuration do
 
     it 'provides defaults' do
       expect(Griddler.configuration.processor_class).to eq(EmailProcessor)
+      expect(Griddler.configuration.email_class).to eq(Griddler::Email)
       expect(Griddler.configuration.reply_delimiter).to eq('-- REPLY ABOVE THIS LINE --')
       expect(Griddler.configuration.email_service).to eq(:test_adapter)
       expect(Griddler.configuration.processor_method).to eq(:process)
@@ -42,6 +43,17 @@ describe Griddler::Configuration do
       end
 
       expect(Griddler.configuration.processor_class).to eq DummyProcessor
+    end
+
+    it 'stores an email_class' do
+      class DummyEmail
+      end
+
+      Griddler.configure do |config|
+        config.email_class = DummyEmail
+      end
+
+      expect(Griddler.configuration.email_class).to eq DummyEmail
     end
 
     it 'stores a processor_method' do

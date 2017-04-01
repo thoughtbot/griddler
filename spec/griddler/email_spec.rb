@@ -888,3 +888,40 @@ This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nveryl
     end
   end
 end
+
+describe Griddler::Email, 'methods' do
+  describe '#to_h' do
+    it 'returns an indifferent access hash of Griddler::Email attributes' do
+      params = {
+        to: ['Some Identifier <some-identifier@example.com>'],
+        from: 'Joe User <joeuser@example.com>',
+        subject: 'Re: [ThisApp] That thing',
+        text: <<-EOS.strip_heredoc.strip
+          lololololo hi
+
+          -- REPLY ABOVE THIS LINE --
+
+          hey sup
+        EOS
+      }
+      email = Griddler::Email.new(params)
+
+      hash = email.to_h
+
+      expect(hash).to eq(
+        to: email.to,
+        from: email.from,
+        cc: email.cc,
+        bcc: email.bcc,
+        subject: email.subject,
+        body: email.body,
+        raw_body: email.raw_body,
+        raw_text: email.raw_text,
+        raw_html: email.raw_html,
+        headers: email.headers,
+        raw_headers: email.raw_headers,
+        attachments: email.attachments,
+      )
+    end
+  end
+end
