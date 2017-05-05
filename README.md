@@ -84,7 +84,7 @@ class EmailProcessor
     # processing reports, etc
 
     # here's an example of model creation
-    user = User.find_by_email(@email.from[:email])
+    user = User.find_by_email!(@email.from[:email])
     user.posts.create!(
       subject: @email.subject,
       body: @email.body
@@ -123,6 +123,23 @@ information of each recipient:
 | `:email` | The email address of the recipient.
 | `:full` | The whole recipient field (e.g., `Some User <hello@example.com>`).
 | `:name` | The name of the recipient (e.g., `Some User`).
+
+Returning errors
+----------------
+
+Griddler's response is `200 OK` in all cases. To fail the webhook and cause a retry, raise an exception. Use Rails' bang methods, as in the example above, or raise an exception manually:
+
+```ruby
+class EmailProcessor
+  def process
+    # ...
+
+    raise(model.errors) unless model.valid?
+  end
+end
+```
+
+Providers usually retry a webhook for a limited number of times, increasing the interval between each retry.
 
 Testing In Your App
 -------------------
