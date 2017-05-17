@@ -4,7 +4,7 @@ module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
     attr_reader :to, :from, :cc, :bcc, :subject, :body, :raw_body, :raw_text, :raw_html,
-      :headers, :raw_headers, :attachments
+      :clean_body, :clean_text, :clean_html, :headers, :raw_headers, :attachments
 
     def initialize(params)
       @params = params
@@ -14,8 +14,12 @@ module Griddler
       @subject = extract_subject
 
       @body = extract_body
-      @raw_text = clean_raw_text(params[:text])
-      @raw_html = clean_html(params[:html])
+      @clean_text = clean_raw_text(params[:text])
+      @clean_html = clean_raw_html(params[:html])
+      @clean_body = @clean_text.presence || @clean_html
+
+      @raw_text = clean_utf8(params[:text])
+      @raw_html = clean_utf8(params[:html])
       @raw_body = @raw_text.presence || @raw_html
 
       @headers = extract_headers
@@ -41,11 +45,11 @@ module Griddler
     end
 
     def extract_address(address)
-      EmailParser.parse_address(clean_text(address))
+      EmailParser.parse_address(clean_utf8(address))
     end
 
     def extract_subject
-      clean_text(params[:subject])
+      clean_utf8(params[:subject])
     end
 
     def extract_body
@@ -65,22 +69,22 @@ module Griddler
     end
 
     def text_or_sanitized_html
-      text = clean_text(params.fetch(:text, ''))
-      text.presence || clean_html(params.fetch(:html, '')).presence
+      text = clean_raw_text(params.fetch(:text, ''))
+      text.presence || clean_raw_html(params.fetch(:html, '')).presence
     end
 
-    def clean_text(text)
+    def clean_utf8(text)
       clean_invalid_utf8_bytes(text).strip
     end
 
     def clean_raw_text(text)
       full_sanitizer = Rails::Html::FullSanitizer.new
-      cleaned_text = clean_invalid_utf8_bytes(text).strip
+      cleaned_text = clean_invalid_utf8_bytes(text)
       cleaned_text = full_sanitizer.sanitize(cleaned_text)
-      cleaned_text
+      cleaned_text.strip
     end
 
-    def clean_html(html)
+    def clean_raw_html(html)
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = sanitize(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
