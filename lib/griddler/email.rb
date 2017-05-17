@@ -74,8 +74,9 @@ module Griddler
     end
 
     def clean_raw_text(text)
+      full_sanitizer = Rails::Html::FullSanitizer.new
       cleaned_text = clean_invalid_utf8_bytes(text).strip
-      cleaned_text = strip_tags(cleaned_text)
+      cleaned_text = full_sanitizer.sanitize(cleaned_text)
       cleaned_text
     end
 
