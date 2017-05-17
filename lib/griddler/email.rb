@@ -14,7 +14,7 @@ module Griddler
       @subject = extract_subject
 
       @body = extract_body
-      @raw_text = clean_text(params[:text])
+      @raw_text = clean_raw_text(params[:text])
       @raw_html = clean_html(params[:html])
       @raw_body = @raw_text.presence || @raw_html
 
@@ -70,6 +70,10 @@ module Griddler
     end
 
     def clean_text(text)
+      clean_invalid_utf8_bytes(text).strip
+    end
+
+    def clean_raw_text(text)
       cleaned_text = clean_invalid_utf8_bytes(text).strip
       cleaned_text = strip_tags(cleaned_text)
       cleaned_text
