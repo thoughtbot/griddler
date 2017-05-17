@@ -14,8 +14,8 @@ module Griddler
       @subject = extract_subject
 
       @body = extract_body
-      @raw_text = params[:text]
-      @raw_html = params[:html]
+      @raw_text = clean_text(params[:text])
+      @raw_html = clean_html(params[:html])
       @raw_body = @raw_text.presence || @raw_html
 
       @headers = extract_headers
@@ -70,14 +70,14 @@ module Griddler
     end
 
     def clean_text(text)
-      clean_invalid_utf8_bytes(text)
+      clean_invalid_utf8_bytes(text).strip
     end
 
     def clean_html(html)
       cleaned_html = clean_invalid_utf8_bytes(html)
-      cleaned_html = strip_tags(cleaned_html)
+      cleaned_html = sanitize(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
-      cleaned_html
+      cleaned_html.strip
     end
 
     def deep_clean_invalid_utf8_bytes(object)
@@ -98,7 +98,7 @@ module Griddler
 
     def clean_invalid_utf8_bytes(text)
       if text && !text.valid_encoding?
-        text.force_encoding('ISO-8859-1').encode('UTF-8')
+        text.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
       else
         text
       end
