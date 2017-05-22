@@ -158,39 +158,6 @@ describe Griddler::Email, 'body formatting' do
     expect(raw_body_from_email(text: body)).to eq body
   end
 
-  it 'handles "[date] [soandso] <email@example.com>:" format' do
-    body = <<-EOF
-      Hello.
-
-      2016-03-03 11:35 GMT+01:00 Bob <email@example.com>:
-      > Check out this report.
-      >
-      > It's pretty cool.
-      >
-      > Thanks, Tristan
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
-  it 'handles "On [date] [soandso]<\nverylongemailaddress@longdomain.com>\nwrote:" format' do
-    body = <<-EOF.strip_heredoc
-      Hello.
-
-      On Jan 1, 2020 at 12:00 PM, Peter <
-      peterhasasuperlongemailthatforcesanewline@longdomain.com>
-      wrote:
-      > My name is Peter
-      >
-      > Sorry, but my email address is very long
-      >
-      > and adds extra newlines to the delimiter
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
-
   it 'handles "> On [date] [soandso] <email@example.com> wrote:" format' do
     body = <<-EOF.strip_heredoc
       Hello.
@@ -650,15 +617,6 @@ describe Griddler::Email, 'extracting email headers' do
     expect(headers[header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
   end
 
-  it 'deeply cleans invalid UTF-8 bytes from an array when it is submitted' do
-    header_name = 'Arbitrary-Header'
-    header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
-    header = [{ header_name => { "a" => [header_value] } }]
-    headers = header_from_email(header)
-
-    expect(headers[0][header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
-  end
-
   it 'handles no matched headers' do
     headers = header_from_email('')
     expect(headers).to eq({})
@@ -811,18 +769,6 @@ describe Griddler::Email, 'extracting email addresses' do
     expect(email.to).to eq [expected]
     expect(email.from).to eq expected
   end
-
-  it 'ignores blank email addresses' do
-    expected = @address_components
-    email = Griddler::Email.new(to: ['', @full_address])
-    expect(email.to).to eq [expected]
-  end
-
-  it 'ignores emails without @' do
-    expected = @address_components
-    email = Griddler::Email.new(to: ['johndoe', @full_address])
-    expect(email.to).to eq [expected]
-  end
 end
 
 describe Griddler::Email, 'extracting email subject' do
@@ -871,11 +817,6 @@ describe Griddler::Email, 'extracting email addresses from CC field' do
   it 'returns an empty array when no CC address is added' do
     email = Griddler::Email.new(to: [@address], from: @address)
     expect(email.cc).to be_empty
-  end
-
-  it 'removes empty cc addresses' do
-    email = Griddler::Email.new(to: [@address], from: @address, cc: ['', @cc])
-    expect(email.cc.size).to eq(1)
   end
 end
 
@@ -964,16 +905,6 @@ This is the real text\r\n\r\n\r\nOn Fri, Mar 21, 2014 at 3:11 PM, Someone <\r\ns
     end
   end
 
-  describe 'parsing with gmail reply header with newlines and long email' do
-    it 'only keeps the message above the reply header' do
-      params[:text] = <<-EOS.strip_heredoc
-This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nverylongemailaddress@longdomain.com>\r\nwrote:\r\n\r\n> -- REPLY ABOVE THIS LINE --\r\n>\r\n> The Old message!\r\n>\r\n> Another line! *\r\n>\n
-      EOS
-      email = Griddler::Email.new(params)
-      expect(email.body).to eq 'This is the real text'
-    end
-  end
-
   context 'with multiple recipients in to field' do
     it 'includes all of the emails' do
       recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
@@ -982,58 +913,6 @@ This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nveryl
       email = Griddler::Email.new(params)
 
       expect(email.to.map { |to| to[:full] }).to eq recipients
-    end
-  end
-
-  context 'with an empty recipient in to field' do
-    it 'includes all of the emails' do
-      recipients =
-        ['caleb@example.com',
-         '',
-         '<joel@example.com>',
-         'Swift <swift@example.com>']
-      params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
-
-      email = Griddler::Email.new(params)
-
-      expect(email.to.map { |to| to[:full] }).to eq recipients.reject(&:empty?)
-    end
-  end
-end
-
-describe Griddler::Email, 'methods' do
-  describe '#to_h' do
-    it 'returns an indifferent access hash of Griddler::Email attributes' do
-      params = {
-        to: ['Some Identifier <some-identifier@example.com>'],
-        from: 'Joe User <joeuser@example.com>',
-        subject: 'Re: [ThisApp] That thing',
-        text: <<-EOS.strip_heredoc.strip
-          lololololo hi
-
-          -- REPLY ABOVE THIS LINE --
-
-          hey sup
-        EOS
-      }
-      email = Griddler::Email.new(params)
-
-      hash = email.to_h
-
-      expect(hash).to eq(
-        to: email.to,
-        from: email.from,
-        cc: email.cc,
-        bcc: email.bcc,
-        subject: email.subject,
-        body: email.body,
-        raw_body: email.raw_body,
-        raw_text: email.raw_text,
-        raw_html: email.raw_html,
-        headers: email.headers,
-        raw_headers: email.raw_headers,
-        attachments: email.attachments,
-      )
     end
   end
 end

@@ -32,23 +32,6 @@ module Griddler
       @attachments = params[:attachments]
     end
 
-    def to_h
-      @to_h ||= {
-        to: to,
-        from: from,
-        cc: cc,
-        bcc: bcc,
-        subject: subject,
-        body: body,
-        raw_body: raw_body,
-        raw_text: raw_text,
-        raw_html: raw_html,
-        headers: headers,
-        raw_headers: raw_headers,
-        attachments: attachments,
-      }
-    end
-
     private
 
     attr_reader :params
@@ -58,14 +41,11 @@ module Griddler
     end
 
     def recipients(type)
-      params[type].to_a.reject(&:empty?).map do |recipient|
-        extract_address(recipient)
-      end.compact
+      params[type].to_a.map { |recipient| extract_address(recipient) }
     end
 
     def extract_address(address)
-      clean_address = clean_invalid_utf8_bytes(address)
-      EmailParser.parse_address(clean_address) if clean_address =~ /@/
+      EmailParser.parse_address(clean_invalid_utf8_bytes(address))
     end
 
     def extract_subject
@@ -80,8 +60,6 @@ module Griddler
 
     def extract_headers
       if params[:headers].is_a?(Hash)
-        deep_clean_invalid_utf8_bytes(params[:headers])
-      elsif params[:headers].is_a?(Array)
         deep_clean_invalid_utf8_bytes(params[:headers])
       else
         EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
