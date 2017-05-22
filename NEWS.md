@@ -1,5 +1,26 @@
 ## HEAD (unreleased)
 
+## 1.4.0
+* Add `to_h` support to `Griddler::Email` ([#276](https://github.com/thoughtbot/griddler/pull/276))
+* Allow user defined Email class ([#270](https://github.com/thoughtbot/griddler/pull/270))
+* Handle gmail carriage returns ([#260](https://github.com/thoughtbot/griddler/pull/260))
+* Fix link to SendGrid tutorial ([#259](https://github.com/thoughtbot/griddler/pull/259))
+* Add reference to `griddler-ses` adapter to README.md ([#257](https://github.com/thoughtbot/griddler/pull/257))
+
+## 1.3.1
+
+* Allow access to email headers via an array ([#220](https://github.com/thoughtbot/griddler/issues/220))
+* Fixes email address parsing when the email address may be blank ([#223](https://github.com/thoughtbot/griddler/issues/223))
+* Add README link for SparkPost adapter ([#252](https://github.com/thoughtbot/griddler/issues/252))
+* Handle "YYYY-MM-DD *" format ([#248](https://github.com/thoughtbot/griddler/issues/248))
+* Set default configuration without a config file ([#228](https://github.com/thoughtbot/griddler/issues/228))
+* Add split point for 3-line gmail inserts. ([#244](https://github.com/thoughtbot/griddler/issues/244), [#245](https://github.com/thoughtbot/griddler/issues/245))
+
+## 1.3.0
+
+* Make the code resilient against an empty recipient (#242)
+* Make email_service, processor_method, processor_class private methods (#238)
+* Clean invalid UTF-8 chars from the email subject (#230)
 * The README claimed that the delimiter for replies was `-- REPLY ABOVE THIS
   LINE --`, but it was actually `-- Reply ABOVE THIS LINE --`. Now the
   delimiter is actually `-- REPLY ABOVE THIS LINE --`.
