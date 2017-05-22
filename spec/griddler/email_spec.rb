@@ -8,7 +8,9 @@ describe Griddler::Email, 'body formatting' do
       <p>Hello.</p><span>-- REPLY ABOVE THIS LINE --</span><p>original message</p>
     EOF
 
-    expect(body_from_email(html: body)).to eq 'Hello.'
+    expect(body_from_email(html: body)).to eq '<p>Hello.</p><span>'
+    expect(clean_body_from_email(html: body)).to eq body
+    expect(raw_body_from_email(html: body)).to eq body
   end
 
   it 'uses the html field and sanitizes it when text param is empty' do
@@ -16,31 +18,45 @@ describe Griddler::Email, 'body formatting' do
       <p>Hello.</p><span>-- REPLY ABOVE THIS LINE --</span><p>original message</p>
     EOF
 
-    expect(body_from_email(html: body, text: '')).to eq 'Hello.'
+    expect(body_from_email(html: body, text: '')).to eq '<p>Hello.</p><span>'
+    expect(clean_body_from_email(html: body, text: '')).to eq body
+    expect(raw_body_from_email(html: body, text: '')).to eq body
   end
 
   it 'handles invalid utf-8 bytes in html' do
     expect(body_from_email(html: "Hell\xC0.")).to eq 'HellÀ.'
+    expect(clean_body_from_email(html: "Hell\xC0.")).to eq 'HellÀ.'
+    expect(raw_body_from_email(html: "Hell\xC0.")).to eq 'HellÀ.'
   end
 
   it 'handles invalid utf-8 bytes in text' do
     expect(body_from_email(text: "Hell\xF6.")).to eq 'Hellö.'
+    expect(clean_body_from_email(text: "Hell\xF6.")).to eq 'Hellö.'
+    expect(raw_body_from_email(text: "Hell\xF6.")).to eq 'Hellö.'
   end
 
   it 'handles valid utf-8 bytes in html' do
     expect(body_from_email(html: "Hell\xF1.")).to eq 'Hellñ.'
+    expect(clean_body_from_email(html: "Hell\xF1.")).to eq 'Hellñ.'
+    expect(raw_body_from_email(html: "Hell\xF1.")).to eq 'Hellñ.'
   end
 
   it 'handles valid utf-8 bytes in text' do
     expect(body_from_email(text: "Hell\xF2.")).to eq 'Hellò.'
+    expect(clean_body_from_email(text: "Hell\xF2.")).to eq 'Hellò.'
+    expect(raw_body_from_email(text: "Hell\xF2.")).to eq 'Hellò.'
   end
 
   it 'handles valid utf-8 char in html' do
     expect(body_from_email(html: 'Hellö.')).to eq 'Hellö.'
+    expect(clean_body_from_email(html: 'Hellö.')).to eq 'Hellö.'
+    expect(raw_body_from_email(html: 'Hellö.')).to eq 'Hellö.'
   end
 
   it 'handles valid utf-8 char in text' do
     expect(body_from_email(text: 'Hellö.')).to eq 'Hellö.'
+    expect(clean_body_from_email(text: 'Hellö.')).to eq 'Hellö.'
+    expect(raw_body_from_email(text: 'Hellö.')).to eq 'Hellö.'
   end
 
   it 'does not remove invalid utf-8 bytes if charset is set' do
@@ -53,6 +69,8 @@ describe Griddler::Email, 'body formatting' do
     }
 
     expect(body_from_email({ text: 'Helló.' }, charsets)).to eq 'Helló.'
+    expect(clean_body_from_email({ text: 'Helló.' }, charsets)).to eq 'Helló.'
+    expect(raw_body_from_email({ text: 'Helló.' }, charsets)).to eq 'Helló.'
   end
 
   it 'handles everything on one line' do
@@ -60,7 +78,13 @@ describe Griddler::Email, 'body formatting' do
       Hello. On 01/12/13, Tristan <email@example.com> wrote: -- REPLY ABOVE THIS LINE -- or visit your website to respond.
     EOF
 
+    clean_body = <<-EOF
+      Hello. On 01/12/13, Tristan  wrote: -- REPLY ABOVE THIS LINE -- or visit your website to respond.
+    EOF
+
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq clean_body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "On [date] [soandso] wrote:" format' do
@@ -90,7 +114,20 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
+    clean_body = <<-EOF
+      Hello.
+
+      On 2010-01-01 12:00:00 Tristan  wrote:
+      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+    EOF
+
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq clean_body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "On [date] [soandso]\n<email@example.com> wrote:" format' do
@@ -105,7 +142,20 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
+    clean_body = <<-EOF
+      Hello.
+
+      On 2010-01-01 12:00:00 Tristan\n  wrote:
+      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+    EOF
+
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq clean_body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "> On [date] [soandso] <email@example.com> wrote:" format' do
@@ -121,7 +171,21 @@ describe Griddler::Email, 'body formatting' do
       >
     EOF
 
+    clean_body = <<-EOF.strip_heredoc
+      Hello.
+
+      > On 10 janv. 2014, at 18:00, Tristan  wrote:
+      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+      >
+    EOF
+
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq clean_body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "From: email@email.com" format' do
@@ -136,6 +200,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "*From:* email@email.com" format' do
@@ -150,6 +216,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "-----Original Message-----" format' do
@@ -165,6 +233,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "-----Original Message-----" format without a preceding body' do
@@ -178,6 +248,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq ''
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "-----Original message-----" case insensitively' do
@@ -193,6 +265,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "-----Original message-----" case insensitively without a preceding body' do
@@ -206,6 +280,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq ''
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "[date] [soandso] <email@example>" format' do
@@ -218,7 +294,17 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristan
     EOF
 
+    clean_body = <<-EOF
+      2013/12/15 Bob Example \n      > Check out this report.
+      >
+      > It's pretty cool.
+      >
+      > Thanks, Tristan
+    EOF
+
     expect(body_from_email(text: body)).to eq ''
+    expect(clean_body_from_email(text: body)).to eq clean_body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles "-- REPLY ABOVE THIS LINE --" format' do
@@ -231,6 +317,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'removes > in "> -- REPLY ABOVE THIS LINE --" ' do
@@ -241,6 +329,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'removes any non-content things above -- REPLY ABOVE THIS LINE --' do
@@ -255,6 +345,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'removes any iphone things above -- REPLY ABOVE THIS LINE --' do
@@ -269,6 +361,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'should remove any signature above -- REPLY ABOVE THIS LINE --' do
@@ -286,6 +380,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'should trim signature with non-breaking space after hyphens' do
@@ -299,6 +395,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'should remove any signature without space above -- REPLY ABOVE THIS LINE --' do
@@ -316,6 +414,8 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'allows paragraphs to begin with "On"' do
@@ -328,7 +428,18 @@ describe Griddler::Email, 'body formatting' do
       > Thanks, Tristen
     EOF
 
+    clean_body = <<-EOF
+      On the counter.
+
+      On Tue, Sep 30, 2014 at 9:13 PM Tristan  wrote:
+      > Where's that report?
+      >
+      > Thanks, Tristen
+    EOF
+
     expect(body_from_email(text: body)).to eq 'On the counter.'
+    expect(clean_body_from_email(text: body)).to eq clean_body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'properly handles a json charsets' do
@@ -354,29 +465,39 @@ describe Griddler::Email, 'body formatting' do
     }
 
     expect(body_from_email({ text: body }, charsets)).to eq 'Hello.'
+    expect(clean_body_from_email({ text: body }, charsets)).to eq body
+    expect(raw_body_from_email({ text: body }, charsets)).to eq body
   end
 
   it 'should preserve empty lines' do
     body = "Hello.\n\nWhat's up?"
 
     expect(body_from_email(text: body)).to eq body
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'preserves blockquotes' do
     body = "> Hello.\n\n>another line"
 
     expect(body_from_email(text: body)).to eq body
+    expect(clean_body_from_email(text: body)).to eq body
+    expect(raw_body_from_email(text: body)).to eq body
   end
 
   it 'handles empty body values' do
     expect(body_from_email(text: '')).to eq ''
+    expect(clean_body_from_email(text: '')).to eq ''
+    expect(raw_body_from_email(text: '')).to eq ''
   end
 
   it 'handles missing body keys' do
     expect(body_from_email(text: nil)).to eq ''
+    expect(clean_body_from_email(text: nil)).to eq ''
+    expect(raw_body_from_email(text: nil)).to eq ''
   end
 
-  def body_from_email(raw_body, charsets = {})
+  def email_from_body(raw_body, charsets = {})
     raw_body.each do |format, text|
       text.encode!(charsets[format]) if charsets[format]
     end
@@ -393,8 +514,19 @@ describe Griddler::Email, 'body formatting' do
 
     params.merge!(raw_body)
 
-    email = Griddler::Email.new(params)
-    email.body
+    Griddler::Email.new(params)
+  end
+
+  def body_from_email(raw_body, charsets = {})
+    email_from_body(raw_body, charsets).body
+  end
+
+  def clean_body_from_email(raw_body, charsets = {})
+    email_from_body(raw_body, charsets).clean_body
+  end
+
+  def raw_body_from_email(raw_body, charsets = {})
+    email_from_body(raw_body, charsets).raw_body
   end
 end
 

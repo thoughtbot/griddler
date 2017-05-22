@@ -18,8 +18,8 @@ module Griddler
       @clean_html = clean_raw_html(params[:html])
       @clean_body = @clean_text.presence || @clean_html
 
-      @raw_text = clean_utf8(params[:text])
-      @raw_html = clean_utf8(params[:html])
+      @raw_text = clean_raw_utf8(params[:text])
+      @raw_html = clean_raw_utf8(params[:html])
       @raw_body = @raw_text.presence || @raw_html
 
       @headers = extract_headers
@@ -45,15 +45,17 @@ module Griddler
     end
 
     def extract_address(address)
-      EmailParser.parse_address(clean_utf8(address))
+      EmailParser.parse_address(clean_invalid_utf8_bytes(address))
     end
 
     def extract_subject
-      clean_utf8(params[:subject])
+      clean_invalid_utf8_bytes(params[:subject])
     end
 
     def extract_body
-      EmailParser.extract_reply_body(text_or_sanitized_html)
+      text = EmailParser.extract_reply_body(text_or_sanitized_html)
+      text = clean_raw_text(text) if params.fetch(:text, '').presence
+      text
     end
 
     def extract_headers
@@ -69,26 +71,27 @@ module Griddler
     end
 
     def text_or_sanitized_html
-      text = clean_raw_text(params.fetch(:text, ''))
+      text = clean_invalid_utf8_bytes(params.fetch(:text, ''))
       text.presence || clean_raw_html(params.fetch(:html, '')).presence
     end
 
-    def clean_utf8(text)
-      clean_invalid_utf8_bytes(text).strip
-    end
-
     def clean_raw_text(text)
-      full_sanitizer = Rails::Html::FullSanitizer.new
       cleaned_text = clean_invalid_utf8_bytes(text)
+      full_sanitizer = Rails::Html::FullSanitizer.new
       cleaned_text = full_sanitizer.sanitize(cleaned_text)
-      cleaned_text.strip
+      cleaned_text = HTMLEntities.new.decode(cleaned_text)
+      cleaned_text
     end
 
     def clean_raw_html(html)
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = sanitize(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
-      cleaned_html.strip
+      cleaned_html
+    end
+
+    def clean_raw_utf8(text)
+      clean_invalid_utf8_bytes(text) || ''
     end
 
     def deep_clean_invalid_utf8_bytes(object)
@@ -109,7 +112,7 @@ module Griddler
 
     def clean_invalid_utf8_bytes(text)
       if text && !text.valid_encoding?
-        text.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+        text.force_encoding('ISO-8859-1').encode!('UTF-8')
       else
         text
       end
