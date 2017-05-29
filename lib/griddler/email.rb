@@ -28,7 +28,7 @@ module Griddler
 
       @attachments = params[:attachments]
 
-      @vendor_specific = params[:vendor_specific] || {}
+      @vendor_specific = params.fetch(:vendor_specific, {})
     end
 
     def to_h
