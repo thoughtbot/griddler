@@ -869,6 +869,30 @@ This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nveryl
   end
 end
 
+describe Griddler::Email, 'extracting vendor specific' do
+  it 'extracts a hash of vendor specific data' do
+    meeting_info = {
+      name: 'Weekly Stand Up',
+      date: '01/01/2015',
+      time: '8:00am'
+    }
+    params = {
+      vendor_specific: {
+        body_calendar: meeting_info
+      }
+    }
+    email = Griddler::Email.new(params)
+
+    expect(email.vendor_specific).to eq({ body_calendar: meeting_info })
+  end
+
+  it 'defaults to an empty hash' do
+    email = Griddler::Email.new({})
+
+    expect(email.vendor_specific).to eq({})
+  end
+end
+
 describe Griddler::Email, 'methods' do
   describe '#to_h' do
     it 'returns an indifferent access hash of Griddler::Email attributes' do
@@ -901,6 +925,7 @@ describe Griddler::Email, 'methods' do
         headers: email.headers,
         raw_headers: email.raw_headers,
         attachments: email.attachments,
+        vendor_specific: {},
       )
     end
   end
