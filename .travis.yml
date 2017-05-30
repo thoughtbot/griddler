@@ -1,11 +1,13 @@
 language: ruby
 rvm:
-  - 2.0
   - 2.1
   - 2.2
+  - 2.3.3
+  - 2.4.0
 env:
   - "RAILS_BRANCH=4-1-stable"
   - "RAILS_BRANCH=4-2-stable"
+  - "RAILS_BRANCH=5-0-stable"
   - "RAILS_BRANCH=master"
 branches:
   only:
