@@ -995,6 +995,9 @@ describe Griddler::Email, 'methods' do
         to: ['Some Identifier <some-identifier@example.com>'],
         from: 'Joe User <joeuser@example.com>',
         subject: 'Re: [ThisApp] That thing',
+        spam_report: {
+          score: 10,
+        },
         text: <<-EOS.strip_heredoc.strip
           lololololo hi
 
@@ -1021,7 +1024,42 @@ describe Griddler::Email, 'methods' do
         raw_headers: email.raw_headers,
         attachments: email.attachments,
         vendor_specific: {},
+        spam_report: email.spam_report,
+        spam_score: email.spam_score,
       )
+    end
+  end
+end
+
+describe Griddler::Email, 'extracting spam score' do
+  let(:params) do
+    {
+      to: ['Some Identifier <some-identifier@example.com>'],
+      from: 'Joe User <joeuser@example.com>',
+      subject: 'Re: [ThisApp] That thing',
+      text: 'lololololo hi',
+    }
+  end
+
+  describe 'spam_score' do
+    subject { Griddler::Email.new(params) }
+
+    context 'With no spam report' do
+      it { expect(subject.spam_score).to be nil }
+    end
+
+    context 'With a spam report but no score' do
+      before do
+        params[:spam_report] = { other_key: 'value' }
+      end
+      it { expect(subject.spam_score).to be nil }
+    end
+
+    context 'With a score symbol key' do
+      before do
+        params[:spam_report] = { score: 42 }
+      end
+      it { expect(subject.spam_score).to eq 42 }
     end
   end
 end
