@@ -1,0 +1,9 @@
+en:
+  regex:
+    original_message: ^[[:space:]]*[-]+[[:space:]]*Original Message[[:space:]]*[-]+[[:space:]]*$
+    signature_line: ^[[:space:]]*--[[:space:]]*$
+    on_date_soandso_wrote: ^[[:space:]]*\>?[[:space:]]*On.*\r?\n?.*wrote:\r?\n?$
+    long_email_address_wrote: ^On.*<\r?\n?.*>.*\r?\n?wrote:\r?\n?$
+    everything_on_one_line: "On.*wrote:"
+    from_format: \*?From:.*$
+    date_soandso: ^[[:space:]]*\d{4}[-\/]\d{1,2}[-\/]\d{1,2}[[:space:]].*[[:space:]]<.*>?$

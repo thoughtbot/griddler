@@ -158,7 +158,8 @@ describe Griddler::Email, 'body formatting' do
   end
 
   it 'handles french format: "Le [date], [soandso] <email@example.com> a écrit :"' do
-    body = <<-EOF.strip_heredoc
+    I18n.with_locale(:fr) do
+      body = <<-EOF.strip_heredoc
       Hello.
 
       Le 11 mars 2016, at 18:00, Tristan <email@example.com> a écrit :
@@ -168,13 +169,15 @@ describe Griddler::Email, 'body formatting' do
       >
       > Thanks, Tristan
       >
-    EOF
+      EOF
 
-    expect(body_from_email(text: body)).to eq 'Hello.'
+      expect(body_from_email(text: body)).to eq 'Hello.'
+    end
   end
 
   it 'handles LONG french format: "Le [date], [soandso] <email@example.com> a écrit :"' do
-    body = <<-EOF.strip_heredoc
+    I18n.with_locale(:fr) do
+      body = <<-EOF.strip_heredoc
       Hello.
 
       Le 11 mars 2016, at 18:00, Tristan With A Really Really Long Name <
@@ -186,13 +189,15 @@ describe Griddler::Email, 'body formatting' do
       >
       > Thanks, Tristan
       >
-    EOF
+      EOF
 
-    expect(body_from_email(text: body)).to eq 'Hello.'
+      expect(body_from_email(text: body)).to eq 'Hello.'
+    end
   end
 
   it 'handles spanish format: "El [date], [soandso] <email@example.com> escribió:"' do
-    body = <<-EOF.strip_heredoc
+    I18n.with_locale(:es) do
+      body = <<-EOF.strip_heredoc
       Hello.
 
       El 11/03/2016 11:34, Pedro Pérez <email@example.com> escribió:
@@ -202,13 +207,15 @@ describe Griddler::Email, 'body formatting' do
       >
       > Thanks, Pedro
       >
-    EOF
+      EOF
 
-    expect(body_from_email(text: body)).to eq 'Hello.'
+      expect(body_from_email(text: body)).to eq 'Hello.'
+    end
   end
 
   it 'handles LONG spanish format: "El [date], [soandso] <email@example.com> escribió:"' do
-    body = <<-EOF.strip_heredoc
+    I18n.with_locale(:es) do
+      body = <<-EOF.strip_heredoc
       Hello.
 
       El 11/03/2016 11:34, Pedro Pérez <
@@ -219,9 +226,10 @@ describe Griddler::Email, 'body formatting' do
       >
       > Thanks, Pedro
       >
-    EOF
+      EOF
 
-    expect(body_from_email(text: body)).to eq 'Hello.'
+      expect(body_from_email(text: body)).to eq 'Hello.'
+    end
   end
 
   it 'handles "From: email@email.com" format' do
@@ -253,7 +261,8 @@ describe Griddler::Email, 'body formatting' do
   end
 
   it 'handles "De : Firstname <email@email.com>" format (french Outlook)' do
-    body = <<-EOF
+    I18n.with_locale(:fr) do
+      body = <<-EOF
       Hello.
 
       ________________________________
@@ -263,9 +272,10 @@ describe Griddler::Email, 'body formatting' do
       Objet : Awesome report.
 
       Check out this report!
-    EOF
+      EOF
 
-    expect(body_from_email(text: body)).to eq 'Hello.'
+      expect(body_from_email(text: body)).to eq 'Hello.'
+    end
   end
 
   it 'handles "-----Original Message-----" format' do
@@ -696,17 +706,17 @@ describe Griddler::Email, 'extracting email addresses' do
 
   it 'returns the BCC email' do
     email = Griddler::Email.new(
-        text: 'hi',
-        to: [@address_components[:email]],
-        from: @full_address,
-        bcc: [@full_bcc_address],
+      text: 'hi',
+      to: [@address_components[:email]],
+      from: @full_address,
+      bcc: [@full_bcc_address],
     )
     expect(email.bcc).to eq [@bcc_address_components]
   end
 
   it 'handles new lines' do
     email = Griddler::Email.new(text: 'hi', to: ["#{@full_address}\n"],
-      from: "#{@full_address}\n")
+                                from: "#{@full_address}\n")
     expected = @address_components.merge(full: "#{@full_address}\n")
     expect(email.to).to eq [expected]
     expect(email.from).to eq expected

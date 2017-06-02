@@ -1,0 +1,3 @@
+es:
+  regex:
+    on_date_soandso_wrote: ^[[:space:]]*\>?[[:space:]]*El.*<\n?.*>.*\n?escribió:$

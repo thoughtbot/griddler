@@ -78,16 +78,13 @@ module Griddler::EmailParser
   def self.regex_split_points
     [
       reply_delimeter_regex,
-      /^[[:space:]]*[-]+[[:space:]]*Original Message[[:space:]]*[-]+[[:space:]]*$/i,
-      /^[[:space:]]*--[[:space:]]*$/,
-      /^[[:space:]]*\>?[[:space:]]*On.*\r?\n?.*wrote:\r?\n?$/,
-      /^On.*<\r?\n?.*>.*\r?\n?wrote:\r?\n?$/,
-      /On.*wrote:/,
-      /\*?From:.*$/i,
-      /^[[:space:]]*\d{4}[-\/]\d{1,2}[-\/]\d{1,2}[[:space:]].*[[:space:]]<.*>?$/i,
-      /(_)*\n[[:space:]]*De :.*\n[[:space:]]*Envoyé :.*\n[[:space:]]*À :.*\n[[:space:]]*Objet :.*\n$/i, # French Outlook
-      /^[[:space:]]*\>?[[:space:]]*Le.*<\n?.*>.*\n?a[[:space:]]?\n?écrit :$/, # French
-      /^[[:space:]]*\>?[[:space:]]*El.*<\n?.*>.*\n?escribió:$/ # Spanish
+      Regexp.new(I18n.t('regex.original_message'), Regexp::IGNORECASE),
+      Regexp.new(I18n.t('regex.signature_line')),
+      Regexp.new(I18n.t('regex.on_date_soandso_wrote')),
+      Regexp.new(I18n.t('regex.long_email_address_wrote')),
+      Regexp.new(I18n.t('regex.everything_on_one_line')),
+      Regexp.new(I18n.t('regex.from_format'), Regexp::IGNORECASE),
+      Regexp.new(I18n.t('regex.date_soandso'), Regexp::IGNORECASE),
     ]
   end
 
