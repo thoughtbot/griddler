@@ -1,4 +1,4 @@
 fr:
-  regex:
+  split_point:
     on_date_soandso_wrote: ^[[:space:]]*\>?[[:space:]]*Le.*<\n?.*>.*\n?a[[:space:]]?\n?écrit :$
     from_format: (_)*\n[[:space:]]*De :.*\n[[:space:]]*Envoyé :.*\n[[:space:]]*À :.*\n[[:space:]]*Objet :.*\n$

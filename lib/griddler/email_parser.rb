@@ -78,13 +78,13 @@ module Griddler::EmailParser
   def self.regex_split_points
     [
       reply_delimeter_regex,
-      Regexp.new(I18n.t('regex.original_message'), Regexp::IGNORECASE),
-      Regexp.new(I18n.t('regex.signature_line')),
-      Regexp.new(I18n.t('regex.on_date_soandso_wrote')),
-      Regexp.new(I18n.t('regex.long_email_address_wrote')),
-      Regexp.new(I18n.t('regex.everything_on_one_line')),
-      Regexp.new(I18n.t('regex.from_format'), Regexp::IGNORECASE),
-      Regexp.new(I18n.t('regex.date_soandso'), Regexp::IGNORECASE),
+      Regexp.new(I18n.t('split_point.original_message'), Regexp::IGNORECASE),
+      Regexp.new(I18n.t('split_point.signature_line')),
+      Regexp.new(I18n.t('split_point.on_date_soandso_wrote')),
+      Regexp.new(I18n.t('split_point.long_email_address_wrote')),
+      Regexp.new(I18n.t('split_point.everything_on_one_line')),
+      Regexp.new(I18n.t('split_point.from_format'), Regexp::IGNORECASE),
+      Regexp.new(I18n.t('split_point.date_soandso'), Regexp::IGNORECASE),
     ]
   end
 
