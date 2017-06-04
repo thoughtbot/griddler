@@ -15,6 +15,7 @@ module Griddler
                 :raw_body,
                 :raw_text,
                 :raw_html,
+                :date,
                 :headers,
                 :raw_headers,
                 :attachments,
@@ -40,6 +41,8 @@ module Griddler
       @original_recipient = extract_address(params[:original_recipient])
       @reply_to = extract_address(params[:reply_to])
 
+      @date = params[:date]
+
       @raw_headers = params[:headers]
 
       @attachments = params[:attachments]
@@ -60,6 +63,7 @@ module Griddler
         raw_body: raw_body,
         raw_text: raw_text,
         raw_html: raw_html,
+        date: date,
         headers: headers,
         raw_headers: raw_headers,
         attachments: attachments,
