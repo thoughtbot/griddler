@@ -30,10 +30,10 @@ module Griddler
 
       @headers = extract_headers
 
-      @cc  = recipients(:cc)
-      @bcc = recipients(:bcc)
+      @cc                 = recipients(:cc)
+      @bcc                = recipients(:bcc)
       @original_recipient = extract_address(params[:original_recipient])
-      @reply_to = extract_address(params[:reply_to])
+      @reply_to           = extract_address(params[:reply_to])
 
       @raw_headers = params[:headers]
 
@@ -55,21 +55,21 @@ module Griddler
 
     def to_h
       @to_h ||= {
-        to: to,
-        from: from,
-        cc: cc,
-        bcc: bcc,
-        subject: subject,
-        body: body,
-        raw_body: raw_body,
-        raw_text: raw_text,
-        raw_html: raw_html,
-        headers: headers,
-        raw_headers: raw_headers,
-        attachments: attachments,
+        to:              to,
+        from:            from,
+        cc:              cc,
+        bcc:             bcc,
+        subject:         subject,
+        body:            body,
+        raw_body:        raw_body,
+        raw_text:        raw_text,
+        raw_html:        raw_html,
+        headers:         headers,
+        raw_headers:     raw_headers,
+        attachments:     attachments,
         vendor_specific: vendor_specific,
-        spam_score: spam_score,
-        spam_report: spam_report,
+        spam_score:      spam_score,
+        spam_report:     spam_report,
       }
     end
 
@@ -134,8 +134,7 @@ module Griddler
     def clean_html(html)
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = strip_tags(cleaned_html)
-      cleaned_html = HTMLEntities.new.decode(cleaned_html)
-      cleaned_html
+      HTMLEntities.new.decode(cleaned_html)
     end
 
     def deep_clean_invalid_utf8_bytes(object)
