@@ -169,6 +169,7 @@ adapter gem in addition to `griddler`.
 | Service     | Adapter
 | -------     | -------
 | sendgrid    | [griddler-sendgrid]
+| cloudmailin | [griddler-cloudmailin]
 | mandrill    | [griddler-mandrill]
 | mailgun     | [griddler-mailgun]
 | postmark    | [griddler-postmark]
@@ -176,6 +177,7 @@ adapter gem in addition to `griddler`.
 | ses (amazon)| [griddler-ses]
 
 [griddler-sendgrid]: https://github.com/thoughtbot/griddler-sendgrid
+[griddler-cloudmailin]: https://github.com/thoughtbot/griddler-cloudmailin
 [griddler-mandrill]: https://github.com/wingrunr21/griddler-mandrill
 [griddler-mailgun]: https://github.com/bradpauly/griddler-mailgun
 [griddler-postmark]: https://github.com/r38y/griddler-postmark

@@ -3,8 +3,23 @@ require 'htmlentities'
 module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
-    attr_reader :to, :from, :cc, :bcc, :subject, :body, :raw_body, :raw_text, :raw_html,
-                :headers, :raw_headers, :attachments
+
+    attr_reader :to,
+                :from,
+                :cc,
+                :bcc,
+                :original_recipient,
+                :reply_to,
+                :subject,
+                :body,
+                :raw_body,
+                :raw_text,
+                :raw_html,
+                :headers,
+                :raw_headers,
+                :attachments,
+                :vendor_specific,
+                :spam_report
 
     def initialize(params)
       @params = params
@@ -17,6 +32,8 @@ module Griddler
 
       @cc  = recipients(:cc)
       @bcc = recipients(:bcc)
+      @original_recipient = extract_address(params[:original_recipient])
+      @reply_to = extract_address(params[:reply_to])
 
       @raw_headers = params[:headers]
 
@@ -30,6 +47,10 @@ module Griddler
       @body     = extract_body
 
       @attachments = params[:attachments]
+
+      @vendor_specific = params.fetch(:vendor_specific, {})
+
+      @spam_report = params[:spam_report]
     end
 
     def to_h
@@ -46,7 +67,14 @@ module Griddler
         headers: headers,
         raw_headers: raw_headers,
         attachments: attachments,
+        vendor_specific: vendor_specific,
+        spam_score: spam_score,
+        spam_report: spam_report,
       }
+    end
+
+    def spam_score
+      @spam_report[:score] if @spam_report
     end
 
     private
