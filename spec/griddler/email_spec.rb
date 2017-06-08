@@ -2,6 +2,48 @@
 
 require 'spec_helper'
 
+def header_from_email(header)
+  params = {
+    headers: header,
+    to:      ['hi@example.com'],
+    from:    'bye@example.com',
+    text:    ''
+  }
+
+  email = Griddler::Email.new(params)
+  email.headers
+end
+
+def email_with_params(params)
+  params = {
+    to:   ['hi@example.com'],
+    from: 'bye@example.com'
+  }.merge(params)
+
+  Griddler::Email.new(params)
+end
+
+def body_from_email(raw_body, charsets = {})
+  raw_body.each do |format, text|
+    text.encode!(charsets[format]) if charsets[format]
+  end
+
+  params = {
+    to:       ['hi@example.com'],
+    from:     'bye@example.com',
+    charsets: charsets.to_json
+  }
+
+  raw_body.select! do |format, text|
+    text.force_encoding('utf-8') if text
+  end
+
+  params.merge!(raw_body)
+
+  email = Griddler::Email.new(params)
+  email.body
+end
+
 describe Griddler::Email, 'body formatting' do
   it 'uses the html field and sanitizes it when text param missing' do
     body = <<-EOF
@@ -45,11 +87,11 @@ describe Griddler::Email, 'body formatting' do
 
   it 'does not remove invalid utf-8 bytes if charset is set' do
     charsets = {
-      to: 'UTF-8',
-      html: 'utf-8',
+      to:      'UTF-8',
+      html:    'utf-8',
       subject: 'UTF-8',
-      from: 'UTF-8',
-      text: 'iso-8859-1'
+      from:    'UTF-8',
+      text:    'iso-8859-1'
     }
 
     expect(body_from_email({ text: 'Helló.' }, charsets)).to eq 'Helló.'
@@ -462,11 +504,11 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     charsets = {
-      to: 'UTF-8',
-      html: 'utf-8',
+      to:      'UTF-8',
+      html:    'utf-8',
       subject: 'UTF-8',
-      from: 'UTF-8',
-      text: 'utf-8'
+      from:    'UTF-8',
+      text:    'utf-8'
     }
 
     expect(body_from_email({ text: body }, charsets)).to eq 'Hello.'
@@ -492,25 +534,24 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: nil)).to eq ''
   end
 
-  def body_from_email(raw_body, charsets = {})
-    raw_body.each do |format, text|
-      text.encode!(charsets[format]) if charsets[format]
-    end
-
-    params = {
-      to: ['hi@example.com'],
-      from: 'bye@example.com',
-      charsets: charsets.to_json
+  context 'prefer_html: true' do
+    before(:each) {
+      Griddler.configure do |config|
+        config.prefer_html = true
+      end
+      allow(Griddler::EmailParser).to receive_messages(email_client: :outlook_web)
     }
 
-    raw_body.select! do |format, text|
-      text.force_encoding('utf-8') if text
+    it 'split html part as body' do
+      expect(body_from_email(html: "<div id='divtagdefaultwrapper'>Hellö.</div>kajkjkj")).to eq '<div id="divtagdefaultwrapper">Hellö.</div>'
     end
 
-    params.merge!(raw_body)
-
-    email = Griddler::Email.new(params)
-    email.body
+    it 'raw_body is html' do
+      expect(email_with_params(
+               html: "<div id='divtagdefaultwrapper'>Hellö.</div>apple_mail",
+               text: 'Hellö.apple_mail').raw_body
+      ).to eq "<div id='divtagdefaultwrapper'>Hellö.</div>apple_mail"
+    end
   end
 end
 
@@ -553,30 +594,21 @@ describe Griddler::Email, 'multipart emails' do
     )
     expect(email.raw_body).to eq '<b>hello there</b>'
   end
-
-  def email_with_params(params)
-    params = {
-      to: ['hi@example.com'],
-      from: 'bye@example.com'
-    }.merge(params)
-
-    Griddler::Email.new(params)
-  end
 end
 
 describe Griddler::Email, 'extracting email headers' do
   it 'extracts header names and values as a hash' do
-    header_name = 'Arbitrary-Header'
+    header_name  = 'Arbitrary-Header'
     header_value = 'Arbitrary-Value'
-    header = "#{header_name}: #{header_value}"
+    header       = "#{header_name}: #{header_value}"
 
     headers = header_from_email(header)
     expect(headers[header_name]).to eq header_value
   end
 
   it 'handles a hash being submitted' do
-    header = {
-      "X-Mailer" => "Airmail (271)",
+    header  = {
+      "X-Mailer"     => "Airmail (271)",
       "Mime-Version" => "1.0"
     }
     headers = header_from_email(header)
@@ -584,28 +616,28 @@ describe Griddler::Email, 'extracting email headers' do
   end
 
   it 'cleans invalid UTF-8 bytes from a hash when it is submitted' do
-    header_name = 'Arbitrary-Header'
+    header_name  = 'Arbitrary-Header'
     header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
-    header = { header_name => header_value }
-    headers = header_from_email(header)
+    header       = { header_name => header_value }
+    headers      = header_from_email(header)
 
     expect(headers[header_name]).to eq "invalid utf-8 bytes are ÀÁõúþÿ."
   end
 
   it 'deeply cleans invalid UTF-8 bytes from a hash when it is submitted' do
-    header_name = 'Arbitrary-Header'
+    header_name  = 'Arbitrary-Header'
     header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
-    header = { header_name => { "a" => [header_value] } }
-    headers = header_from_email(header)
+    header       = { header_name => { "a" => [header_value] } }
+    headers      = header_from_email(header)
 
     expect(headers[header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
   end
 
   it 'deeply cleans invalid UTF-8 bytes from an array when it is submitted' do
-    header_name = 'Arbitrary-Header'
+    header_name  = 'Arbitrary-Header'
     header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
-    header = [{ header_name => { "a" => [header_value] } }]
-    headers = header_from_email(header)
+    header       = [{ header_name => { "a" => [header_value] } }]
+    headers      = header_from_email(header)
 
     expect(headers[0][header_name]).to eq({ "a" => ["invalid utf-8 bytes are ÀÁõúþÿ."] })
   end
@@ -621,68 +653,56 @@ describe Griddler::Email, 'extracting email headers' do
   end
 
   it 'handles invalid utf-8 bytes in headers' do
-    header_name = 'Arbitrary-Header'
+    header_name  = 'Arbitrary-Header'
     header_value = "invalid utf-8 bytes are \xc0\xc1\xf5\xfa\xfe\xff."
-    header = "#{header_name}: #{header_value}"
+    header       = "#{header_name}: #{header_value}"
 
     headers = header_from_email(header)
     expect(headers[header_name]).to eq "invalid utf-8 bytes are ÀÁõúþÿ."
   end
 
   it 'handles valid utf-8 bytes in headers' do
-    header_name = 'Arbitrary-Header'
+    header_name  = 'Arbitrary-Header'
     header_value = "valid utf-8 bytes are ÀÁõÿ."
-    header = "#{header_name}: #{header_value}"
+    header       = "#{header_name}: #{header_value}"
 
     headers = header_from_email(header)
     expect(headers[header_name]).to eq "valid utf-8 bytes are ÀÁõÿ."
-  end
-
-  def header_from_email(header)
-    params = {
-      headers: header,
-      to: ['hi@example.com'],
-      from: 'bye@example.com',
-      text: ''
-    }
-
-    email = Griddler::Email.new(params)
-    email.headers
   end
 end
 
 describe Griddler::Email, 'extracting email addresses' do
   before do
-    @address_components = {
-      full: 'Bob <bob@example.com>',
+    @address_components     = {
+      full:  'Bob <bob@example.com>',
       email: 'bob@example.com',
       token: 'bob',
-      host: 'example.com',
-      name: 'Bob',
+      host:  'example.com',
+      name:  'Bob',
     }
-    @full_address= @address_components[:full]
+    @full_address           = @address_components[:full]
     @bcc_address_components = {
-      full: 'Johny <johny@example.com>',
+      full:  'Johny <johny@example.com>',
       email: 'johny@example.com',
       token: 'johny',
-      host: 'example.com',
-      name: 'Johny',
+      host:  'example.com',
+      name:  'Johny',
     }
-    @full_bcc_address= @bcc_address_components[:full]
+    @full_bcc_address       = @bcc_address_components[:full]
   end
 
   it 'extracts the name' do
     email = Griddler::Email.new(
-      to: [@full_address],
+      to:   [@full_address],
       from: @full_address,
     )
     expect(email.to).to eq [@address_components.merge(name: 'Bob')]
   end
 
   it 'handles normal e-mail address' do
-    email = Griddler::Email.new(
+    email    = Griddler::Email.new(
       text: 'hi',
-      to: [@address_components[:email]],
+      to:   [@address_components[:email]],
       from: @full_address
     )
     expected = @address_components.merge(
@@ -696,26 +716,26 @@ describe Griddler::Email, 'extracting email addresses' do
 
   it 'returns the BCC email' do
     email = Griddler::Email.new(
-        text: 'hi',
-        to: [@address_components[:email]],
-        from: @full_address,
-        bcc: [@full_bcc_address],
+      text: 'hi',
+      to:   [@address_components[:email]],
+      from: @full_address,
+      bcc:  [@full_bcc_address],
     )
     expect(email.bcc).to eq [@bcc_address_components]
   end
 
   it 'handles new lines' do
-    email = Griddler::Email.new(text: 'hi', to: ["#{@full_address}\n"],
-      from: "#{@full_address}\n")
+    email    = Griddler::Email.new(text: 'hi', to: ["#{@full_address}\n"],
+                                   from: "#{@full_address}\n")
     expected = @address_components.merge(full: "#{@full_address}\n")
     expect(email.to).to eq [expected]
     expect(email.from).to eq expected
   end
 
   it 'handles angle brackets around address' do
-    email = Griddler::Email.new(
+    email    = Griddler::Email.new(
       text: 'hi',
-      to: ["<#{@address_components[:email]}>"],
+      to:   ["<#{@address_components[:email]}>"],
       from: "<#{@address_components[:email]}>"
     )
     expected = @address_components.merge(
@@ -728,7 +748,7 @@ describe Griddler::Email, 'extracting email addresses' do
   it 'handles name and angle brackets around address' do
     email = Griddler::Email.new(
       text: 'hi',
-      to: [@full_address],
+      to:   [@full_address],
       from: @full_address
     )
     expect(email.to).to eq [@address_components]
@@ -736,9 +756,9 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 
   it 'handles multiple e-mails, with priority to the bracketed' do
-    email = Griddler::Email.new(
+    email    = Griddler::Email.new(
       text: 'hi',
-      to: ["fake@example.com <#{@address_components[:email]}>"],
+      to:   ["fake@example.com <#{@address_components[:email]}>"],
       from: "fake@example.com <#{@address_components[:email]}>"
     )
     expected = @address_components.merge(
@@ -751,9 +771,9 @@ describe Griddler::Email, 'extracting email addresses' do
   end
 
   it 'handles invalid UTF-8 characters' do
-    email = Griddler::Email.new(
+    email    = Griddler::Email.new(
       text: 'hi',
-      to: ["\xc0\xc1\xf5\xfa\xfe\xff #{@full_address}"],
+      to:   ["\xc0\xc1\xf5\xfa\xfe\xff #{@full_address}"],
       from: "\xc0\xc1\xf5\xfa\xfe\xff #{@full_address}")
     expected = @address_components.merge(
       full: "ÀÁõúþÿ Bob <bob@example.com>",
@@ -765,13 +785,13 @@ describe Griddler::Email, 'extracting email addresses' do
 
   it 'ignores blank email addresses' do
     expected = @address_components
-    email = Griddler::Email.new(to: ['', @full_address])
+    email    = Griddler::Email.new(to: ['', @full_address])
     expect(email.to).to eq [expected]
   end
 
   it 'ignores emails without @' do
     expected = @address_components
-    email = Griddler::Email.new(to: ['johndoe', @full_address])
+    email    = Griddler::Email.new(to: ['johndoe', @full_address])
     expect(email.to).to eq [expected]
   end
 
@@ -796,17 +816,17 @@ describe Griddler::Email, 'extracting email subject' do
 
   it 'handles normal characters' do
     email = Griddler::Email.new(
-      to: [@address],
-      from: @address,
+      to:      [@address],
+      from:    @address,
       subject: @subject,
     )
     expect(email.subject).to eq @subject
   end
 
   it 'handles invalid UTF-8 characters' do
-    email = Griddler::Email.new(
-      to: [@address],
-      from: @address,
+    email    = Griddler::Email.new(
+      to:      [@address],
+      from:    @address,
       subject: "\xc0\xc1\xf5\xfa\xfe\xff #{@subject}",
     )
     expected = "ÀÁõúþÿ #{@subject}"
@@ -817,18 +837,18 @@ end
 describe Griddler::Email, 'extracting email addresses from CC field' do
   before do
     @address = 'bob@example.com'
-    @cc = 'Charles Conway <charles+123@example.com>'
+    @cc      = 'Charles Conway <charles+123@example.com>'
   end
 
   it 'uses the cc from the adapter' do
     email = Griddler::Email.new(to: [@address], from: @address, cc: [@cc], headers: @headers)
     expect(email.cc).to eq [{
-      token: 'charles+123',
-      host: 'example.com',
-      email: 'charles+123@example.com',
-      full: 'Charles Conway <charles+123@example.com>',
-      name: 'Charles Conway',
-    }]
+                              token: 'charles+123',
+                              host:  'example.com',
+                              email: 'charles+123@example.com',
+                              full:  'Charles Conway <charles+123@example.com>',
+                              name:  'Charles Conway',
+                            }]
   end
 
   it 'returns an empty array when no CC address is added' do
@@ -849,10 +869,10 @@ describe Griddler::Email, 'with custom configuration' do
 
   let(:params) do
     {
-      to: ['Some Identifier <some-identifier@example.com>'],
-      from: 'Joe User <joeuser@example.com>',
+      to:      ['Some Identifier <some-identifier@example.com>'],
+      from:    'Joe User <joeuser@example.com>',
       subject: 'Re: [ThisApp] That thing',
-      text: <<-EOS.strip_heredoc.strip
+      text:    <<-EOS.strip_heredoc.strip
         lololololo hi
 
         -- REPLY ABOVE THIS LINE --
@@ -940,7 +960,7 @@ This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nveryl
   context 'with multiple recipients in to field' do
     it 'includes all of the emails' do
       recipients = ['caleb@example.com', '<joel@example.com>', 'Swift <swift@example.com>']
-      params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
+      params     = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
 
       email = Griddler::Email.new(params)
 
@@ -955,7 +975,7 @@ This is the real text\r\n\r\nOn Tue, Jun 14, 2016 at 10:25 AM Someone <\r\nveryl
          '',
          '<joel@example.com>',
          'Swift <swift@example.com>']
-      params = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
+      params     = { to: recipients, from: 'ralph@example.com', text: 'hi guys' }
 
       email = Griddler::Email.new(params)
 

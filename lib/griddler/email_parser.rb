@@ -11,48 +11,82 @@
 require 'mail'
 
 module Griddler::EmailParser
-  def self.parse_address(full_address)
-    email_address = extract_email_address(full_address)
-    name = extract_name(full_address)
-    token, host = split_address(email_address)
-    {
-      token: token,
-      host: host,
-      email: email_address,
-      full: full_address,
-      name: name,
-    }
-  end
+  class << self
+    def parse_address(full_address)
+      email_address = extract_email_address(full_address)
+      name          = extract_name(full_address)
+      token, host   = split_address(email_address)
+      {
+        token: token,
+        host:  host,
+        email: email_address,
+        full:  full_address,
+        name:  name,
+      }
+    end
 
-  def self.extract_reply_body(body)
-    if body.blank?
-      ""
-    else
-      remove_reply_portion(body)
-        .split(/[\r]*\n/)
-        .reject do |line|
+    # html: html 的内容
+    # client: 是哪一个 email client
+    def extract_reply_html(html, headers = {})
+      doc = Nokogiri::HTML.parse(html)
+      Griddler::EmailClientsSpliter.send(email_client(headers), doc)
+    end
+
+    def extract_reply_body(body)
+      if body.blank?
+        ""
+      else
+        remove_reply_portion(body)
+          .split(/[\r]*\n/)
+          .reject do |line|
           line =~ /^[[:space:]]+>/ ||
             line =~ /^[[:space:]]*Sent from my /
         end.
-        join("\n").
-        strip
+          join("\n").
+          strip
+      end
     end
-  end
 
-  def self.extract_headers(raw_headers)
-    if raw_headers.is_a?(Hash)
-      raw_headers
-    else
-      header_fields = Mail::Header.new(raw_headers).fields
+    def extract_headers(raw_headers)
+      if raw_headers.is_a?(Hash)
+        raw_headers
+      else
+        header_fields = Mail::Header.new(raw_headers).fields
 
-      header_fields.inject({}) do |header_hash, header_field|
-        header_hash[header_field.name.to_s] = header_field.value.to_s
-        header_hash
+        header_fields.inject({}) do |header_hash, header_field|
+          header_hash[header_field.name.to_s] = header_field.value.to_s
+          header_hash
+        end
       end
     end
   end
 
+
   private
+
+  # 判断 email client 是哪一个
+  def self.email_client(headers)
+    trait = email_client_trait(headers)
+    client_patterns.each do |client, pattern|
+      return client if pattern.match?(trait)
+    end
+    :default
+  end
+
+  # patterns 有先后的顺序
+  def self.client_patterns
+    {
+      outlook_mac: /Microsoft-MacOutlook/i,
+      outlook_web: /prod\.outlook\.com/,
+      icloud:      /icloud\.com/, # 现在 Apple 的 iPhone, Mac, iPad 都可以统一处理, 未来再看是否需要额外处理.
+      gmail:       /mail\.gmail\.com/
+    }
+  end
+
+  # 通过 User-Agnet, From, 与 Message-Id 来进行判断. 获取能够产生 trait 标记的方法
+  def self.email_client_trait(headers)
+    [headers['User-Agent'], headers['Message-Id'], headers['From']].join(' ')
+  end
 
   def self.reply_delimeter_regex
     delimiter = Array(Griddler.configuration.reply_delimiter).join('|')
@@ -65,7 +99,7 @@ module Griddler::EmailParser
 
   def self.extract_name(full_address)
     full_address = full_address.strip
-    name = full_address.split('<').first.strip
+    name         = full_address.split('<').first.strip
     if name.present? && name != full_address
       name
     end
