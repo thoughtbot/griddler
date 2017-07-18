@@ -19,7 +19,8 @@ module Griddler
                 :raw_headers,
                 :attachments,
                 :vendor_specific,
-                :spam_report
+                :spam_report,
+                :charsets
 
     def initialize(params)
       @params = params
@@ -47,6 +48,8 @@ module Griddler
       @vendor_specific = params.fetch(:vendor_specific, {})
 
       @spam_report = params[:spam_report]
+
+      @charsets = params[:charsets]
     end
 
     def to_h
@@ -66,6 +69,7 @@ module Griddler
         vendor_specific: vendor_specific,
         spam_score: spam_score,
         spam_report: spam_report,
+        charsets: charsets
       }
     end
 
