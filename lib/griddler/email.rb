@@ -69,7 +69,7 @@ module Griddler
         vendor_specific: vendor_specific,
         spam_score: spam_score,
         spam_report: spam_report,
-        charsets: charsets
+        charsets: charsets,
       }
     end
 

@@ -1003,7 +1003,7 @@ describe Griddler::Email, 'methods' do
           html: 'utf-8',
           subject: 'UTF-8',
           from: 'UTF-8',
-          text: 'iso-8859-1'
+          text: 'iso-8859-1',
         }.to_json,
         text: <<-EOS.strip_heredoc.strip
           lololololo hi
@@ -1033,7 +1033,7 @@ describe Griddler::Email, 'methods' do
         vendor_specific: {},
         spam_report: email.spam_report,
         spam_score: email.spam_score,
-        charsets: email.charsets
+        charsets: email.charsets,
       )
     end
   end
