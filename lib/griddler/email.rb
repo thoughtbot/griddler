@@ -84,6 +84,8 @@ module Griddler
     end
 
     def clean_raw_html(html)
+      Loofah::HTML5::WhiteList::ACCEPTABLE_PROTOCOLS.add('cid')
+      Loofah::HTML5::WhiteList::ACCEPTABLE_PROTOCOLS.add('data')
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = sanitize(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)
