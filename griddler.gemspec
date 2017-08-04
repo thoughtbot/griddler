@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ['cjaysson@gmail.com', 'joel@thoughtbot.com', 'theycallmeswift@gmail.com']
   s.homepage    = 'http://thoughtbot.com'
   s.summary     = 'SendGrid Parse API client Rails Engine'
+  s.license	= 'MIT'
 
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
   s.files = Dir['{app,config,lib}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
