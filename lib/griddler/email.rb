@@ -3,7 +3,7 @@ require 'htmlentities'
 module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
-    attr_reader :to, :from, :cc, :bcc, :subject, :raw_body, :raw_text, :raw_html, :content_ids, :headers, :raw_headers, :attachments
+    attr_reader :to, :from, :cc, :bcc, :subject, :raw_body, :raw_text, :raw_html, :headers, :raw_headers, :attachments, :content_ids
 
     def initialize(params)
       @params = params
@@ -83,6 +83,8 @@ module Griddler
 
     ##to delete
     def clean_raw_html(html)
+      Loofah::HTML5::WhiteList::ACCEPTABLE_PROTOCOLS.add('cid')
+      Loofah::HTML5::WhiteList::ACCEPTABLE_PROTOCOLS.add('data')
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = sanitize(cleaned_html)
       cleaned_html = HTMLEntities.new.decode(cleaned_html)

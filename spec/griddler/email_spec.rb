@@ -73,6 +73,20 @@ describe Griddler::Email, 'body formatting' do
     expect(raw_body_from_email({ text: 'Helló.' }, charsets)).to eq 'Helló.'
   end
 
+  it 'does not remove embedded [cid] images if they come as html' do
+    image_tag = '<img src="cid:ii_15d764b442ac37dd" alt="Inline image 1">'
+    expect(body_from_email(html: image_tag)).to eq image_tag
+    expect(clean_body_from_email(html: image_tag)).to eq image_tag
+    expect(raw_body_from_email(html: image_tag)).to eq image_tag
+  end
+
+  it 'does not remove embedded [data] images if they come as html' do
+    image_tag = '<img src="data:data:image/jpeg;base64,/9j/4S/+RXhpZgAATU0AKgAAAAgACAESAAMAENkDZ5u8/" alt="Inline image 1">'
+    expect(body_from_email(html: image_tag)).to eq image_tag
+    expect(clean_body_from_email(html: image_tag)).to eq image_tag
+    expect(raw_body_from_email(html: image_tag)).to eq image_tag
+  end
+
   it 'handles everything on one line' do
     body = <<-EOF
       Hello. On 01/12/13, Tristan <email@example.com> wrote: -- REPLY ABOVE THIS LINE -- or visit your website to respond.
