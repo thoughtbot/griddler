@@ -3,8 +3,7 @@ require 'htmlentities'
 module Griddler
   class Email
     include ActionView::Helpers::SanitizeHelper
-    attr_reader :to, :from, :cc, :bcc, :subject, :body, :raw_body, :raw_text, :raw_html,
-      :clean_body, :clean_text, :clean_html, :headers, :raw_headers, :attachments
+    attr_reader :to, :from, :cc, :bcc, :subject, :raw_body, :raw_text, :raw_html, :content_ids, :headers, :raw_headers, :attachments
 
     def initialize(params)
       @params = params
@@ -13,17 +12,12 @@ module Griddler
       @from = extract_address(params[:from])
       @subject = extract_subject
 
-      @body = extract_body
-      @clean_text = clean_raw_text(params[:text])
-      @clean_html = clean_raw_html(params[:html])
-      @clean_body = @clean_text.presence || @clean_html
-
       @raw_text = clean_raw_utf8(params[:text])
       @raw_html = clean_raw_utf8(params[:html])
       @raw_body = @raw_text.presence || @raw_html
 
       @headers = extract_headers
-
+      @content_ids = params['content-ids']
       @cc = recipients(:cc)
       @bcc = recipients(:bcc)
 
@@ -52,6 +46,8 @@ module Griddler
       clean_invalid_utf8_bytes(params[:subject])
     end
 
+
+    ##to delete
     def extract_body
       text = EmailParser.extract_reply_body(text_or_sanitized_html)
       text = clean_raw_text(text) if params.fetch(:text, '').presence
@@ -75,6 +71,8 @@ module Griddler
       text.presence || clean_raw_html(params.fetch(:html, '')).presence
     end
 
+
+    ##to delete
     def clean_raw_text(text)
       cleaned_text = clean_invalid_utf8_bytes(text)
       full_sanitizer = Rails::Html::FullSanitizer.new
@@ -83,6 +81,7 @@ module Griddler
       cleaned_text
     end
 
+    ##to delete
     def clean_raw_html(html)
       cleaned_html = clean_invalid_utf8_bytes(html)
       cleaned_html = sanitize(cleaned_html)
