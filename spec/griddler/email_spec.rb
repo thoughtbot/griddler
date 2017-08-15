@@ -8,8 +8,6 @@ describe Griddler::Email, 'body formatting' do
       <p>Hello.</p><span>-- REPLY ABOVE THIS LINE --</span><p>original message</p>
     EOF
 
-    # expect(body_from_email(html: body)).to eq '<p>Hello.</p><span>'
-    # expect(clean_body_from_email(html: body)).to eq body
     expect(raw_body_from_email(html: body)).to eq body
   end
 
@@ -18,8 +16,6 @@ describe Griddler::Email, 'body formatting' do
       <p>Hello.</p><span>-- REPLY ABOVE THIS LINE --</span><p>original message</p>
     EOF
 
-    # expect(body_from_email(html: body, text: '')).to eq '<p>Hello.</p><span>'
-    # expect(clean_body_from_email(html: body, text: '')).to eq body
     expect(raw_body_from_email(html: body, text: '')).to eq body
   end
 
