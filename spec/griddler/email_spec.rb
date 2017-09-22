@@ -582,6 +582,23 @@ describe Griddler::Email, 'extracting email addresses' do
 
   end
 
+  it 'handles empty names' do
+    email = Griddler::Email.new(
+      text: 'hi',
+      to: [' '],
+      from: @full_address
+    )
+    expected = {
+      token: nil,
+      host: nil,
+      email: '',
+      full: ' ',
+      name: nil
+    }
+    expect(email.to).to eq [expected]
+    expect(email.from).to eq @address_components
+  end
+
   it 'returns the BCC email' do
     email = Griddler::Email.new(
         text: 'hi',
