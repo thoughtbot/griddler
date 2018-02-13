@@ -13,7 +13,7 @@ RSpec.describe "Receiving Email", :type => :request do
     it 'is successful' do
       post path, params: email_params
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it 'creates a new Griddler::Email with the given params' do
