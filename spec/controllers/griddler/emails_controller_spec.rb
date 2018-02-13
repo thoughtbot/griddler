@@ -1,15 +1,17 @@
 require 'spec_helper'
 
-describe Griddler::EmailsController, :type => :controller do
+RSpec.describe "sending data", :type => :request do
   before(:each) do
     fake_adapter = double(normalize_params: normalized_params)
     Griddler.adapter_registry.register(:one_that_works, fake_adapter)
     Griddler.configuration.email_service = :one_that_works
   end
 
-  describe 'POST create', type: :controller do
+  let(:path) { "/email_processor" }
+
+  describe 'POST create' do
     it 'is successful' do
-      post :create, params: email_params
+      post path, params: email_params
 
       expect(response).to be_success
     end
@@ -20,7 +22,7 @@ describe Griddler::EmailsController, :type => :controller do
         with(hash_including(to: ['tb@example.com'])).
         and_return(email)
 
-      post :create, params: { to: 'tb@example.com' }
+      post path, params: { to: 'tb@example.com' }
     end
 
     it 'calls process on the custom processor class' do
@@ -28,7 +30,7 @@ describe Griddler::EmailsController, :type => :controller do
       expect(my_handler).to receive(:new).and_return(my_handler)
       allow(Griddler.configuration).to receive_messages(processor_class: my_handler)
 
-      post :create, params: email_params
+      post path, params: email_params
     end
 
     it 'calls the custom processor method on the processor class' do
@@ -38,7 +40,7 @@ describe Griddler::EmailsController, :type => :controller do
       expect(EmailProcessor).to receive(:new).and_return(fake_processor)
       expect(fake_processor).to receive(:perform)
 
-      post :create, params: email_params
+      post path, params: email_params
     end
   end
 
