@@ -8,6 +8,7 @@ env:
   - "RAILS_BRANCH=4-1-stable"
   - "RAILS_BRANCH=4-2-stable"
   - "RAILS_BRANCH=5-0-stable"
+  - "RAILS_BRANCH=5-1-stable"
   - "RAILS_BRANCH=master"
 branches:
   only:
