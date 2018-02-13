@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-RSpec.describe "Receiving Email", :type => :request do
+RSpec.describe 'Receiving Email', type: :request do
   before(:each) do
     fake_adapter = double(normalize_params: normalized_params)
     Griddler.adapter_registry.register(:one_that_works, fake_adapter)
     Griddler.configuration.email_service = :one_that_works
   end
 
-  let(:path) { "/email_processor" }
+  let(:path) { '/email_processor' }
 
   describe 'POST create' do
     it 'is successful' do
