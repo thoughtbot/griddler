@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe "sending data", :type => :request do
+RSpec.describe "Receiving Email", :type => :request do
   before(:each) do
     fake_adapter = double(normalize_params: normalized_params)
     Griddler.adapter_registry.register(:one_that_works, fake_adapter)
