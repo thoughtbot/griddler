@@ -1,5 +1,8 @@
 ## HEAD (unreleased)
 
+## 1.5.1
+* Don't raise when skipping `verify_authenticity_token` ([#299](https://github.com/thoughtbot/griddler/pull/299))
+
 ## 1.5.0
 * Add `params[:vendor_specific]` to `Griddler::Email` ([#285](https://github.com/thoughtbot/griddler/pull/285))
 * Handle common French/Spanish formats ([#250](https://github.com/thoughtbot/griddler/pull/250))
