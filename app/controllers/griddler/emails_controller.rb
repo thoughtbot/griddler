@@ -1,4 +1,6 @@
 class Griddler::EmailsController < ActionController::Base
+  skip_before_action :verify_authenticity_token
+
   def create
     normalized_params.each do |p|
       process_email email_class.new(p)
