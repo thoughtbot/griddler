@@ -1,5 +1,8 @@
 ## HEAD (unreleased)
 
+## 1.5.2
+* Add Email#charsets reader ([#292](https://github.com/thoughtbot/griddler/pull/292))
+
 ## 1.5.1
 * Don't raise when skipping `verify_authenticity_token` ([#299](https://github.com/thoughtbot/griddler/pull/299))
 
