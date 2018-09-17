@@ -173,7 +173,7 @@ adapter gem in addition to `griddler`.
 | mailgun     | [griddler-mailgun]
 | postmark    | [griddler-postmark]
 | sparkpost   | [griddler-sparkpost]
-| ses (amazon)| [griddler-ses]
+| ses (amazon)| [griddler-amazon_ses]
 
 [griddler-sendgrid]: https://github.com/thoughtbot/griddler-sendgrid
 [griddler-cloudmailin]: https://github.com/thoughtbot/griddler-cloudmailin
@@ -181,7 +181,7 @@ adapter gem in addition to `griddler`.
 [griddler-mailgun]: https://github.com/bradpauly/griddler-mailgun
 [griddler-postmark]: https://github.com/r38y/griddler-postmark
 [griddler-sparkpost]: https://github.com/PrestoDoctor/griddler-sparkpost
-[griddler-ses]: https://github.com/85x14/griddler-ses
+[griddler-amazon_ses]: https://github.com/ccallebs/griddler-amazon_ses
 
 Writing an Adapter
 ------------------
