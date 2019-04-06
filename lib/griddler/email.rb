@@ -109,6 +109,8 @@ module Griddler
         deep_clean_invalid_utf8_bytes(params[:headers])
       elsif params[:headers].is_a?(Array)
         deep_clean_invalid_utf8_bytes(params[:headers])
+      elsif params[:headers].is_a?(ActionController::Parameters)
+        deep_clean_invalid_utf8_bytes(params[:headers].to_unsafe_hash)
       else
         EmailParser.extract_headers(clean_invalid_utf8_bytes(params[:headers]))
       end
