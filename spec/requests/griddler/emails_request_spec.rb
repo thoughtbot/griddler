@@ -7,13 +7,23 @@ RSpec.describe 'Receiving Email', type: :request do
     Griddler.configuration.email_service = :one_that_works
   end
 
-  let(:path) { '/email_processor' }
+  let(:path) { '/v1/email_processor' }
 
   describe 'POST create' do
     it 'is successful' do
       post path, params: email_params
 
       expect(response).to be_successful
+    end
+
+    context 'with another API version' do
+      let(:path) { '/v2/email_processor' }
+
+      it 'is also successful' do
+        post path, params: email_params
+
+        expect(response).to be_successful
+      end
     end
 
     it 'creates a new Griddler::Email with the given params' do

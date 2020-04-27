@@ -1,5 +1,12 @@
 Dummy::Application.routes.draw do
-  mount_griddler
+  scope 'v1' do
+    mount_griddler
+  end
+
+  scope 'v2' do
+    mount_griddler
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
