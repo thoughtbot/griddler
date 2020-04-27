@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '>= 3.2.0'
   s.add_dependency 'htmlentities'
+  s.add_dependency 'sqlite3'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'pry'
   # jquery-rails is used by the dummy Rails application
   s.add_development_dependency 'jquery-rails'
