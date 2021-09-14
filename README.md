@@ -213,7 +213,7 @@ implementation.
 Credits
 -------
 
-Griddler was written by Caleb Thompson and Joel Oliveira.
+Griddler was written by Caleb Hearth and Joel Oliveira.
 
 Thanks to our [contributors](https://github.com/thoughtbot/griddler/contributors)!
 
