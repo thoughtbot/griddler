@@ -80,14 +80,16 @@ module Griddler::EmailParser
       reply_delimeter_regex,
       /^[[:space:]]*[-]+[[:space:]]*Original Message[[:space:]]*[-]+[[:space:]]*$/i,
       /^[[:space:]]*--[[:space:]]*$/,
-      /^[[:space:]]*\>?[[:space:]]*On.*\r?\n?.*wrote:\r?\n?$/,
+      /^[[:space:]]*(>[[:space:]]*)?On.*\r?\n?.*wrote:\r?\n?$/,
       /^On.*<\r?\n?.*>.*\r?\n?wrote:\r?\n?$/,
       /On.*wrote:/,
       /\*?From:.*$/i,
       /^[[:space:]]*\d{4}[-\/]\d{1,2}[-\/]\d{1,2}[[:space:]].*[[:space:]]<.*>?$/i,
       /(_)*\n[[:space:]]*De :.*\n[[:space:]]*Envoyé :.*\n[[:space:]]*À :.*\n[[:space:]]*Objet :.*\n$/i, # French Outlook
-      /^[[:space:]]*\>?[[:space:]]*Le.*<\n?.*>.*\n?a[[:space:]]?\n?écrit :$/, # French
-      /^[[:space:]]*\>?[[:space:]]*El.*<\n?.*>.*\n?escribió:$/ # Spanish
+      # French
+      /^[[:space:]]*(>[[:space:]]*)?Le.*<\n?.*>.*\n?a[[:space:]]?\n?écrit :$/,
+      # Spanish
+      /^[[:space:]]*(>[[:space:]]*)?El.*<\n?.*>.*\n?escribió:$/,
     ]
   end
 
