@@ -112,11 +112,7 @@ module Griddler
     end
 
     def clean_invalid_utf8_bytes(text)
-      if text && !text.valid_encoding?
-        text.force_encoding('ISO-8859-1').encode!('UTF-8')
-      else
-        text
-      end
+      text
     end
   end
 end
