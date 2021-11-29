@@ -113,7 +113,7 @@ Griddler::Email attributes
 
 ### Email Addresses
 
-Gridder::Email provides email addresses as hashes. Each hash will have the following
+Griddler::Email provides email addresses as hashes. Each hash will have the following
 information of each recipient:
 
 | Key | Value
