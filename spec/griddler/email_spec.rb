@@ -574,6 +574,17 @@ describe Griddler::Email, 'extracting email headers' do
     expect(headers[header_name]).to eq header_value
   end
 
+  it 'coerces ActionController::Parameters to a Hash' do
+    headers_hash = {
+      'X-Mailer' => 'Airmail (271)',
+      'Mime-Version' => '1.0',
+    }
+    header = ActionController::Parameters.new(headers_hash)
+    headers = header_from_email(header)
+    expect(headers).to be_a(Hash)
+    expect(headers).to eq(headers_hash)
+  end
+
   it 'handles a hash being submitted' do
     header = {
       "X-Mailer" => "Airmail (271)",
