@@ -10,17 +10,7 @@ module Griddler::Testing
   end
 
   def normalize_params(params)
-    begin
-      Griddler::Sendgrid::Adapter.normalize_params(params)
-    rescue
-      puts({
-        is_griddler: true,
-        griddler_date: DateTime.now,
-        griddler_from: "normalize_params",
-        tag: "missing_mail",
-        params_to_normalize: params
-      }.to_json)
-    end
+    Griddler::Sendgrid::Adapter.normalize_params(params)
   end
 
   class UploadedImage

@@ -9,24 +9,14 @@ class Griddler::EmailsController < ActionController::Base
           is_griddler: true,
           griddler_from: "params_each_griddler_emails_controller",
           tag: "missing_mail",
-          email_class: email_class.new(p),
+          email_class: email_class.new(p).as_json,
+          griddler_param: p,
           griddler_date: DateTime.now,
           email_class_valid: email_class.new(p).valid?
         }.to_json)
       rescue
       end
       process_email email_class.new(p)
-    end
-
-    begin
-      puts({
-        tag: "missing_mail",
-        griddler_date: DateTime.now,
-        is_griddler: true,
-        griddler_from: "griddler_emails_controller",
-        normalized_params: params
-      }.to_json)
-    rescue
     end
 
     head :ok
