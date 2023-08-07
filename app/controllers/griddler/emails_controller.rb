@@ -1,21 +1,9 @@
 class Griddler::EmailsController < ActionController::Base
   skip_before_action :verify_authenticity_token, raise: false
+  before_action :logging, only: :create
 
   def create
-    params = normalized_params
-    params.each do |p|
-      begin
-        puts({
-          is_griddler: true,
-          griddler_from: "params_each_griddler_emails_controller",
-          tag: "missing_mail",
-          email_class: email_class.new(p).as_json,
-          griddler_param: p,
-          griddler_date: DateTime.now,
-          email_class_valid: email_class.new(p).valid?
-        }.to_json)
-      rescue
-      end
+    normalized_params.each do |p|
       process_email email_class.new(p)
     end
 
@@ -38,5 +26,18 @@ class Griddler::EmailsController < ActionController::Base
 
   def griddler_configuration
     Griddler.configuration
+  end
+
+  def logging
+    begin
+      puts({
+        is_griddler: true,
+        griddler_from: "params_each_griddler_emails_controller",
+        tag: "missing_mail",
+        griddler_params: normalized_params,
+        griddler_date: DateTime.now
+      }.to_json)
+    rescue
+    end
   end
 end
