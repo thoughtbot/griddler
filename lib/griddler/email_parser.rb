@@ -93,7 +93,7 @@ module Griddler::EmailParser
 
   def self.remove_reply_portion(body)
     regex_split_points.inject(body) do |result, split_point|
-      result[result.index(split_point)] || ""
+      result[0...result.index(split_point)] || ""
     end
   end
 end
