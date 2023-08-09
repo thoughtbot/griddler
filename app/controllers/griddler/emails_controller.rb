@@ -1,5 +1,6 @@
 class Griddler::EmailsController < ActionController::Base
   skip_before_action :verify_authenticity_token, raise: false
+  before_action :logging, only: :create
 
   def create
     normalized_params.each do |p|
@@ -25,5 +26,18 @@ class Griddler::EmailsController < ActionController::Base
 
   def griddler_configuration
     Griddler.configuration
+  end
+
+  def logging
+    begin
+      puts({
+        is_griddler: true,
+        griddler_from: "params_each_griddler_emails_controller",
+        tag: "missing_mail",
+        griddler_params: normalized_params,
+        griddler_date: DateTime.now
+      }.to_json)
+    rescue
+    end
   end
 end
