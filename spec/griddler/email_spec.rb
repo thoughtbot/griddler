@@ -373,6 +373,16 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'handles Отправлено из мобильной почты' do
+    body = <<-EOF
+      Hello.\nSome text for testing
+      Отправлено из мобильной почты Mail.ru
+      hey
+    EOF
+
+    expect(body_from_email(text: body)).to eq "Hello.\nSome text for testing"
+  end
+  
   it 'removes any iphone things above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
       Hello.
