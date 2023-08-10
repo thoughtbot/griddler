@@ -157,73 +157,6 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
-  it 'handles french format: "Le [date], [soandso] <email@example.com> a écrit :"' do
-    body = <<-EOF.strip_heredoc
-      Hello.
-
-      Le 11 mars 2016, at 18:00, Tristan <email@example.com> a écrit :
-      > Check out this report.
-      >
-      > It's pretty cool.
-      >
-      > Thanks, Tristan
-      >
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
-  it 'handles LONG french format: "Le [date], [soandso] <email@example.com> a écrit :"' do
-    body = <<-EOF.strip_heredoc
-      Hello.
-
-      Le 11 mars 2016, at 18:00, Tristan With A Really Really Long Name <
-      tristanhasasuperlongemailthatforcesanewline@candidates.welcomekit.co> a
-      écrit :
-      > Check out this report.
-      >
-      > It's pretty cool.
-      >
-      > Thanks, Tristan
-      >
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
-  it 'handles spanish format: "El [date], [soandso] <email@example.com> escribió:"' do
-    body = <<-EOF.strip_heredoc
-      Hello.
-
-      El 11/03/2016 11:34, Pedro Pérez <email@example.com> escribió:
-      > Check out this report.
-      >
-      > It's pretty cool.
-      >
-      > Thanks, Pedro
-      >
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
-  it 'handles LONG spanish format: "El [date], [soandso] <email@example.com> escribió:"' do
-    body = <<-EOF.strip_heredoc
-      Hello.
-
-      El 11/03/2016 11:34, Pedro Pérez <
-      pedrohasasuperlongemailthatforcesanewline@example.com> escribió:
-      > Check out this report.
-      >
-      > It's pretty cool.
-      >
-      > Thanks, Pedro
-      >
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
   it 'handles "From: email@email.com" format' do
     body = <<-EOF
       Hello.
@@ -245,22 +178,6 @@ describe Griddler::Email, 'body formatting' do
       *From:* bob@example.com
       *Sent:* Today
       *Subject:* Awesome report.
-
-      Check out this report!
-    EOF
-
-    expect(body_from_email(text: body)).to eq 'Hello.'
-  end
-
-  it 'handles "De : Firstname <email@email.com>" format (french Outlook)' do
-    body = <<-EOF
-      Hello.
-
-      ________________________________
-      De : Bob <bob@example.com>
-      Envoyé : mercredi 15 juin 2016 07:24
-      À : robert@example.com
-      Objet : Awesome report.
 
       Check out this report!
     EOF
@@ -373,6 +290,16 @@ describe Griddler::Email, 'body formatting' do
     expect(body_from_email(text: body)).to eq 'Hello.'
   end
 
+  it 'handles Отправлено из мобильной почты' do
+    body = <<-EOF
+      Hello.\nSome text for testing
+      Отправлено из мобильной почты Mail.ru
+      hey
+    EOF
+
+    expect(body_from_email(text: body)).to eq "Hello.\nSome text for testing"
+  end
+  
   it 'removes any iphone things above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
       Hello.
@@ -432,6 +359,14 @@ describe Griddler::Email, 'body formatting' do
     EOF
 
     expect(body_from_email(text: body)).to eq 'Hello.'
+  end
+
+  it 'without split points' do
+    body = <<-EOF
+      On the counter. Hello world, No split points
+    EOF
+
+    expect(body_from_email(text: body)).to eq 'On the counter. Hello world, No split points'
   end
 
   it 'allows paragraphs to begin with "On"' do

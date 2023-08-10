@@ -32,8 +32,8 @@ class Griddler::EmailsController < ActionController::Base
     begin
       puts({
         is_griddler: true,
-        griddler_from: "params_each_griddler_emails_controller",
-        tag: "missing_mail",
+        griddler_from: "griddler_emails_controller",
+        tag: "griddler_tag",
         griddler_params: params,
         griddler_normalized_params: normalized_params,
         griddler_date: DateTime.now
