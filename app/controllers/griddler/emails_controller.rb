@@ -3,8 +3,12 @@ class Griddler::EmailsController < ActionController::Base
   before_action :logging, only: :create
 
   def create
-    normalized_params.each do |p|
-      process_email email_class.new(p)
+    begin
+      normalized_params.each do |p|
+        process_email email_class.new(p)
+      end
+    rescue
+      sentry.capture_exception("Error in Griddler#create", extra: normalized_params)
     end
 
     head :ok
@@ -12,9 +16,9 @@ class Griddler::EmailsController < ActionController::Base
 
   private
 
-  delegate :processor_class, :email_class, :processor_method, :email_service, to: :griddler_configuration
+  delegate :processor_class, :email_class, :processor_method, :email_service, :sentry, :logger, to: :griddler_configuration
 
-  private :processor_class, :email_class, :processor_method, :email_service
+  private :processor_class, :email_class, :processor_method, :email_service, :sentry, :logger
 
   def normalized_params
     Array.wrap(email_service.normalize_params(params))
@@ -30,14 +34,15 @@ class Griddler::EmailsController < ActionController::Base
 
   def logging
     begin
-      puts({
+      @log_hash = {
         is_griddler: true,
         griddler_from: "griddler_emails_controller",
         tag: "griddler_tag",
         griddler_params: params,
         griddler_normalized_params: normalized_params,
         griddler_date: DateTime.now
-      }.to_json)
+      }
+      logger.info(@log_hash)
     rescue
     end
   end
