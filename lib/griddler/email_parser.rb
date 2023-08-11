@@ -78,6 +78,7 @@ module Griddler::EmailParser
     [
       reply_delimeter_regex,
       /^[[:space:]]*(Отправлено из мобильной почты|Sent from my).*/i,
+      /.*от Level Travel <manager@level.travel>.*/i,
       /^[[:space:]]*[-]+[[:space:]]*Original Message[[:space:]]*[-]+[[:space:]]*$/i,
       /^[[:space:]]*--[[:space:]]*$/,
       /^[[:space:]]*\>?[[:space:]]*On.*\r?\n?.*wrote:\r?\n?$/,

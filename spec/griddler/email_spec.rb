@@ -299,6 +299,16 @@ describe Griddler::Email, 'body formatting' do
 
     expect(body_from_email(text: body)).to eq "Hello.\nSome text for testing"
   end
+
+  it 'handles от Level Travel' do
+    body = <<-EOF
+      Hello.\nSome text for testing
+      вторник, 8 августа 2023 г. в 12:00 +03:00 от Level Travel <manager@level.travel>:
+      hey
+    EOF
+
+    expect(body_from_email(text: body)).to eq "Hello.\nSome text for testing"
+  end
   
   it 'removes any iphone things above -- REPLY ABOVE THIS LINE --' do
     body = <<-EOF
