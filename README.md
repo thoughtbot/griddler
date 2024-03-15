@@ -217,6 +217,5 @@ Griddler was written by Caleb Hearth and Joel Oliveira.
 
 Thanks to our [contributors](https://github.com/thoughtbot/griddler/contributors)!
 
-![thoughtbot](http://presskit.thoughtbot.com/images/thoughtbot-logo-for-readmes.svg)
-
-The names and logos for thoughtbot are trademarks of thoughtbot, inc.
+<!-- START /templates/footer.md -->
+<!-- END /templates/footer.md -->
