@@ -1,8 +1,9 @@
+## Deprecated as of June 6, 2024
+
+Griddler has been deprecated in favor of ActionMailer since this is built into Rails now.
+
 Griddler
 ========
-
-[![Build Status](https://travis-ci.org/thoughtbot/griddler.png?branch=master)](https://travis-ci.org/thoughtbot/griddler)
-[![Code Climate](https://codeclimate.com/github/thoughtbot/griddler.png)](https://codeclimate.com/github/thoughtbot/griddler)
 
 ### Receive emails in your Rails app
 
