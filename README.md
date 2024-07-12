@@ -1,6 +1,6 @@
 ## Deprecated as of June 6, 2024
 
-Griddler has been deprecated in favor of ActionMailer since this is built into Rails now.
+Griddler has been deprecated in favor of [ActionMailbox](https://guides.rubyonrails.org/action_mailbox_basics.html) since this is built into Rails now.
 
 Griddler
 ========
